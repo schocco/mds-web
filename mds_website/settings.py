@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'south',
+    'apps.muni_scales',
 )
 
 # A sample logging configuration. The only tangible logging
