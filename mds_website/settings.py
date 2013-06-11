@@ -1,7 +1,11 @@
+# -*- coding: utf-8 -*-
 # Django settings for mds_website project.
+import os
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+
+PROJECT_DIR = os.path.dirname(__file__)
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -50,7 +54,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = os.path.abspath(os.path.join(PROJECT_DIR, "media"))
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -61,7 +65,7 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = ''
+STATIC_ROOT = os.path.abspath(os.path.join(PROJECT_DIR, "../../sitestatic"))
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -72,6 +76,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    os.path.abspath(os.path.join(PROJECT_DIR, "static")),
 )
 
 # List of finder classes that know how to find static files in
@@ -83,7 +88,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '&74k!6!-15rxh36nnt6g@2_5i$_lq4oy^si&hw6w$yy29#z$4('
+SECRET_KEY = 'use your own secret key.'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -153,3 +158,9 @@ LOGGING = {
         },
     }
 }
+
+# import local settings file if one exists
+try:
+    from settings_local import *
+except Exception, e:
+    print("Could not find a local settings file.")
