@@ -39,3 +39,4 @@ for level in Mscale.levels:
                )
     MSCALES[level] = m
     
+MSCALE_CHOICES = tuple((m, "M %s" % str(m).replace(".0","")) for m in Mscale.levels)
