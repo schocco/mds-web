@@ -1,3 +1,5 @@
+from django.utils.encoding import force_unicode
+
 class Mscale(object):
     '''
     M scale, describing the difficultiy of a single muni trail section.
@@ -24,8 +26,21 @@ class Mscale(object):
         self.slope = kwargs.pop("slope", "")
         self.obstacles = kwargs.pop("obstacles", [])
         self.characteristics = kwargs.pop("characteristics", [])
+        
     def __unicode__(self):
-        return "M%s" % self.number
+        return force_unicode("M%s" % self.number or u'M')
+
+    def __eq__(self, other):
+        return self.number == other.number
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __cmp__(self, other):
+        return cmp(self.number, other.number)
+
+    def __hash__(self):
+        return hash(unicode(self))
     
         
 MSCALES = {}
