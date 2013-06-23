@@ -56,8 +56,7 @@ class UXCscale(BaseScale):
         '''
         Calculates the score with the given attributes.
         '''
-        #TODO: implement
-        return 0
+        return calculator.UXC(self)
     
     class Meta:
         verbose_name = "UXC Scale Entity"
