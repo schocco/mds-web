@@ -1,6 +1,7 @@
-from fields import MscaleField
+from apps.muni_scales import calculator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from fields import MscaleField
         
         
 class BaseScale(models.Model):
@@ -30,8 +31,7 @@ class UDHscale(BaseScale):
         '''
         Calculates the score with the given attributes.
         '''
-        #TODO: implement
-        return 0
+        return calculator.UDH(self)
     
     class Meta:
         verbose_name = "UDH Scale Entity"

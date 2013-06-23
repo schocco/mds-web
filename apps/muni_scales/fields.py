@@ -24,13 +24,12 @@ class MscaleField(DecimalField):
 
     def __init__(self, *args, **kwargs):
         '''Creates DecimalField with fixed number of digits and decimal places.'''
-        super(MscaleField, self).__init__(*args, max_digits=2, decimal_places=1, **kwargs)
-        #self.
-        #self.
+        kwargs['max_digits'] = 2
+        kwargs['decimal_places'] = 1
+        super(MscaleField, self).__init__(*args, **kwargs)
         
     def to_python(self, value):
         ''':returns: value as an Mscale object'''
-        print "HEEEELLLOOOOO!!!!!!!!!!!!"
         if isinstance(value, Mscale) or value is None:
             return value
         if isinstance(value, str):
