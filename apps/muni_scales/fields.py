@@ -1,9 +1,9 @@
-from mscale import MSCALE_CHOICES
 from django import forms
 from django.db.models.fields import DecimalField
+from django.db.models.fields.subclassing import SubfieldBase
 from django.forms.widgets import Select
 from django.utils.translation import ugettext_lazy as _
-from mscale import Mscale, MSCALES
+from mscale import MSCALE_CHOICES, Mscale, MSCALES
 from south.modelsinspector import add_introspection_rules
 
 class MscaleFormField(forms.fields.DecimalField):
@@ -21,7 +21,8 @@ class MscaleField(DecimalField):
     #If  null=True i sallowed, any field method that takes value as
     # an argument, like to_python() and get_prep_value(), should handle the case when value is None.
     description = _("M scale, describing the difficultiy of a single muni trail section.")
-
+    __metaclass__ = SubfieldBase
+    
     def __init__(self, *args, **kwargs):
         '''Creates DecimalField with fixed number of digits and decimal places.'''
         kwargs['max_digits'] = 2

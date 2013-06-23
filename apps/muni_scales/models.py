@@ -25,11 +25,12 @@ class UDHscale(BaseScale):
     average_slope = models.IntegerField(_("average slope"), help_text = _("average slope in %"))
     
     def __unicode__(self):
-        return u'UDH %s' % self.get_score()
+        return u'UDH %sm avg M%s' % (self.total_length, self.average_difficulty)
     
     def get_score(self):
         '''
         Calculates the score with the given attributes.
+        :rtype: :py:class:`apps.muni_scales.calculator.UDH`
         '''
         return calculator.UDH(self)
     
