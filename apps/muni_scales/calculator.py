@@ -1,7 +1,53 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
     
-class UDH(object):
+class CalcBase(object):
+    _interval_borders = (0,2,8,10)
+    @staticmethod
+    def get_boundaries(value, lst, max_pts=10):
+        '''
+        determines the position of the value in the provided
+        list and returns the matching borders of the points list.
+        p0 represents the lower boundary of the available points. 
+        p1 represents the upper boundary of the available points.
+        i0 represents the lower boundary of the criteria measure.
+        i1 represents the upper boundary of the criteria measure.
+        
+        :returns: a tuple with 4 elements: (p0, p1, i0, i1)
+        '''
+        for idx, val in enumerate(lst):
+            if value > val and value < lst[idx+1]:
+                ps = tuple(float(p) * max_pts / 10 for p in CalcBase._interval_borders[idx:idx+2])
+                return ps + lst[idx:idx+2]
+    
+    @staticmethod 
+    def get_criteria_score(value, lst, max_pts=10):
+        '''
+        :returns: a tuple with an explanation and the actual score. The explanation
+                  describes how the score was calculated.
+        :rtype: tuple(str,int)
+        '''
+        # return min when value lower than first listvalue
+        if(value <= lst[0]):
+            explanation = _("The value (%s) is smaller than the first interval point %s" % (value, lst[0]))
+            return explanation, CalcBase._interval_borders[0] * float(max_pts) / 10
+        # return max when value higher than last listvalue
+        if(value >= lst[-1]):
+            explanation = _("The value (%s) exceeds the last interval point %s" % (value, lst[-1]))
+            return explanation, CalcBase._interval_borders[-1] * float(max_pts) / 10
+        if(value in lst):
+            index = lst.index(value)
+            explanation = _("The value (%s) matches an interval point" % value)
+            return explanation, CalcBase._interval_borders[index] * float(max_pts) / 10
+        #otherwise calculate, using the interval borders
+        p0, p1, i0, i1 = UXC.get_boundaries(value, lst, max_pts)
+        result = float(p1 - p0) / (i1 - i0) * (value - i0) + p0
+        result = round(result,1)
+        explanation = _("The score was determined by linear interpolation. The value is in "
+                        + "between %s and %s, so that the score has to be in between %s and %s" % (i0, i1, p0, p1))
+        return explanation, result
+    
+class UDH(CalcBase):
     '''
     Shows scores assigned to each scale criteria for
     better transparency/understandability of the calculated
@@ -34,48 +80,6 @@ class UDH(object):
         self.__max_difficulty = obj.maximum_difficulty
         self.__avg_difficulty = obj.average_difficulty
 
-    @staticmethod
-    def get_boundaries(value, lst):
-        '''
-        determines the position of the value in the provided
-        list and returns the matching borders of the points list.
-        p0 represents the lower boundary of the available points. 
-        p1 represents the upper boundary of the available points.
-        i0 represents the lower boundary of the criteria measure.
-        i1 represents the upper boundary of the criteria measure.
-        
-        :returns: a tuple with 4 elements: (p0, p1, i0, i1)
-        '''
-        for idx, val in enumerate(lst):
-            if value > val and value < lst[idx+1]:
-                return UDH._interval_borders[idx:idx+2] + lst[idx:idx+2]
-    
-    @staticmethod 
-    def get_criteria_score(value, lst):
-        '''
-        :returns: a tuple with an explanation and the actual score. The explanation
-                  describes how the score was calculated.
-        :rtype: tuple(str,int)
-        '''
-        # return min when value lower than first listvalue
-        if(value <= lst[0]):
-            explanation = _("The value (%s) is smaller than the first interval point %s" % (value, lst[0]))
-            return explanation, UDH._interval_borders[0]
-        # return max when value higher than last listvalue
-        if(value >= lst[-1]):
-            explanation = _("The value (%s) exceeds the last interval point %s" % (value, lst[-1]))
-            return explanation, UDH._interval_borders[-1]
-        if(value in lst):
-            index = lst.index(value)
-            explanation = _("The value (%s) matches an interval point" % value)
-            return explanation, UDH._interval_borders[index]
-        #otherwise calculate, using the interval borders
-        p0, p1, i0, i1 = UDH.get_boundaries(value, lst)
-        result = float(p1 - p0) / (i1 - i0) * (value - i0) + p0
-        result = round(result,1)
-        explanation = _("The score was determined by linear interpolation. The value is in "
-                        + "between %s and %s, so that the score has to be in between %s and %s" % (i0, i1, p0, p1))
-        return explanation, result
 
     def get_total_length(self):
         calc = {'value': self.__total_length}
@@ -110,7 +114,7 @@ class UDH(object):
     avg_difficulty = property(fget=get_avg_difficulty, doc="avg_difficulty's docstring")
     total_score = property(fget=get_total_score, doc="the total score of the trail")
     
-class UXC(object):
+class UXC(CalcBase):
     '''
     Shows scores assigned to each UXC scale criteria for
     better transparency/understandability of the calculated
@@ -141,49 +145,6 @@ class UXC(object):
         self.__max_difficulty = obj.maximum_difficulty
         self.__avg_difficulty = obj.average_difficulty
         
-    @staticmethod
-    def get_boundaries(value, lst, max_pts):
-        '''
-        determines the position of the value in the provided
-        list and returns the matching borders of the points list.
-        p0 represents the lower boundary of the available points. 
-        p1 represents the upper boundary of the available points.
-        i0 represents the lower boundary of the criteria measure.
-        i1 represents the upper boundary of the criteria measure.
-        
-        :returns: a tuple with 4 elements: (p0, p1, i0, i1)
-        '''
-        for idx, val in enumerate(lst):
-            if value > val and value < lst[idx+1]:
-                ps = tuple(float(p) * max_pts / 10 for p in UXC._interval_borders[idx:idx+2])
-                return ps + lst[idx:idx+2]
-    
-    @staticmethod 
-    def get_criteria_score(value, lst, max_pts):
-        '''
-        :returns: a tuple with an explanation and the actual score. The explanation
-                  describes how the score was calculated.
-        :rtype: tuple(str,int)
-        '''
-        # return min when value lower than first listvalue
-        if(value <= lst[0]):
-            explanation = _("The value (%s) is smaller than the first interval point %s" % (value, lst[0]))
-            return explanation, UXC._interval_borders[0] * float(max_pts) / 10
-        # return max when value higher than last listvalue
-        if(value >= lst[-1]):
-            explanation = _("The value (%s) exceeds the last interval point %s" % (value, lst[-1]))
-            return explanation, UXC._interval_borders[-1] * float(max_pts) / 10
-        if(value in lst):
-            index = lst.index(value)
-            explanation = _("The value (%s) matches an interval point" % value)
-            return explanation, UXC._interval_borders[index] * float(max_pts) / 10
-        #otherwise calculate, using the interval borders
-        p0, p1, i0, i1 = UXC.get_boundaries(value, lst, max_pts)
-        result = float(p1 - p0) / (i1 - i0) * (value - i0) + p0
-        result = round(result,1)
-        explanation = _("The score was determined by linear interpolation. The value is in "
-                        + "between %s and %s, so that the score has to be in between %s and %s" % (i0, i1, p0, p1))
-        return explanation, result
     
     def get_total_length(self):
         length = float(self.__total_length) / 1000 #km instead of meters
@@ -234,7 +195,3 @@ class UXC(object):
     max_difficulty = property(get_max_difficulty, None, None, None)
     avg_difficulty = property(get_avg_difficulty, None, None, None)
     total_score = property(get_total_score, None, None, None)
-    
-    
-        
-    
