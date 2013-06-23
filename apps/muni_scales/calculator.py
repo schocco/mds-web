@@ -1,4 +1,4 @@
- # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
     
     
@@ -94,18 +94,29 @@ class UDH(object):
         return calc
 
     def get_avg_slope(self):
-        return self.__avg_slope
+        calc = {'value': self.__avg_slope}
+        calc['explanation'], calc['result'] = UDH.get_criteria_score(self.__avg_slope, UDH._avg_slope)
+        return calc
 
 
     def get_max_difficulty(self):
-        return self.__max_difficulty
+        calc = {'value': self.__max_difficulty}
+        calc['explanation'], calc['result'] = UDH.get_criteria_score(self.__max_difficulty.number, UDH._max_difficulty)
+        return calc
 
 
     def get_avg_difficulty(self):
-        return self.__avg_difficulty
+        calc = {'value': self.__avg_difficulty}
+        calc['explanation'], calc['result'] = UDH.get_criteria_score(self.__avg_difficulty.number, UDH._avg_difficulty)
+        return calc
+    
+    def get_total_score(self):
+        score = self.total_length['result'] + self.avg_slope['result'] + self.max_difficulty['result'] + self.avg_difficulty['result']
+        return int(round(score))
 
     total_length = property(fget=get_total_length, doc="")
     avg_slope = property(fget=get_avg_slope, doc="")
     max_difficulty = property(fget=get_max_difficulty, doc="max_difficulty's docstring")
     avg_difficulty = property(fget=get_avg_difficulty, doc="avg_difficulty's docstring")
+    total_score = property(fget=get_total_score, doc="the total score of the trail")
         

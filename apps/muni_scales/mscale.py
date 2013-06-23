@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.utils.encoding import force_unicode
 from django.utils.translation import ugettext_lazy as _
 
@@ -32,13 +33,26 @@ class Mscale(object):
         return force_unicode("M%s" % self.number or u'M')
 
     def __eq__(self, other):
-        return self.number == other.number
+        if(isinstance(other, Mscale)):
+            return self.number == other.number
+        elif(isinstance(other, int) or isinstance(other, float)):
+            return self.number == other
+        else:
+            raise TypeError("Cannot compare Mscale object with %s" % str(other))
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
     def __cmp__(self, other):
-        return cmp(self.number, other.number)
+        '''
+        Also allows comparisons between mscale instances and numbers.
+        '''
+        if(isinstance(other, Mscale)):
+            return cmp(self.number, other.number)
+        elif(isinstance(other, int) or isinstance(other, float)):
+            return cmp(self.number, other)
+        else:
+            raise TypeError("Cannot compare Mscale object with %s" % str(other))
 
     def __hash__(self):
         return hash(unicode(self))
