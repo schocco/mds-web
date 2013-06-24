@@ -2,7 +2,7 @@ from apps.muni_scales import calculator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from fields import MscaleField
-        
+
         
 class BaseScale(models.Model):
     '''
@@ -25,7 +25,7 @@ class UDHscale(BaseScale):
     average_slope = models.IntegerField(_("average slope"), help_text = _("average slope in %"))
     
     def __unicode__(self):
-        return u'UDH %sm avg M%s' % (self.total_length, self.average_difficulty)
+        return u'UDH %sm avg %s' % (self.total_length, self.average_difficulty)
     
     def get_score(self):
         '''
@@ -50,7 +50,7 @@ class UXCscale(BaseScale):
 
     
     def __unicode__(self):
-        return u'UXC %s' % self.get_score()
+        return u'UXC %s' % self.average_difficulty
     
     def get_score(self):
         '''
