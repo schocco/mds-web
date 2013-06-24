@@ -127,8 +127,10 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
+    'django.contrib.gis',
     'south',
     'apps.muni_scales',
+    'apps.trails',
 )
 
 # A sample logging configuration. The only tangible logging
