@@ -1,4 +1,5 @@
 from apps.muni_scales import calculator
+from apps.trails.models import Trail
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from fields import MscaleField
@@ -8,6 +9,7 @@ class BaseScale(models.Model):
     '''
     Base class for all discipline specific scales.
     '''
+    trail = models.ForeignKey(Trail, null=True)
     total_length = models.IntegerField(_('total length'), 
                                        help_text = _("Total trail length in meters"))
     maximum_difficulty = MscaleField(_('maximum difficulty'), 
