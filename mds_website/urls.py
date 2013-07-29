@@ -9,5 +9,5 @@ v1_api.register(MscaleResource())
 
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
-    (r'^api/', include(v1_api.urls)),
+    url(r'^api/', include(v1_api.urls)),
 )
