@@ -16,6 +16,7 @@ Planned features
 ****************
 
 - Informing about the difficulty scale
+- Internationalization
 - Online calculator to determine scores
 - GPX track import as alternative data entry method for the calculator
 - Storing trails and their associated difficulty ratings, so that they can be
@@ -26,7 +27,8 @@ Planned features
 Requirements
 ************
 
-- see requirements.txt (created via PIP)
+- Python packages as listed in requirements.txt (created via PIP)
+- PostGIS instance
 
 
 References
