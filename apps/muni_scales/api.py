@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from apps.muni_scales.models import UDHscale, UXCscale
 from apps.muni_scales.mscale import Mscale, MSCALES
 from django.conf.urls import url
 from tastypie import fields
@@ -6,6 +7,22 @@ from tastypie.authorization import Authorization
 from tastypie.bundle import Bundle
 from tastypie.resources import Resource, ModelResource
 
+class UDHResource(ModelResource):
+    '''
+    UDH rating
+    '''
+    class Meta:
+        queryset = UDHscale.objects.all()
+        resource_name = 'udh-scale'
+    
+class UXCResource(ModelResource):
+    '''
+    UXC Rating
+    '''
+    class Meta:
+        queryset = UXCscale.objects.all()
+        resource_name = 'uxc-scale'    
+    
 class MscaleResource(Resource):
     '''
     A read-only Mscale resource.
