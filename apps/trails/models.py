@@ -13,7 +13,7 @@ class Trail(models.Model):
     created = models.DateTimeField()
     edited = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=500, blank=True)
-    waypoints = LineStringField()
+    waypoints = LineStringField(null=True, blank=True)
     objects = GeoManager()
     # user
     # comments[]
