@@ -20,6 +20,7 @@ class MscaleResource(Resource):
         resource_name = 'mscales'
         object_class = Mscale
         authorization = Authorization()
+        allowed_methods = ['get']
 
     def prepend_urls(self):
         return [
