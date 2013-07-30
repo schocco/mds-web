@@ -1,9 +1,8 @@
 from apps.trails.gis_math import haversine
 from django.contrib.gis.db.models.fields import LineStringField
 from django.contrib.gis.db.models.manager import GeoManager
-from django.db import models, models
+from django.db import models
 from django.utils.translation import ugettext_lazy as _
-import math
 
 
 

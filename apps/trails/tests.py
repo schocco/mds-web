@@ -63,3 +63,42 @@ class ImportGPXTest(TestCase):
         self.assertTrue(os.path.exists(gpx_file))
         with open(gpx_file) as fp:
             c.post('/load-gpx/', {'gpx': fp})
+            
+            
+class TrailFunctionTest(TestCase):
+    '''
+    Tests functions / properties of trail objects.
+    '''
+    def setUp(self):
+        ls2d = LineString((48.75118072, 8.539638519),
+                          (48.75176078, 8.541011810),
+                          (48.75133635, 8.545153141),
+                          (48.75067140, 8.545582294))
+        ls3d = LineString((48.75118072, 8.539638519, 540),
+                          (48.75176078, 8.541011810, 696),
+                          (48.75133635, 8.545153141, 556),
+                          (48.75067140, 8.545582294, 531))
+        Trail.objects.create(name="no waypoints")
+        Trail.objects.create(name="3d waypoints", waypoints = ls3d)
+        Trail.objects.create(name="2d waypoints", waypoints = ls2d)
+        
+    def test_altitude_functions(self):
+        '''
+        Checks correct altitude calculations.
+        '''
+        no = Trail.objects.get(name="no waypoints")
+        d3 = Trail.objects.get(name="3d waypoints")
+        d2 = Trail.objects.get(name="2d waypoints")
+        # altitude sections
+        self.assertEquals(no._get_altitude_sections(), [])
+        self.assertEquals(d2._get_altitude_sections(), [])
+        self.assertEqual(len(d3._get_altitude_sections()), 4)
+        # total altitude uphill
+        self.assertEqual(no.get_total_altitude_up(), 0)
+        self.assertEqual(d3.get_total_altitude_up(), 696 - 540)
+        self.assertEqual(d2.get_total_altitude_up(), 0)
+        # total altitude downhill        
+        self.assertEqual(no.get_total_altitude_down(), 0)
+        self.assertEqual(d3.get_total_altitude_down(), 696 - 531)
+        self.assertEqual(d2.get_total_altitude_down(), 0)
+        
