@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" creator="GPSies http://www.gpsies.com - bad wildbad" version="1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+  <metadata>
+    <name>bad wildbad</name>
+    <link href="http://www.gpsies.com/">
+      <text>bad wildbad on GPSies.com</text>
+    </link>
+    <time>2013-07-29T11:59:58Z</time>
+  </metadata>
+  <rte>
+    <name>bad wildbad on GPSies.com</name>
+    <rtept lat="48.75118072" lon="8.539638519">
+      <ele>712.00000</ele>
+      <time>2010-01-01T00:00:00Z</time>
+    </rtept>
+    <rtept lat="48.75176078" lon="8.541011810">
+      <ele>696.00000</ele>
+      <time>2010-01-01T00:00:26Z</time>
+    </rtept>
+    <rtept lat="48.75214276" lon="8.542428016">
+      <ele>656.00000</ele>
+      <time>2010-01-01T00:00:51Z</time>
+    </rtept>
+    <rtept lat="48.75198714" lon="8.543179035">
+      <ele>637.00000</ele>
+      <time>2010-01-01T00:01:04Z</time>
+    </rtept>
+    <rtept lat="48.75178907" lon="8.544487953">
+      <ele>589.00000</ele>
+      <time>2010-01-01T00:01:26Z</time>
+    </rtept>
+    <rtept lat="48.75133635" lon="8.545153141">
+      <ele>556.00000</ele>
+      <time>2010-01-01T00:01:42Z</time>
+    </rtept>
+    <rtept lat="48.75067140" lon="8.545582294">
+      <ele>531.00000</ele>
+      <time>2010-01-01T00:02:00Z</time>
+    </rtept>
+  </rte>
+</gpx>
+
