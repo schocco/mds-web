@@ -23,3 +23,51 @@ class Trail(models.Model):
     
     def __unicode__(self):
         return u'%s' % self.name
+    
+    def has_waypoints(self):
+        return self.waypoints is not None
+    
+    def get_altitude_difference(self):
+        '''
+        Calculates the total altitude difference between start and end point.
+        Ignores ups and downs in between.
+        '''
+        #TODO
+        
+    def get_max_slope(self):
+        '''
+        Calculates the slope in % for each pair of waypoints and returns
+        the highest slope found.
+        '''
+        
+    def get_avg_slope(self):
+        '''
+        Calculates the average slope by dividing total altitude difference
+        through the length of the track.
+        '''
+        
+    def get_length(self):
+        '''
+        Calculates the (flat) distance of the track.
+        This does not take into account that the earth isn't flat, and that
+        the distance should be longer due to the altitude difference.
+        '''
+        
+    def get_exact_length(self):
+        '''
+        Calculates the length of the track and takes into account that
+        the earth is not flat + altitude difference.
+        '''
+        
+    def get_total_altitude_up(self):
+        '''
+        Calculates the total uphill meters (altitude)
+        '''
+        #TODO
+        
+    def get_total_altitude_down(self):
+        '''
+        Calculates the total downhill meters (altitude)
+        '''
+        #TODO
+        
