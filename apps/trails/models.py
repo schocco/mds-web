@@ -102,6 +102,8 @@ class Trail(models.Model):
          dh: set to true to get the maximum downhill slope
          uh: set to True to get the maximum uphill slope
         '''
+        if(not self.has_waypoints()):
+            return 0
         if(dh is uh):
             slopes = [abs(s) for s in self._get_slope_sections()]
             return max(slopes)

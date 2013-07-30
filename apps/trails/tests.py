@@ -70,10 +70,10 @@ class TrailFunctionTest(TestCase):
     Tests functions / properties of trail objects.
     '''
     def setUp(self):
-        ls2d = LineString((48.75118072, 8.539638519),
-                          (48.75176078, 8.541011810),
-                          (48.75133635, 8.545153141),
-                          (48.75067140, 8.545582294))
+        ls2d = LineString((48.75118072, 8.539638519, 0),
+                          (48.75176078, 8.541011810, 0),
+                          (48.75133635, 8.545153141, 0),
+                          (48.75067140, 8.545582294, 0))
         ls3d = LineString((48.75118072, 8.539638519, 540),
                           (48.75176078, 8.541011810, 696),
                           (48.75133635, 8.545153141, 556),
@@ -91,8 +91,8 @@ class TrailFunctionTest(TestCase):
         d2 = Trail.objects.get(name="2d waypoints")
         # altitude sections
         self.assertEquals(no._get_altitude_sections(), [])
-        self.assertEquals(d2._get_altitude_sections(), [])
-        self.assertEqual(len(d3._get_altitude_sections()), 4)
+        self.assertEquals(len(d2._get_altitude_sections()), 3)
+        self.assertEqual(len(d3._get_altitude_sections()), 3)
         # total altitude uphill
         self.assertEqual(no.get_total_altitude_up(), 0)
         self.assertEqual(d3.get_total_altitude_up(), 696 - 540)
@@ -102,3 +102,37 @@ class TrailFunctionTest(TestCase):
         self.assertEqual(d3.get_total_altitude_down(), 696 - 531)
         self.assertEqual(d2.get_total_altitude_down(), 0)
         
+    def test_length_functions(self):
+        '''
+        tests length calculations
+        '''
+        no = Trail.objects.get(name="no waypoints")
+        d3 = Trail.objects.get(name="3d waypoints")
+        d2 = Trail.objects.get(name="2d waypoints")
+        
+        self.assertEqual(no._get_length_sections(), [])
+        self.assertEqual(d3._get_length_sections(), d2._get_length_sections())
+        
+        self.assertEqual(no.get_length(), 0)
+        self.assertEqual(d3.get_length(), d2.get_length())
+        self.assertGreater(d2.get_length(), 0)
+        
+    def test_slope_functions(self):
+        '''
+        tests slope calculations
+        '''
+        no = Trail.objects.get(name="no waypoints")
+        d3 = Trail.objects.get(name="3d waypoints")
+        d2 = Trail.objects.get(name="2d waypoints")
+        
+        self.assertEqual(len(d3._get_slope_sections()), 3)
+        self.assertEqual(no._get_slope_sections(), [])
+        # slope may be higher than 140% in general, but in this case it shouldn't be
+        print d3.get_max_slope()
+        self.assertTrue(d3.get_max_slope() > 0 and d3.get_max_slope() <= 140)
+        self.assertGreater(d3.get_max_slope(dh=True), 0)
+        self.assertGreater(d3.get_max_slope(uh=True), 0)
+        # the steepest part is the first uphill section
+        self.assertEqual(d3.get_max_slope(), d3.get_max_slope(uh=True))
+        print d3.get_avg_slope()
+        self.assertTrue(abs(d3.get_avg_slope()) > 0 and d3.get_avg_slope() <= d3.get_max_slope(), 'avg slope must not be higher than maximum slope')
