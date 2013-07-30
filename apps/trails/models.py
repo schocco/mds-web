@@ -135,7 +135,7 @@ class Trail(models.Model):
         lengths = self._get_length_sections()
         return sum(lengths)
         
-    def get_total_altitude_up(self):
+    def get_total_ascent(self):
         '''
         Calculates the total uphill meters (altitude).
         Returns the absolute value.
@@ -146,7 +146,7 @@ class Trail(models.Model):
                 total += alt
         return abs(total)
         
-    def get_total_altitude_down(self):
+    def get_total_descent(self):
         '''
         Calculates the total downhill meters (altitude)
         Returns the absolute value.

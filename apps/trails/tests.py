@@ -94,13 +94,13 @@ class TrailFunctionTest(TestCase):
         self.assertEquals(len(d2._get_altitude_sections()), 3)
         self.assertEqual(len(d3._get_altitude_sections()), 3)
         # total altitude uphill
-        self.assertEqual(no.get_total_altitude_up(), 0)
-        self.assertEqual(d3.get_total_altitude_up(), 696 - 540)
-        self.assertEqual(d2.get_total_altitude_up(), 0)
+        self.assertEqual(no.get_total_ascent(), 0)
+        self.assertEqual(d3.get_total_ascent(), 696 - 540)
+        self.assertEqual(d2.get_total_ascent(), 0)
         # total altitude downhill        
-        self.assertEqual(no.get_total_altitude_down(), 0)
-        self.assertEqual(d3.get_total_altitude_down(), 696 - 531)
-        self.assertEqual(d2.get_total_altitude_down(), 0)
+        self.assertEqual(no.get_total_descent(), 0)
+        self.assertEqual(d3.get_total_descent(), 696 - 531)
+        self.assertEqual(d2.get_total_descent(), 0)
         
     def test_length_functions(self):
         '''
@@ -128,11 +128,9 @@ class TrailFunctionTest(TestCase):
         self.assertEqual(len(d3._get_slope_sections()), 3)
         self.assertEqual(no._get_slope_sections(), [])
         # slope may be higher than 140% in general, but in this case it shouldn't be
-        print d3.get_max_slope()
         self.assertTrue(d3.get_max_slope() > 0 and d3.get_max_slope() <= 140)
         self.assertGreater(d3.get_max_slope(dh=True), 0)
         self.assertGreater(d3.get_max_slope(uh=True), 0)
         # the steepest part is the first uphill section
         self.assertEqual(d3.get_max_slope(), d3.get_max_slope(uh=True))
-        print d3.get_avg_slope()
         self.assertTrue(abs(d3.get_avg_slope()) > 0 and d3.get_avg_slope() <= d3.get_max_slope(), 'avg slope must not be higher than maximum slope')
