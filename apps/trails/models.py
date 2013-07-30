@@ -10,8 +10,8 @@ class Trail(models.Model):
     Representation of a muni track.
     '''
     name = models.CharField(_('name'), max_length=100)
-    created = models.DateTimeField(_('created'))
-    edited = models.DateTimeField(_('last change'),auto_now_add=True)
+    created = models.DateTimeField(_('created'), auto_now_add=True, blank=True)
+    edited = models.DateTimeField(_('last change'), auto_now=True, blank=True)
     description = models.CharField(_('description'), max_length=500, blank=True)
     waypoints = LineStringField(_('waypoints'), dim=3, null=True, blank=True) #include altitude as Z
     objects = GeoManager()
