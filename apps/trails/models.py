@@ -37,8 +37,8 @@ class Trail(models.Model):
         A positive number means, that the end point is higher than the start point.
         Unit: meters
         '''
-        if(self.has_waypoints()):
-            return self.waypoints[-1] - self.waypoints[0]
+        if(self.has_waypoints() and self.waypoints.z is not None):
+            return self.waypoints.z[-1] - self.waypoints.z[0]
         return 0
     
     def _get_altitude_sections(self):
@@ -49,11 +49,11 @@ class Trail(models.Model):
         A positive number means, that the end point is higher than the start point.
         Unit: meters
         '''
-        if not self.has_waypoints():
+        if not self.has_waypoints() or self.waypoints.z is None:
             return []
         dest = self.waypoints.z[0]
         altitudes = []
-        for altitude in self.waypoints.z[2:]:
+        for altitude in self.waypoints.z[1:]:
             start = dest
             dest = altitude
             altitudes.append(dest-start)
@@ -88,7 +88,7 @@ class Trail(models.Model):
         lengths = self._get_length_sections()
         for idx, length in enumerate(lengths):
             alt = altitudes[idx]
-            slopes.append(float(alt) / length)
+            slopes.append(float(alt) / length / 10) # /1000 (length in km) * 100 (%)
         return slopes
     
     def get_max_slope(self, dh=None, uh=None):
@@ -118,7 +118,9 @@ class Trail(models.Model):
         
         Positive number indicates uphill, negative indicates downhill.
         '''
-        return self.get_altitude_difference() / self.get_length()
+        if(self.has_waypoints()):
+            return self.get_altitude_difference() / self.get_length() / 10
+        return 0
         
      
     def get_length(self):
@@ -129,18 +131,35 @@ class Trail(models.Model):
         Uses the Haversine Formula,
         see http://www.movable-type.co.uk/scripts/gis-faq-5.1.html
         '''        
-        lengths = self._get_distance_sections()
+        lengths = self._get_length_sections()
         return sum(lengths)
         
     def get_total_altitude_up(self):
         '''
-        Calculates the total uphill meters (altitude)
+        Calculates the total uphill meters (altitude).
+        Returns the absolute value.
         '''
-        #TODO
+        total = 0
+        for alt in self._get_altitude_sections():
+            if alt > 0:
+                total += alt
+        return abs(total)
         
     def get_total_altitude_down(self):
         '''
         Calculates the total downhill meters (altitude)
+        Returns the absolute value.
+        '''
+        total = 0
+        for alt in self._get_altitude_sections():
+            if alt < 0:
+                total += alt
+        return abs(total)
+    
+    def fetch_altitude_info(self, datasource="OSM"):
+        '''
+        replace z values with data from 3rd party provider
+        as specified in source
         '''
         #TODO
-        
+        raise NotImplementedError("not possible yet.")
