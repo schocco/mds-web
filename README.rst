@@ -29,6 +29,7 @@ Requirements
 
 - Python packages as listed in requirements.txt (created via PIP)
 - PostGIS instance
+- GDAL
 
 
 References
