@@ -65,7 +65,7 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = os.path.abspath(os.path.join(PROJECT_DIR, "../../sitestatic"))
+STATIC_ROOT = os.path.abspath(os.path.join(PROJECT_DIR, "../sitestatic"))
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -86,6 +86,50 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
+
+# Pipeline specific settings for JS and CSS compression
+# yui-compressor is required, for a list of alternative compressors
+# see https://django-pipeline.readthedocs.org/en/latest/compressors.html
+STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+PIPELINE_YUI_BINARY = "/usr/bin/yui-compressor"
+PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
+PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
+
+PIPELINE_CSS = {
+    'main': {
+        'source_filenames': (
+          'css/*.css',
+        ),
+        'output_filename': 'css/main.css',
+    },
+}
+PIPELINE_JS = {
+    'modernizer': {
+        'source_filenames': (
+          'js/modernizer/modernizer.js',
+        ),
+        'output_filename': 'js/modernizer.js',
+    },
+    'ie_font': {
+        'source_filenames': (
+          'js/ie_font.js',
+        ),
+        'output_filename': 'js/ie_font.js',
+    },
+    'jquery': {
+        'source_filenames': (
+          'js/jquery/jquery.js',
+        ),
+        'output_filename': 'js/jquery.js',
+    },
+    'main': {
+        'source_filenames': (
+          'js/plugins.js',
+          'js/*.js',
+        ),
+        'output_filename': 'js/main.js',
+    }
+}
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'use your own secret key.'
@@ -116,6 +160,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    os.path.join(PROJECT_DIR, 'templates'),
 )
 
 INSTALLED_APPS = (
@@ -130,6 +175,7 @@ INSTALLED_APPS = (
     'django.contrib.gis',
     'south',
     'tastypie',
+    'pipeline', #minify css and js
     'apps.muni_scales',
     'apps.trails',
 )
@@ -164,6 +210,7 @@ LOGGING = {
 }
 
 # import local settings file if one exists
+# apparantly using system environments is the better solution
 try:
     from settings_local import *
 except Exception, e:

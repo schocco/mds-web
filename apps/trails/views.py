@@ -3,7 +3,7 @@ from django.http import HttpResponse
 import os
 import tempfile
 
-
+#TODO: auhtorization
 def load_gpx(request):
     if request.method == 'POST':
         gpx_file = request.FILES['gpx']
@@ -24,3 +24,15 @@ def load_gpx(request):
     else:
         # raise http error
         return HttpResponse(300)
+    
+#def user_detail(request, username):
+#    ur = UserResource()
+#    user = ur.obj_get(username=username)
+#
+#    # Other things get prepped to go into the context then...
+#
+#    ur_bundle = ur.build_bundle(obj=user, request=request)
+#    return render_to_response('myapp/user_detail.html', {
+#        # Other things here.
+#        "user_json": ur.serialize(None, ur.full_dehydrate(ur_bundle), 'application/json'),
+#    })
