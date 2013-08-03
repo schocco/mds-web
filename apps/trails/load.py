@@ -59,7 +59,7 @@ class GPXReader(object):
         elif(len(geom) == 1):
             geom = geom[0]
             if(geom.geom_typeid == 5): # MultiLineString
-                return geom.merged
+                return geom.merged # pylint: disable=E1103
             if(geom.geom_typeid == 1): # LineString
                 return geom
         else:

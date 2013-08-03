@@ -95,10 +95,27 @@ PIPELINE_YUI_BINARY = "/usr/bin/yui-compressor"
 PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 
+
+
+
 PIPELINE_CSS = {
     'main': {
         'source_filenames': (
-          'css/*.css',
+            'css/plugins.css',
+            'css/workless.css',
+            'css/typography.css',
+            'css/font.css',
+            'css/forms.css',
+            'css/tables.css',
+            'css/buttons.css',
+            'css/alerts.css',
+            'css/tabs.css',
+            'css/pagination.css',
+            'css/breadcrumbs.css',
+            'css/helpers.css',
+            'css/scaffolding.css',
+            'css/print.css',
+            'css/application.css',
         ),
         'output_filename': 'css/main.css',
     },
