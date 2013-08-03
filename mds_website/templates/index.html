@@ -134,9 +134,10 @@
 <!-- JavaScript at the bottom for fast page loading -->
 
 <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script>window.jQuery || alert('need jquery')</script>
-<script>window.jQuery || document.write('<script src="/static/js/jquery.js"><\/script>')</script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"></script>
+<script>window.jQuery || document.write('<script src="/static/js/jquery/jquery-1.10.2.min.js"><\/script>')</script>
 
 <!-- scripts  -->
 {% compressed_js 'main' %}
