@@ -19,7 +19,7 @@ def load_gpx(request):
             ls = GPXReader(tmpath)
             # clean up
             os.remove(tmpath)      
-        return HttpResponse(ls.get_layer_geometry(1))
+        return HttpResponse(ls.to_linestring())
     else:
         # raise http error
         return HttpResponse(300)

@@ -2,6 +2,7 @@
 module for gpx conversion tasks
 '''
 from django.contrib.gis.geos.geometry import GEOSGeometry
+from django.contrib.gis.geos.linestring import LineString
 from osgeo import ogr
 import os
 
@@ -19,7 +20,6 @@ class GPXReader(object):
             os.environ['GPX_ELE_AS_25D'] = 'YES'
         ogr.UseExceptions()
         self.gpx_file = file_path
-        self.layers = {}
         self.ds = ogr.Open(self.gpx_file)
         # Unset the environment variable, so it doesn't affect other
         # GPX DataSource objects.
@@ -29,7 +29,43 @@ class GPXReader(object):
         if self.ds is None:
             raise Exception("Cant use %s as datasource" % file_path)
     
-    def get_layer(self, layer):
+    def _guess_layer(self):
+        '''
+        Guess which layer contains the relevant trail data.
+        It is most likely that the route or track layer contains the complete trail.
+        If those are not present, it is checked wether there are enough waypoints
+        that could make a complete trail.
+        '''
+        for lay in (2, 1, 0): # track, route, waypoints
+            if self.ds.GetLayer(lay).GetFeatureCount() > 0:
+                return lay
+        return "dunno!"
+    
+    def to_linestring(self, layer=None):
+        '''
+        Returns the waypoints/track/route as GEOS LineString. Tries
+        to automatically detect which layer to use when no layer is provided.
+        
+        The following types are not handled:
+        - polygon (typeid 3)
+        - multipoint (typeid 4)
+        - multipolygon (typeid 6)
+        '''
+        if not layer:
+            layer = self._guess_layer()
+        geom = self.get_layer_geometry(layer)
+        if(geom is None or len(geom) == 0):
+            return None
+        elif(len(geom) == 1):
+            geom = geom[0]
+            if(geom.geom_typeid == 5): # MultiLineString
+                return geom.merged
+            if(geom.geom_typeid == 1): # LineString
+                return geom
+        else:
+            return LineString(geom)
+            
+    def _get_layer(self, layer):
         '''
         Get OGR layer by id.
         '''
@@ -44,7 +80,7 @@ class GPXReader(object):
         
         Returns an empty list when layer is empty or not present.
         '''       
-        lyr = self.get_layer(layer)
+        lyr = self._get_layer(layer)
         objs = []
         for feature_idx in range(lyr.GetFeatureCount()):
             feature = lyr.GetFeature(feature_idx)
