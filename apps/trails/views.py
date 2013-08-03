@@ -1,4 +1,4 @@
-from apps.trails.load import gpx_to_linestring
+from apps.trails.load import GPXReader
 from django.http import HttpResponse
 import os
 import tempfile
@@ -16,11 +16,10 @@ def load_gpx(request):
                 for chunk in gpx_file.chunks():
                     destination.write(chunk)
             #get linestring
-            ls = gpx_to_linestring(tmpath)
+            ls = GPXReader(tmpath)
             # clean up
-            os.remove(tmpath)    
-                  
-        return HttpResponse(ls)
+            os.remove(tmpath)      
+        return HttpResponse(ls.get_layer_geometry(1))
     else:
         # raise http error
         return HttpResponse(300)
