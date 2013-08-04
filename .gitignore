@@ -2,3 +2,4 @@
 .settings
 *~
 mds_website/settings_local.py
+/sitestatic
