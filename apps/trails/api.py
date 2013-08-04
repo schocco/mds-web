@@ -3,8 +3,7 @@
 from apps.trails.models import Trail
 from tastypie.authentication import Authentication
 from tastypie.authorization import Authorization
-from tastypie.resources import ModelResource
-
+from tastypie.contrib.gis.resources import ModelResource 
 
 class TrailResource(ModelResource):
     
