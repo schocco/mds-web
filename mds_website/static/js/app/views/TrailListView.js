@@ -1,5 +1,5 @@
 define(['backbone',
-        'collections/trails',
+        'collections/TrailCollection',
         'underscore',
         'text!templates/trail_list.html',
         'jquery'],

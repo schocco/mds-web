@@ -1,4 +1,4 @@
-define(['backbone', 'models/trails'],
+define(['backbone', 'models/TrailModel'],
 		function(Backbone, Trail){
 	
 	var TrailsCollection = Backbone.Collection.extend({

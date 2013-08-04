@@ -1,6 +1,6 @@
 define(['backbone',
-        'views/trails',
-        ], function(Backbone, TrailsView){
+        'views/TrailListView',
+        ], function(Backbone, TrailListView){
 			// Navigation via router events
 			var WorkspaceRouter = Backbone.Router.extend({
 				routes: {
@@ -30,7 +30,7 @@ define(['backbone',
 				
 				trails: function() {
 					console.log("trails");
-					var trailView = new TrailsView;
+					var trailView = new TrailListView;
 				},
 				
 				contact: function() {
