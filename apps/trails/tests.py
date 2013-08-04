@@ -5,7 +5,7 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 
-from apps.trails.load import GPXMapping
+from apps.trails.load import GPXReader
 from django.contrib.gis.geos import LineString
 from django.test import TestCase
 from django.test.client import Client
@@ -44,14 +44,12 @@ class ImportGPXTest(TestCase):
         path = os.path.dirname( __file__ )
         gpx_file = os.path.join(path, 'data/BadWildbad.gpx')
         self.assertTrue(os.path.exists(gpx_file))
-        track_mapping = {'waypoints' : 'LINESTRING'}
-        lm = GPXMapping(Trail, gpx_file, track_mapping, layer=1)
-        lm.model.name = "test track"
-        self.assertIsNotNone(lm.model.waypoints)
+        ls = GPXReader(gpx_file)
+        self.assertIsNotNone(ls.to_linestring())
         
         t1 = Trail()
         t1.name = "Testtrail GPX"
-        t1.waypoints = lm.get_values()['waypoints']
+        t1.waypoints = ls.to_linestring()
         t1.save()
         self.assertIsNotNone(t1.created, 'timestamp has not been added automatically')
         self.assertIsNotNone(t1.edited, 'timestamp has not been added automatically')
