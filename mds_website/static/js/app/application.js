@@ -53,7 +53,7 @@ $('.tooltip-w').tipsy({
 jQuery.localScroll();
 
 // Prettyprint
-$('pre').addClass('prettyprint linenums');
+//$('pre').addClass('prettyprint linenums');
 
 // Uniform
 $("select, input:checkbox, input:radio, input:file").uniform();
@@ -87,6 +87,8 @@ var WorkspaceRouter = Backbone.Router.extend({
 	
 	trails: function() {
 		console.log("trails");
+		var trailView = new TrailsView;
+		trailView.render();
 	},
 	
 	contact: function() {
@@ -96,8 +98,8 @@ var WorkspaceRouter = Backbone.Router.extend({
 
 $('nav>ul>li>a').click(function(e) {
 	// this might cause issues with the back function in IE
-    e.preventDefault();
-    router.navigate($(this).attr('href'), true )
+    //e.preventDefault();
+    //router.navigate($(this).attr('href'), true )
 });
 
 var router = new WorkspaceRouter();

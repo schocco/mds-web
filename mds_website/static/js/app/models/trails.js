@@ -1,5 +1,8 @@
-$(function(){
-    var Trail = Backbone.Model.extend({
-    });
-
+define(['backbone'],
+		function(Backbone){
+	var Trail = Backbone.Model.extend({});
+	return Trail;
+	
 });
+
+

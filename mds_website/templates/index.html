@@ -39,14 +39,14 @@
 
 	
 	<!-- All JavaScript at the bottom, except modernizr -->
-	{% compressed_js 'modernizer' %}
+	<!--  {% compressed_js 'modernizer' %} -->
 
   	<!--[if lt IE 8]>    
         {% compressed_js 'ie_font' %}
     <![endif]-->
 </head>
 
-<body class="blueish" id="top" onload="prettyPrint()">
+<body class="blueish" id="top">
 
 <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6 -->
 <!--[if lt IE 7]>
@@ -71,11 +71,11 @@
         <!-- nav -->
         <nav id="primary">
 			<ul>
-				<li><a href="#">Home</a></li>
-				<li><a href="#">Unicycle DH Scale</a></li>
-				<li><a href="#">Unicycle XC Scale</a></li>
-                <li><a href="#">Muni Trail Scale</a></li>
-                <li><a href="#">Trails</a></li>
+				<li><a href="#/home">Home</a></li>
+				<li><a href="#/udh-scale">Unicycle DH Scale</a></li>
+				<li><a href="#/uxc-scale">Unicycle XC Scale</a></li>
+                <li><a href="#/mts">Muni Trail Scale</a></li>
+                <li><a href="#/trails">Trails</a></li>
 			</ul>
 		</nav>
 		<!-- /nav -->
@@ -122,6 +122,8 @@
 		<!-- footer -->
 		<footer class="one_full">
 			<p class="small muted">A project by <a href="//is-gr8.com">Rocco Schulz</a> and the <a href="//iufinc.org">IUF</a>. Design based on the <a href="http://workless.ikreativ.com/">Workless</a> framework</p>
+		    <p class="small muted"><a href="help">help</a></p>
+		    <p class="small muted"><a href="#help">help</a></p>
 		</footer>
 		<!-- /footer -->
 
@@ -134,13 +136,15 @@
 <!-- JavaScript at the bottom for fast page loading -->
 
 <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+<!-- 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"></script>
 <script>window.jQuery || document.write('<script src="/static/js/jquery/jquery-1.10.2.min.js"><\/script>')</script>
+-->
 
 <!-- scripts  -->
-{% compressed_js 'main' %}
+{% compressed_js 'require' %}
 <!-- /scripts -->
 
 </body>

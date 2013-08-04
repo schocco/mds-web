@@ -141,10 +141,23 @@ PIPELINE_JS = {
     },
     'main': {
         'source_filenames': (
-          'js/plugins.js',
+          'js/jquery/plugins.js',
+          'js/require/*.js',
+          'js/underscore/*.js',
           'js/*.js',
+          'js/app/models/*.js',
+          'js/app/collections/*.js',
+          'js/app/views/*.js',
+          'js/app/*.js',
         ),
         'output_filename': 'js/main.js',
+    },
+    'require': {
+        'source_filenames': (
+          'js/require/require.js',
+          'js/app/main.js',
+        ),
+        'output_filename': 'js/app/main.js',
     }
 }
 
