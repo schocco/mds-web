@@ -1,0 +1,14 @@
+<div class="one_full">
+    <h3>Trails</h3>
+    <p>
+    This is a small collection of trails, that have been uploaded by our users.
+    </p>
+</div>
+
+<% _.each(trails, function(trail) { %> 
+    <div class="one_third">
+	    <h3><%= trail.get('name') %></h3>
+	    <p><%= trail.get('description') %>/<p>
+	    <p><%= trail.get('waypoints') %></p>
+    </div>
+<% }); %>

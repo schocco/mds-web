@@ -1,27 +1,29 @@
-define(['backbone', 'collections/trails'],
-		function(Backbone, TrailsCollection){
+define(['backbone',
+        'collections/trails',
+        'underscore',
+        'text!templates/trail_list.html',
+        'jquery'],
+		function(Backbone, TrailsCollection, _, tpl, $){
 	
 	var TrailsView = Backbone.View.extend({
-		el: '.one_full',
+		el: '#content',
 		initialize: function () {
-			// isLoading is a useful flag to make sure we don't send off more than 
-			// one request at a time 
-			console.log("init trailsview");
-			this.trailsCollection = new TrailsCollection();
+			var that = this;
+		    var onDataHandler = function(collection) {
+		    	console.log("fetched data.");
+		        that.render();
+		    }
+		    that.collection = new TrailsCollection([]);
+		    that.collection.fetch({ success : onDataHandler });
+		    this.collection.on("reset", this.render, this);
 		},
 		render: function(){
-			console.log("render trails view");
-			this.loadTrails();
+			console.log("rendering");
+			console.log(this.collection.models);
+			var compiledTemplate = _.template( tpl, {'trails': this.collection.models });
+			$(this.el).html(compiledTemplate);
+			
 		},
-		loadTrails: function(){
-			var that = this;
-			this.trailsCollection.fetch({
-				success: function (trails) {
-					$(that.el).append("trails");
-					that.isLoading = false;
-				}
-			});
-		}
 			
 	});
 	

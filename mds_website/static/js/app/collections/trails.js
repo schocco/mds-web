@@ -6,7 +6,8 @@ define(['backbone', 'models/trails'],
 		url : "/api/v1/trails/?format=json",
 	
 		parse: function(response) {
-			return response.objects;
+			this.recent_meta = response.meta || {};
+			return response.objects || response;
 		}
 	});
 	

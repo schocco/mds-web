@@ -1,6 +1,7 @@
 require.config({
 	baseUrl: "static/js/app",
 	paths: { 
+		text: '../require/require.text',
 		jquery: '../jquery/jquery-1.10.2.min', 
 		underscore: '../underscore/underscore-min', 
 		backbone: '../backbone-min.1.0',

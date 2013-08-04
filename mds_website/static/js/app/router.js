@@ -31,7 +31,6 @@ define(['backbone',
 				trails: function() {
 					console.log("trails");
 					var trailView = new TrailsView;
-					trailView.render();
 				},
 				
 				contact: function() {
