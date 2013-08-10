@@ -1,6 +1,7 @@
 require.config({
 	baseUrl: "static/js/app",
-	paths: { 
+	paths: {
+		chart: '../chart/Chart.min',
 		text: '../require/require.text',
 		jquery: '../jquery/jquery-1.10.2.min', 
 		underscore: '../underscore/underscore-min', 
@@ -13,6 +14,9 @@ require.config({
 		prettify: '../prettify'
 	},
 	    shim: {
+	    	'chart': {
+	    		exports: 'chart'
+	    	},
 	        'backbone': {
 	            deps: ['underscore', 'jquery'],
 	            //Once loaded, use the global 'Backbone' as the
