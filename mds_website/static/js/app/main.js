@@ -11,7 +11,8 @@ require.config({
 		jquery_uniform: '../jquery/jquery.uniform',
 		jquery_localscroll: '../jquery/jquery.localscroll-1.2.7-min',
 		jquery_scrollto: '../jquery/jquery.scrollTo-1.4.3.1-min',
-		prettify: '../prettify'
+		prettify: '../prettify',
+		openlayers: '../openlayers/OpenLayers'
 	},
 	    shim: {
 	    	'chart': {
@@ -25,6 +26,9 @@ require.config({
 	        },
 	        'underscore': {
 	            exports: '_'
+	        },
+	        'openlayers': {
+	        	exports: 'OpenLayers'
 	        },
 	        'jquery': {
 	        	exports: '$'

@@ -1,23 +1,24 @@
 <div class="one_full">
-    <h3><%= trail.get('name') %></h3>
+    <h2><%= trail.get('name') %></h2>
     <p>
     <%= trail.get('description') %>
     </p>
 </div>
 
-<div class="two_third">
-    <h3>Map</h3>
-	<p><%= trail.get('waypoints') %></p>
-	<canvas id="chart" width="200" height="200">canvas.</canvas>
-</div>
+<hr>
 
-<div class="one_third">
+<div class="two_third">
     <h3>Statistics</h3>
     <p>Length, altitude, type, etc</p>
     <canvas id="chart" width="200" height="200">canvas.</canvas>
 </div>
 
-<div class="one_full">
+<div class="one_third">
     <h3>Hight Profile</h3>
-    <canvas id="chart" width="200" height="200">canvas.</canvas>
+    <canvas id="height_profile" style="width:100%;height:300px;"></canvas>
+</div>
+
+<div class="one_full">
+    <h3>Map</h3>
+    <div id="mapdiv" style="width:100%;height:500px;"></div>
 </div>
