@@ -85,9 +85,10 @@ class Trail(models.Model):
         slopes = []
         altitudes = self._get_altitude_sections()
         lengths = self._get_length_sections()
-        for idx, length in enumerate(lengths):
-            alt = altitudes[idx]
-            slopes.append(float(alt) / length / 10) # /1000 (length in km) * 100 (%)
+        if(len(altitudes) == len(lengths)):
+            for idx, length in enumerate(lengths):
+                alt = altitudes[idx]
+                slopes.append(float(alt) / length / 10) # /1000 (length in km) * 100 (%)
         return slopes
     
     def get_max_slope(self, dh=None, uh=None):
@@ -102,15 +103,16 @@ class Trail(models.Model):
          dh: set to true to get the maximum downhill slope
          uh: set to True to get the maximum uphill slope
         '''
-        if(not self.has_waypoints()):
+        sections = self._get_slope_sections()
+        if(not self.has_waypoints() or len(sections) == 0):
             return 0
         if(dh is uh):
-            slopes = [abs(s) for s in self._get_slope_sections()]
+            slopes = [abs(s) for s in sections]
             return max(slopes)
         elif(dh):
-            return abs(min(self._get_slope_sections()))
+            return abs(min(sections))
         elif(uh):
-            return max(self._get_slope_sections())
+            return max(sections)
         
     def get_avg_slope(self):
         '''
@@ -131,9 +133,11 @@ class Trail(models.Model):
         
         Uses the Haversine Formula,
         see http://www.movable-type.co.uk/scripts/gis-faq-5.1.html
-        '''        
-        lengths = self._get_length_sections()
-        return sum(lengths)
+        '''
+        if(self.has_waypoints()):
+            lengths = self._get_length_sections()
+            return sum(lengths)
+        return 0
         
     def get_total_ascent(self):
         '''
