@@ -25,28 +25,19 @@ define(['backbone',
 		 * Use the models waypoints to provide a dataset for chart.js
 		 * TODO: To be replaced. Data for the height profile should be provided by the server.
 		 */
-		get_chart_data: function(){
-			var waypoints = this.trail.get('waypoints');
-			var start = waypoints.coordinates[0][2] || 0;
-			var end = waypoints.coordinates[waypoints.coordinates.length-1][2] || 0;
-			
+		get_chart_data: function(profile){
 			var dataset = [];
 			var labels = [];
-			
-			for(i=0;i<35;i++){
-				  dataset[i] = Math.floor((Math.random()*10)+200);
-				  labels[i] = i + " km";
-			}
-			
+		
 			var data = {
-					labels : labels,//["Start height","End height"],
+					labels : profile.labels,
 					datasets : [
 						{
 							fillColor : "rgba(151,187,205,0.5)",
 							strokeColor : "rgba(151,187,205,1)",
 							pointColor : "rgba(151,187,205,1)",
 							pointStrokeColor : "#fff",
-							data : dataset //[start,end]
+							data : profile.values
 						}
 					]
 				}
@@ -79,17 +70,20 @@ define(['backbone',
 			canvas.width = canvasdiv.clientWidth;
 			canvas.height = canvasdiv.clientHeight;		
 			var ctx = document.getElementById("height_profile").getContext("2d");
-			var data = this.get_chart_data();
+			
+			
+			var profile = this.trail.get('height_profile');
+			var data = this.get_chart_data(profile);
+			
 			// fixed scale
 			var options = {
 					scaleOverride : true,
 					scaleSteps : 10,
-					scaleStepWidth : 5,
-					scaleStartValue : 190,
+					scaleStepWidth : (profile.max_height - profile.min_height + 10) / 10,
+					scaleStartValue : profile.min_height - 5,
 					pointDot : false,
 					scaleLabel : "<%=value%> m"
 				};
-			console.log("render hight profile.");
 			var myNewChart = new Chart(ctx).Line(data, options);
 		},
 		

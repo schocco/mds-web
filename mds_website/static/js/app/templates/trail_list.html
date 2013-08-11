@@ -6,10 +6,9 @@
 </div>
 
 <% _.each(trails, function(trail) { %> 
-    <div class="one_third">
+    <div class="one_third" style="height:200px;">
 	    <h3><a href="/<%= trail.get_url() %>"><%= trail.get('name') %></a></h3>
 	    <p><%= trail.get('description') %><p>
 	    <p><%= trail.get('waypoints') %></p>
-	    <canvas id="chart" width="200" height="200">canvas.</canvas>
     </div>
 <% }); %>

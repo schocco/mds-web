@@ -161,6 +161,60 @@ class Trail(models.Model):
                 total += alt
         return abs(total)
     
+    def get_height_at(self, meter):
+        '''
+        Return the approximate height at a given position of a track.
+        Interpolates nearest waypoints to get the height.
+        '''
+        lengths = self._get_length_sections()
+        # transform to cummulative lengths
+        total = 0
+        prev_total = 0
+        for idx, section in enumerate(lengths):
+            prev_total = total
+            total += section
+            lengths[idx] = int(total)
+            # return z value of matchin point if present
+            if meter == int(total):
+                return self.waypoints.z[idx]
+            if meter > prev_total and meter < total:
+                h0 = self.waypoints.z[idx-1]
+                h1 = self.waypoints.z[idx]
+                m0 = prev_total
+                m1 = total                
+                result = float(meter - m0) / (m1 - m0) * (h1 - h0) + h0
+                return result
+            
+    
+    def get_height_profile(self, scale_steps=20):
+        '''
+        Creates a dictionary which contains height information
+        along a dynamically set scale of distance points.
+        Height for each point is calculated via interpolation using the nearest 2
+        waypoints.
+        '''
+        min_height = min(self.waypoints.z)
+        max_height = max(self.waypoints.z)
+        length = self.get_length()
+
+        step = length / scale_steps
+        labels = ['0 km']
+        values = [self.waypoints.z[0]]
+        total = 0
+        for i in range(scale_steps-2):
+            total += step
+            labels.append('%.0d m' % total)
+            values.append(self.get_height_at(total))
+        labels.append('%.0d m' % length)
+        values.append(self.waypoints.z[-1])
+        
+        height_profile = {'max_height': max_height,
+                          'min_height': min_height,
+                          'labels': labels,
+                          'values': values}
+        return height_profile
+        
+    
     def fetch_altitude_info(self, datasource="OSM"):
         '''
         replace z values with data from 3rd party provider

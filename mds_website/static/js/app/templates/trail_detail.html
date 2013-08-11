@@ -3,15 +3,19 @@
     <p>
     <%= trail.get('description') %>
     </p>
+    <p>Created on: <%= trail.get('created') %></p>
 </div>
 
 <hr>
 
 <div class="one_third">
     <h3>Statistics</h3>
-    <p>Length</p>
-    <p>altitude</p>
-    <p>type</p>
+    <p>Altitude difference: <%= trail.get('altitude_difference') %></p>
+    <p>Average slope: <%= trail.get('avg_slope') %></p>
+    <p>Max slope: <%= trail.get('max_slope') %></p>
+    <p>Length: <%= trail.get('length') %></p>
+    <p>Total ascent: <%= trail.get('total_ascent') %></p>
+    <p>Total descent: <%= trail.get('total_descent') %></p>
 </div>
 
 <div class="two_third">
