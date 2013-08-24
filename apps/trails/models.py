@@ -133,6 +133,8 @@ class Trail(models.Model):
         
         Uses the Haversine Formula,
         see http://www.movable-type.co.uk/scripts/gis-faq-5.1.html
+        
+        :return: the length in km
         '''
         if(self.has_waypoints()):
             lengths = self._get_length_sections()
@@ -203,9 +205,9 @@ class Trail(models.Model):
         total = 0
         for i in range(scale_steps-2):
             total += step
-            labels.append('%.0d m' % total)
+            labels.append('%.1f km' % total)
             values.append(self.get_height_at(total))
-        labels.append('%.0d m' % length)
+        labels.append('%.1f km' % length)
         values.append(self.waypoints.z[-1])
         
         height_profile = {'max_height': max_height,

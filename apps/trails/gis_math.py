@@ -1,6 +1,13 @@
 import math
 
 def haversine(origin, destination):
+    '''
+    :param origin: start position
+    :param destination: end position
+    
+    .. See::
+       http://www.movable-type.co.uk/scripts/gis-faq-5.1.html
+    '''
     lat1, lon1 = origin
     lat2, lon2 = destination
     # Earth radius varies from 6356.752 km at the poles 
