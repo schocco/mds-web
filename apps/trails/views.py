@@ -19,7 +19,7 @@ def load_gpx(request):
             ls = GPXReader(tmpath)
             # clean up
             os.remove(tmpath)      
-        return HttpResponse(ls.to_linestring())
+        return HttpResponse(ls.to_linestring().geojson)
     else:
         # raise http error
         return HttpResponse(300)

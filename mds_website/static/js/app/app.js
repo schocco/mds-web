@@ -4,8 +4,7 @@ define(['backbone',
         'jquery_localscroll', 
         'jquery_uniform'
 ], function(Backbone, Router) {
-	var initialize = function() {
-		
+	var initialize = function() {		
 		// Select nav for smaller resolutions
 		// Select menu for smaller screens
 		$("<select />").appendTo("nav#primary");

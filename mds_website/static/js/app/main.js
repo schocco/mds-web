@@ -8,6 +8,7 @@ require.config({
 		backbone: '../backbone-min.1.0',
 		jquery_easing: '../jquery/jquery.easing.1.3',
 		jquery_tipsy: '../jquery/jquery.tipsy',
+		jquery_form: '../jquery/jquery.form.min',
 		jquery_uniform: '../jquery/jquery.uniform',
 		jquery_localscroll: '../jquery/jquery.localscroll-1.2.7-min',
 		jquery_scrollto: '../jquery/jquery.scrollTo-1.4.3.1-min',
@@ -36,6 +37,7 @@ require.config({
 	        'jquery_easing': ['jquery'],
 	        'jquery_tipsy':  ['jquery'],
 	        'jquery_uniform': ['jquery'],
+	        'jquery_form': ['jquery'],
 	        'jquery_localscroll': ['jquery'],
 	        'jquery_scrollto': ['jquery']
 	    }
