@@ -1,10 +1,11 @@
 define(['backbone',
         'models/TrailModel',
+        'views/_MapView',
         'underscore',
         'text!templates/trail_detail.html',
         'jquery',
         'openlayers'],
-		function(Backbone, Trail, _, tpl, $, OpenLayers){
+		function(Backbone, Trail, MapView, _, tpl, $, OpenLayers){
 	
 	var TrailDetailView = Backbone.View.extend({
 		el: '#content',
@@ -23,7 +24,6 @@ define(['backbone',
 		
 		/**
 		 * Use the models waypoints to provide a dataset for chart.js
-		 * TODO: To be replaced. Data for the height profile should be provided by the server.
 		 */
 		get_chart_data: function(profile){
 			var dataset = [];
@@ -49,33 +49,7 @@ define(['backbone',
 		 * Create and render an open layers map.
 		 */
 		render_map: function(){
-			//create map
-			var WGS84 = new OpenLayers.Projection("EPSG:4326");
-			var MERCATOR = new OpenLayers.Projection('EPSG:900913');
-			var options = {
-				    projection: WGS84 //WGS84
-			};
-			map = new OpenLayers.Map("mapdiv", options);
-			var ol = new OpenLayers.Layer.OSM("osm");
-			
-			//create a linestring with all points given in the trails waypoints
-			var coordinates = this.trail.get('waypoints').coordinates;
-			var points = new Array();
-			for (var i = 0; i < coordinates.length; i++) {
-				points[i] = new OpenLayers.Geometry.Point(coordinates[i][0], coordinates[i][1]);
-			}
-			var linestring = new OpenLayers.Geometry.LineString(points).transform(WGS84, MERCATOR);
-
-			// add track as vector layer to map
-			var trail = new OpenLayers.Layer.Vector("Trail")
-			trail.style = {strokeColor:"#0500bd", strokeWidth:3};
-			
-			trail.addFeatures([new OpenLayers.Feature.Vector(linestring)]);
-			map.addLayers([ol,trail]);
-			map.setCenter(new OpenLayers.LonLat(coordinates[0][0], coordinates[0][1]).transform(WGS84, MERCATOR), 14);	
-			map.addControl(new OpenLayers.Control.LayerSwitcher());
-			map.addControl(new OpenLayers.Control.MousePosition()); 
-			
+			this.mapview = new MapView({parent: "#mapdiv", geojson:this.trail.get("waypoints")});
 		},
 		
 		
