@@ -1,4 +1,4 @@
-<div class="one_full">
+<div class="one_third">
     <h2>Import a Trail</h2>
     <p>
     You can import trails that you recorded via GPS.
@@ -12,11 +12,33 @@
 	    <div>
 	       <a href="#" class="button" id="submit">Import</a>
 	    </div>
-	       <div class="progress">
+	       <div class="progress hidden">
             <div class="bar"></div >
             <div class="percent">0%</div >
         </div>
         <div id="status"></div>
+    </form>
+</div>
+
+<div class="two_third">
+    <h2>Trail information</h2>
+    
+    <form id="info_form" method="post" action="#/trails/upload">
+        <div>
+            <label for="name">Name</label> <input name="name" type="text"></input>
+        </div>
+        <div>
+            <label for="name">Description</label> <input name="description" type="text"></input>
+        </div>
+        <div>
+            <label for="name">Max Difficulty</label> <input name="max_difficulty" type="text"></input>
+        </div>
+        <div>
+            <label for="name">Avg Difficulty</label> <input name="avg_difficulty" type="text"></input>
+        </div>
+        <div>
+           <a href="#" class="button" id="submit_info">Save trail</a>
+        </div>
     </form>
 </div>
 

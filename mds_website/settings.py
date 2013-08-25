@@ -52,6 +52,10 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
+#dont force trailing backslash
+#APPEND_SLASH = False
+#TASTYPIE_ALLOW_MISSING_SLASH = APPEND_SLASH
+
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
 MEDIA_ROOT = os.path.abspath(os.path.join(PROJECT_DIR, "media"))

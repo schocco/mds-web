@@ -56,10 +56,8 @@ define(['backbone',
 			        percent.html(percentVal);
 			    },
 				complete: function(xhr) {
-					status.html(xhr.responseText);
-					console.log("xhr " + JSON.parse(xhr.responseText));
+					//status.html(xhr.responseText);
 					that.trail.set({waypoints: JSON.parse(xhr.responseText)});
-					console.log(that.trail);
 					that.show_map();
 				}
 			}); 
@@ -69,17 +67,32 @@ define(['backbone',
 				$('#upload_form').submit();
 				return false;
 			});
+			
+			$('#submit_info').click(function() {
+				$('#info_form').submit();
+				return false;
+			});
+			
+			$('#info_form').submit(function(){
+				var data = $(this).serializeArray();
+				console.log(data);
+				that.trail.set("name", data[0].value);
+				that.trail.set("description", data[1].value);
+				that.save_trail();
+				return false;
+			});
+		},
+		
+		
+		/** save details in trail object and save it on the server. */
+		save_trail: function(){
+			this.trail.save();
 		},
 		
 		
 		/** update map */
 		show_map: function(){
-			if(this.mapview){
-				console.log("there is already a map instance.");
-				//this.mapview = null;
-				//$("#mapdiv").empty();
-			}
-			this.mapview = new MapView({parent:"#mapdiv", geojson:this.trail.get("waypoints")});
+			this.mapview = new MapView({parent:"#mapdiv", geojson:this.trail.get("waypoints"), editable: true});
 		}
 			
 	});
