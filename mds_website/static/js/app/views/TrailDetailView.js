@@ -50,12 +50,12 @@ define(['backbone',
 		 */
 		render_map: function(){
 			//create map
+			var WGS84 = new OpenLayers.Projection("EPSG:4326");
+			var MERCATOR = new OpenLayers.Projection('EPSG:900913');
 			var options = {
 				    projection: WGS84 //WGS84
 			};
 			map = new OpenLayers.Map("mapdiv", options);
-			var WGS84 = new OpenLayers.Projection("EPSG:4326");
-			var MERCATOR = new OpenLayers.Projection('EPSG:900913');
 			var ol = new OpenLayers.Layer.OSM("osm");
 			
 			//create a linestring with all points given in the trails waypoints
