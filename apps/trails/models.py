@@ -26,6 +26,18 @@ class Trail(models.Model):
     def __unicode__(self):
         return u'%s' % self.name
     
+    def __generator(self):
+        '''
+        Yields 1 once, and then 0 for all subsequent calls.
+        
+        This can be used for loops where the first element in the first linestring
+        needs to be treated differently than all other linestring elements in the 
+        multilinestring.
+        '''
+        yield 1
+        while(True):
+            yield 0
+    
     def has_waypoints(self):
         return self.waypoints is not None
     
@@ -50,14 +62,17 @@ class Trail(models.Model):
         A positive number means, that the end point is higher than the start point.
         Unit: meters
         '''
-        if not self.has_waypoints() or self.waypoints.z is None:
+        if not self.has_waypoints() or self.waypoints[0].z is None:
             return []
-        dest = self.waypoints.z[0]
         altitudes = []
-        for altitude in self.waypoints.z[1:]:
-            start = dest
-            dest = altitude
-            altitudes.append(dest-start)
+        dest = self.waypoints[0].z[0]
+        idx = self.__generator()
+        for ls in self.waypoints:
+            # exclude first element on first run, use all elements otherwise
+            for altitude in ls.z[idx.next():]:
+                start = dest
+                dest = altitude
+                altitudes.append(dest-start)
         return altitudes
     
     def _get_length_sections(self):
@@ -68,13 +83,21 @@ class Trail(models.Model):
         if not self.has_waypoints():
             return []
         length_sections = []
+        destination = self.waypoints[0][0]
+        idx = self.__generator()
         for linestring in self.waypoints:
-            destination = linestring[0]
-            for point in linestring[1:]:
+            # exclude first element on first run, use all elements otherwise
+            for point in linestring[idx.next():]:
                 origin = destination
                 destination = point
                 length_sections.append(haversine(origin[:2], destination[:2])) # ignore z
         return length_sections
+    
+    def __flat_z(self):
+        zs = []
+        for ls in self.waypoints:
+            zs = zs + ls.z
+        return zs
     
     def _get_slope_sections(self):
         '''
@@ -98,22 +121,21 @@ class Trail(models.Model):
         '''
         Calculates the slope in % for each pair of waypoints and returns
         the highest slope found.
-        By default returns the maximum slope, be it uphill or downhill.
+        By default returns the maximum slope, be it uphill (positive number) or downhill (negative number).
         
-        The slope is always returned as a positive number.
-        
-        parameters:
-         dh: set to true to get the maximum downhill slope
-         uh: set to True to get the maximum uphill slope
+        :param bool dh: set to True to get the maximum downhill slope
+        :param bool uh: set to True to get the maximum uphill slope
         '''
         sections = self._get_slope_sections()
         if(not self.has_waypoints() or len(sections) == 0):
             return 0
         if(dh is uh):
-            slopes = [abs(s) for s in sections]
-            return max(slopes)
+            if abs(min(sections)) > max(sections):
+                return min(sections)
+            else:
+                return max(sections)
         elif(dh):
-            return abs(min(sections))
+            return min(sections)
         elif(uh):
             return max(sections)
         
@@ -169,22 +191,25 @@ class Trail(models.Model):
     def get_height_at(self, meter):
         '''
         Return the approximate height at a given position of a track.
-        Interpolates nearest waypoints to get the height.
+        Interpolates nearest waypoints to get the height in meters.
         '''
         lengths = self._get_length_sections()
-        # transform to cummulative lengths
+        # it is necessary to get a flat list of all z values
+        # to look up values that correspond to length sections
+        zs = self.__flat_z()
+        # transform to cumulative lengths
         total = 0
         prev_total = 0
         for idx, section in enumerate(lengths):
             prev_total = total
             total += section
             lengths[idx] = int(total)
-            # return z value of matchin point if present
+            # return z value of matching point if present
             if meter == int(total):
-                return self.waypoints.z[idx]
+                return zs[idx]
             if meter > prev_total and meter < total:
-                h0 = self.waypoints.z[idx-1]
-                h1 = self.waypoints.z[idx]
+                h0 = zs[idx-1]
+                h1 = zs[idx]
                 m0 = prev_total
                 m1 = total                
                 result = float(meter - m0) / (m1 - m0) * (h1 - h0) + h0
@@ -198,20 +223,21 @@ class Trail(models.Model):
         Height for each point is calculated via interpolation using the nearest 2
         waypoints.
         '''
-        min_height = min(self.waypoints.z)
-        max_height = max(self.waypoints.z)
+        zs = self.__flat_z()
+        min_height = min(zs)
+        max_height = max(zs)
         length = self.get_length()
 
         step = length / scale_steps
         labels = ['0 km']
-        values = [self.waypoints.z[0]]
+        values = [zs[0]]
         total = 0
         for i in range(scale_steps-2):
             total += step
             labels.append('%.1f km' % total)
-            values.append(self.get_height_at(total))
+            values.append(round(self.get_height_at(total),1))
         labels.append('%.1f km' % length)
-        values.append(self.waypoints.z[-1])
+        values.append(zs[-1])
         
         height_profile = {'max_height': max_height,
                           'min_height': min_height,
