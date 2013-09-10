@@ -37,8 +37,9 @@ class Trail(models.Model):
         A positive number means, that the end point is higher than the start point.
         Unit: meters
         '''
-        if(self.has_waypoints() and self.waypoints.z is not None):
-            return self.waypoints.z[-1] - self.waypoints.z[0]
+        if(self.has_waypoints() and self.waypoints[0].z is not None):
+            #last point in last linestring - first point in first linestring
+            return self.waypoints[-1].z[-1] - self.waypoints[0].z[0]
         return 0
     
     def _get_altitude_sections(self):
@@ -67,11 +68,12 @@ class Trail(models.Model):
         if not self.has_waypoints():
             return []
         length_sections = []
-        destination = self.waypoints[0]
-        for point in self.waypoints[1:]:
-            origin = destination
-            destination = point
-            length_sections.append(haversine(origin[:2], destination[:2])) # ignore z
+        for linestring in self.waypoints:
+            destination = linestring[0]
+            for point in linestring[1:]:
+                origin = destination
+                destination = point
+                length_sections.append(haversine(origin[:2], destination[:2])) # ignore z
         return length_sections
     
     def _get_slope_sections(self):
