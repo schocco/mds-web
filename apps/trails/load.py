@@ -6,6 +6,9 @@ from django.contrib.gis.geos.linestring import LineString
 from osgeo import ogr
 import os
 
+class GPXImportError(Exception):
+    'Exception to be raised when gpx files cannot be read.'
+    pass
 
 
 class GPXReader(object):
@@ -27,19 +30,19 @@ class GPXReader(object):
             os.environ.pop('GPX_ELE_AS_25D')
         
         if self.ds is None:
-            raise Exception("Cant use %s as datasource" % file_path)
+            raise GPXImportError("Cant use %s as datasource" % file_path)
     
     def _guess_layer(self):
         '''
         Guess which layer contains the relevant trail data.
         It is most likely that the route or track layer contains the complete trail.
-        If those are not present, it is checked wether there are enough waypoints
+        If those are not present, it is checked whether there are enough waypoints
         that could make a complete trail.
         '''
         for lay in (2, 1, 0): # track, route, waypoints
             if self.ds.GetLayer(lay).GetFeatureCount() > 0:
                 return lay
-        return "dunno!"
+        raise GPXImportError("Could not guess which GPX layer to use.")
     
     def to_linestring(self, layer=None):
         '''
