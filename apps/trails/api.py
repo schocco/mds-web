@@ -7,6 +7,10 @@ from tastypie.authorization import Authorization
 from tastypie.contrib.gis.resources import ModelResource
 
 class TrailResource(ModelResource):
+    '''
+    API resource which includes dynamically calculated values as readonly
+    fields. Fields are only visible in detail view to avoid high computation overhead.
+    '''
     altitude_difference = fields.CharField(attribute='get_altitude_difference', readonly=True)
     length = fields.CharField(attribute='get_length', readonly=True)
     max_slope = fields.CharField(attribute='get_max_slope', readonly=True, use_in="detail")
