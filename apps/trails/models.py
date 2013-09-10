@@ -1,5 +1,6 @@
 from apps.trails.gis_math import haversine
-from django.contrib.gis.db.models.fields import LineStringField
+from django.contrib.gis.db.models.fields import LineStringField, \
+    MultiLineStringField
 from django.contrib.gis.db.models.manager import GeoManager
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -14,7 +15,7 @@ class Trail(models.Model):
     created = models.DateTimeField(_('created'), auto_now_add=True, blank=True)
     edited = models.DateTimeField(_('last change'), auto_now=True, blank=True)
     description = models.CharField(_('description'), max_length=500, blank=True)
-    waypoints = LineStringField(_('waypoints'), dim=3, null=True, blank=True) #include altitude as Z
+    waypoints = MultiLineStringField(_('waypoints'), dim=3, null=True, blank=True) #include altitude as Z
     objects = GeoManager()
     # user
     # comments[]
