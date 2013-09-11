@@ -4,6 +4,7 @@ def haversine(origin, destination):
     '''
     :param origin: start position
     :param destination: end position
+    :return: length in meters
     
     .. See::
        http://www.movable-type.co.uk/scripts/gis-faq-5.1.html
@@ -13,7 +14,7 @@ def haversine(origin, destination):
     # Earth radius varies from 6356.752 km at the poles 
     # to 6378.137 km at the equator, use something in
     # between.
-    radius = radius_for_lat(lat1) # km
+    radius = radius_for_lat(lat1) # m
 
     dlat = math.radians(lat2-lat1)
     dlon = math.radians(lon2-lon1)
@@ -31,13 +32,13 @@ def radius_for_lat(lat):
     
     Rt= SQRT( (((minr^2cos(t))^2)+((maxr^2sin(t))^2))/    ((acos(t))^2 + (maxr * sin(t)^2))
     
-    :return: radius for given latitude in km
+    :return: radius for given latitude in m
     
     .. See::
        http://en.wikipedia.org/wiki/Earth_radius#Radius_at_a_given_geodetic_latitude
     '''
-    maxr = 6378.137 # km
-    minr = 6356.752 # km
+    maxr = 6378137.0 # m
+    minr = 6356752.0 # m
     d = (minr**2 * math.cos(lat))**2 + (maxr**2 * math.sin(lat))**2
     div = (minr * math.cos(lat))**2 + (maxr * math.sin(lat))**2
     rlat = math.sqrt(d/div)

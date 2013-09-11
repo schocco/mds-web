@@ -5,7 +5,8 @@ from django.contrib.gis.db.models.manager import GeoManager
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-
+import logging
+logger = logging.getLogger(__name__)
 
 class Trail(models.Model):
     '''
@@ -77,7 +78,7 @@ class Trail(models.Model):
     
     def _get_length_sections(self):
         '''
-        returns a list of distances with
+        :return: a list of distances in meters with
         one element for each pair of consequent waypoints
         '''
         if not self.has_waypoints():
@@ -95,8 +96,9 @@ class Trail(models.Model):
     
     def _flat_z(self):
         zs = []
-        for ls in self.waypoints:
-            zs = zs + ls.z
+        if self.has_waypoints():
+            for ls in self.waypoints:
+                zs = zs + ls.z
         return zs
     
     def _get_slope_sections(self):
@@ -115,8 +117,9 @@ class Trail(models.Model):
             for idx, length in enumerate(lengths):
                 alt = altitudes[idx]
                 try:
-                    slopes.append(float(alt) / length / 10) # /1000 (length in km) * 100 (%)
+                    slopes.append(float(alt) / length * 100) # in %
                 except ZeroDivisionError, e:
+                    logger.error(e)
                     slopes.append(0)
         return slopes
     
@@ -129,6 +132,8 @@ class Trail(models.Model):
         :param bool dh: set to True to get the maximum downhill slope
         :param bool uh: set to True to get the maximum uphill slope
         '''
+        logger.debug("get max slope")
+        
         sections = self._get_slope_sections()
         if(not self.has_waypoints() or len(sections) == 0):
             return 0
@@ -147,14 +152,15 @@ class Trail(models.Model):
         Calculates the average slope by dividing total altitude difference
         through the length of the track.
         
-        Positive number indicates uphill, negative indicates downhill.
+        :return: slope in %. Positive number indicates uphill, negative indicates downhill.
         '''
+        logger.debug("get avg slope")
         if(self.has_waypoints()):
-            return self.get_altitude_difference() / self.get_length() / 10
+            return (self.get_altitude_difference() / self.get_length(unit="m")) * 100 # in %
         return 0
         
      
-    def get_length(self):
+    def get_length(self, unit="km"):
         '''
         Calculates the length of the track by measuring distances between
         each pair of waypoints.
@@ -164,9 +170,14 @@ class Trail(models.Model):
         
         :return: the length in km
         '''
+        logger.debug("get length")
         if(self.has_waypoints()):
             lengths = self._get_length_sections()
-            return sum(lengths)
+            if unit == "km":
+                return sum(lengths)/1000
+            if unit == "m":
+                return sum(lengths)
+            else: raise ValueError("Only m or km are allowed.")
         return 0
         
     def get_total_ascent(self):
@@ -174,6 +185,7 @@ class Trail(models.Model):
         Calculates the total uphill meters (altitude).
         Returns the absolute value.
         '''
+        logger.debug("get total ascent")
         total = 0
         for alt in self._get_altitude_sections():
             if alt > 0:
@@ -185,6 +197,7 @@ class Trail(models.Model):
         Calculates the total downhill meters (altitude)
         Returns the absolute value.
         '''
+        logger.debug("get total descent")
         total = 0
         for alt in self._get_altitude_sections():
             if alt < 0:
@@ -226,21 +239,23 @@ class Trail(models.Model):
         Height for each point is calculated via interpolation using the nearest 2
         waypoints.
         '''
+        logger.debug("get height profile")
+        
         zs = self._flat_z()
-        min_height = min(zs)
-        max_height = max(zs)
+        min_height = round(min(zs),1)
+        max_height = round(max(zs),1)
         length = self.get_length()
 
         step = length / scale_steps
         labels = ['0 km']
-        values = [zs[0]]
+        values = [round(zs[0],1)]
         total = 0
         for i in range(scale_steps-2):
             total += step
             labels.append('%.1f km' % total)
-            values.append(round(self.get_height_at(total),1))
+            values.append(round(self.get_height_at(total*1000),1)) # total in meters
         labels.append('%.1f km' % length)
-        values.append(zs[-1])
+        values.append(round(zs[-1],1))
         
         height_profile = {'max_height': max_height,
                           'min_height': min_height,
