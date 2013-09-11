@@ -40,25 +40,36 @@ define(['backbone',
 			//create a linestring with all points given in the trails waypoints
 			var coordinates = this.geojson.coordinates;
 			var points = new Array();
+			var linestrings = new Array();
 
 
 			// add track as vector layer to map
 			var trail = new OpenLayers.Layer.Vector("Trail");
 			var waypoints = new OpenLayers.Layer.Vector("Waypoints");
 			trail.style = {strokeColor:"#0500bd", strokeWidth:3};
-			for (var i = 0; i < coordinates.length; i++) {
-				points[i] = new OpenLayers.Geometry.Point(coordinates[i][0], coordinates[i][1]);
+			// get all linestrings from multilinestring
+			for (var k = 0; k < coordinates.length; k++) {
+				ls = coordinates[k]
+				console.log("create linestring #" + k);
+				for (var i = 0; i < ls.length; i++) {
+					points[i] = new OpenLayers.Geometry.Point(ls[i][0], ls[i][1]);
+				}
+				var linestring = new OpenLayers.Geometry.LineString(points).transform(WGS84, MERCATOR);
+				linestrings[k] = linestring
 			}
-			var linestring = new OpenLayers.Geometry.LineString(points).transform(WGS84, MERCATOR);
-			var lsFeature = new OpenLayers.Feature.Vector(linestring);
+			var multi_ls = new OpenLayers.Geometry.MultiLineString(linestrings)//.transform(WGS84, MERCATOR);
+			
+			var lsFeature = new OpenLayers.Feature.Vector(multi_ls);
 			trail.addFeatures(lsFeature);
 			
 			map.addLayers([ol,trail]);
 			
 			// set extend / zoom level
 			var bounds = new OpenLayers.Bounds();
-			bounds.extend(new OpenLayers.LonLat(coordinates[0][0], coordinates[0][1]).transform(WGS84, MERCATOR));
-			bounds.extend(new OpenLayers.LonLat(coordinates[coordinates.length-1][0], coordinates[coordinates.length-1][1]).transform(WGS84, MERCATOR));
+			var first_pt = coordinates[0][0];
+			var last_pt = coordinates[coordinates.length-1][coordinates[coordinates.length-1].length-1]
+			bounds.extend(new OpenLayers.LonLat(first_pt[0], first_pt[1]).transform(WGS84, MERCATOR));
+			bounds.extend(new OpenLayers.LonLat(last_pt[0], last_pt[1]).transform(WGS84, MERCATOR));
 			map.zoomToExtent(bounds);
 			
 			//add controls
@@ -68,6 +79,8 @@ define(['backbone',
 			if(this.editable){
 				//TODO: allow moving and deleting points of the trail
 				// see http://openlayers.org/dev/examples/modify-feature.html
+				// new trail needs to be read from map and new elevation
+				// data needs to be added in the backend or via a web service of OSM or gmaps
 	            controls = {
 	                   // line: new OpenLayers.Control.DrawFeature(trail,
 	                   //             OpenLayers.Handler.Path),
