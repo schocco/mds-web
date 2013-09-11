@@ -1,4 +1,4 @@
-<div class="one_third">
+<div class="one_full" id="import_div">
     <h2>Import a Trail</h2>
     <p>
     You can import trails that you recorded via GPS.
@@ -20,7 +20,7 @@
     </form>
 </div>
 
-<div class="two_third">
+<div class="one_third hidden" id="info_div">
     <h2>Trail information</h2>
     
     <form id="info_form" method="post" action="#/trails/upload">
@@ -28,13 +28,13 @@
             <label for="name">Name</label> <input name="name" type="text"></input>
         </div>
         <div>
-            <label for="name">Description</label> <input name="description" type="text"></input>
+            <label for="type">Track type</label>
+            <select name="type">
+                <% _.each(type_choices, function(val,key) { %> <option value=<%= key %>><%= val %></option> <% }); %>
+            </select>
         </div>
         <div>
-            <label for="name">Max Difficulty</label> <input name="max_difficulty" type="text"></input>
-        </div>
-        <div>
-            <label for="name">Avg Difficulty</label> <input name="avg_difficulty" type="text"></input>
+            <label for="description">Description</label> <textarea name="description" type="text"></textarea>
         </div>
         <div>
            <a href="#" class="button" id="submit_info">Save trail</a>
@@ -42,9 +42,8 @@
     </form>
 </div>
 
-<hr>
 
-<div class="one_full">
-    <h3>Map</h3>
+<div class="two_third hidden" id="map_div">
+    <h2>Map (preview)</h2>
     <div id="mapdiv" style="width:100%"></div>
 </div>

@@ -13,8 +13,8 @@ define(['backbone',
 		
 		initialize: function () {
 			var that = this;
+			that.trail = new Trail();
 			that.render();
-		    that.trail = new Trail();
    
 		    
 		},
@@ -22,7 +22,7 @@ define(['backbone',
 		/** renders the whole view. */
 		render: function(){
 			console.log("render template");
-			var compiledTemplate = _.template(tpl);
+			var compiledTemplate = _.template(tpl, {type_choices: this.trail.type_choices});
 			$(this.el).html(compiledTemplate);		
 			this.set_up_form()
 		},
@@ -56,8 +56,10 @@ define(['backbone',
 			        percent.html(percentVal);
 			    },
 				complete: function(xhr) {
-					//status.html(xhr.responseText);
 					that.trail.set({waypoints: JSON.parse(xhr.responseText)});
+					// toggle visibility
+					$('#import_div').addClass("hidden");
+					$('#info_div').removeClass('hidden');
 					that.show_map();
 				}
 			}); 
@@ -78,6 +80,7 @@ define(['backbone',
 				console.log(data);
 				that.trail.set("name", data[0].value);
 				that.trail.set("description", data[1].value);
+				that.trail.set("type", data[2].value);
 				that.save_trail();
 				return false;
 			});
@@ -86,13 +89,19 @@ define(['backbone',
 		
 		/** save details in trail object and save it on the server. */
 		save_trail: function(){
+			//TODO: validate first
 			this.trail.save();
 		},
 		
-		
 		/** update map */
 		show_map: function(){
+			$('#map_div').removeClass('hidden');
 			this.mapview = new MapView({parent:"#mapdiv", geojson:this.trail.get("waypoints"), editable: true});
+		},
+		
+		/** proceed to next view to allow creating UXC or UDH object and link it to this track. */
+		rate_track: function(){
+			console.error("not yet implemented");
 		}
 			
 	});
