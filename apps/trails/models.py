@@ -8,11 +8,19 @@ from django.utils.translation import ugettext_lazy as _
 import logging
 logger = logging.getLogger(__name__)
 
+TRAIL_TYPE_CHOICES = (
+                      ("unknown", _("unknown")),
+                      ("uphill", _("uphill")),
+                      ("downhill", _("downhill")),
+                      ("xc", _("cross country")),                      
+                      )
+
 class Trail(models.Model):
     '''
     Representation of a muni track.
     '''
-    name = models.CharField(_('name'), max_length=100)
+    name = models.CharField(_('name'), max_length=100, blank=False)
+    type = models.CharField(_('trail type'), choices = TRAIL_TYPE_CHOICES, max_length=100)
     created = models.DateTimeField(_('created'), auto_now_add=True, blank=True)
     edited = models.DateTimeField(_('last change'), auto_now=True, blank=True)
     description = models.CharField(_('description'), max_length=500, blank=True)
