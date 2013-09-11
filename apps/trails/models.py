@@ -26,7 +26,7 @@ class Trail(models.Model):
     def __unicode__(self):
         return u'%s' % self.name
     
-    def __generator(self):
+    def _generator(self):
         '''
         Yields 1 once, and then 0 for all subsequent calls.
         
@@ -66,7 +66,7 @@ class Trail(models.Model):
             return []
         altitudes = []
         dest = self.waypoints[0].z[0]
-        idx = self.__generator()
+        idx = self._generator()
         for ls in self.waypoints:
             # exclude first element on first run, use all elements otherwise
             for altitude in ls.z[idx.next():]:
@@ -84,7 +84,7 @@ class Trail(models.Model):
             return []
         length_sections = []
         destination = self.waypoints[0][0]
-        idx = self.__generator()
+        idx = self._generator()
         for linestring in self.waypoints:
             # exclude first element on first run, use all elements otherwise
             for point in linestring[idx.next():]:
@@ -93,7 +93,7 @@ class Trail(models.Model):
                 length_sections.append(haversine(origin[:2], destination[:2])) # ignore z
         return length_sections
     
-    def __flat_z(self):
+    def _flat_z(self):
         zs = []
         for ls in self.waypoints:
             zs = zs + ls.z
@@ -114,7 +114,10 @@ class Trail(models.Model):
         if(len(altitudes) == len(lengths)):
             for idx, length in enumerate(lengths):
                 alt = altitudes[idx]
-                slopes.append(float(alt) / length / 10) # /1000 (length in km) * 100 (%)
+                try:
+                    slopes.append(float(alt) / length / 10) # /1000 (length in km) * 100 (%)
+                except ZeroDivisionError, e:
+                    slopes.append(0)
         return slopes
     
     def get_max_slope(self, dh=None, uh=None):
@@ -196,7 +199,7 @@ class Trail(models.Model):
         lengths = self._get_length_sections()
         # it is necessary to get a flat list of all z values
         # to look up values that correspond to length sections
-        zs = self.__flat_z()
+        zs = self._flat_z()
         # transform to cumulative lengths
         total = 0
         prev_total = 0
@@ -223,7 +226,7 @@ class Trail(models.Model):
         Height for each point is calculated via interpolation using the nearest 2
         waypoints.
         '''
-        zs = self.__flat_z()
+        zs = self._flat_z()
         min_height = min(zs)
         max_height = max(zs)
         length = self.get_length()

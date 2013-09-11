@@ -1,6 +1,7 @@
 '''
 module for gpx conversion tasks
 '''
+from django.contrib.gis.geos import MultiLineString
 from django.contrib.gis.geos.geometry import GEOSGeometry
 from django.contrib.gis.geos.linestring import LineString
 from osgeo import ogr
@@ -62,11 +63,11 @@ class GPXReader(object):
         elif(len(geom) == 1):
             geom = geom[0]
             if(geom.geom_typeid == 5): # MultiLineString
-                return geom.merged # pylint: disable=E1103
+                return geom # pylint: disable=E1103
             if(geom.geom_typeid == 1): # LineString
-                return geom
+                return MultiLineString(geom)
         else:
-            return LineString(geom)
+            return MultiLineString(LineString(geom))
             
     def _get_layer(self, layer):
         '''
