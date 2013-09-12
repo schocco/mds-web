@@ -1,12 +1,13 @@
 define(['backbone',
         'models/TrailModel',
         'views/_MapView',
+        'views/TrailRatingView',
         'underscore',
         'text!templates/trail_upload.html',
         'jquery',
         'openlayers',
         'jquery_form'],
-		function(Backbone, Trail, MapView, _, tpl, $, OpenLayers){
+		function(Backbone, Trail, MapView, RatingView, _, tpl, $, OpenLayers){
 	
 	var TrailUploadView = Backbone.View.extend({
 		el: '#content',		
@@ -82,6 +83,7 @@ define(['backbone',
 				that.trail.set("description", data[1].value);
 				that.trail.set("type", data[2].value);
 				that.save_trail();
+				that.rate_track();
 				return false;
 			});
 		},
@@ -101,7 +103,10 @@ define(['backbone',
 		
 		/** proceed to next view to allow creating UXC or UDH object and link it to this track. */
 		rate_track: function(){
-			console.error("not yet implemented");
+			console.log("rate trail");
+			// destroy this view and pass the trail object to the next view?
+			view = new RatingView(this.trail);
+			this.remove();
 		}
 			
 	});

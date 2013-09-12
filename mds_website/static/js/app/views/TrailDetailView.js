@@ -1,11 +1,12 @@
 define(['backbone',
         'models/TrailModel',
         'views/_MapView',
+        'views/TrailRatingView',
         'underscore',
         'text!templates/trail_detail.html',
         'jquery',
         'openlayers'],
-		function(Backbone, Trail, MapView, _, tpl, $, OpenLayers){
+		function(Backbone, Trail, MapView, TrailRatingView, _, tpl, $, OpenLayers){
 	
 	var TrailDetailView = Backbone.View.extend({
 		el: '#content',
@@ -49,7 +50,7 @@ define(['backbone',
 		 * Create and render an open layers map.
 		 */
 		render_map: function(){
-			this.mapview = new MapView({parent: "#mapdiv", geojson:this.trail.get("waypoints")});
+			this.mapview = new MapView({parent: "#mapdiv", geojson: this.trail.get("waypoints")});
 		},
 		
 		
@@ -88,6 +89,13 @@ define(['backbone',
 			console.log("create map.");
 			this.render_map();
 			
+			// add handler to link
+			var that = this;
+			$('#rate').click(function(event){
+				event.preventDefault();
+				console.log("rate link clicked");
+				var rateview = new TrailRatingView({trail: that.trail});
+			});
 		}
 			
 	});

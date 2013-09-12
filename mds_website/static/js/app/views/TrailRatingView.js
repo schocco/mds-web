@@ -1,7 +1,7 @@
 define(['backbone',
         'models/TrailModel',
-        'models/UDH',
-        'models/UXC',
+        'models/UDHModel',
+        'models/UXCModel',
         'underscore',
         'text!templates/trail_rating.html',
         'text!templates/_UDH_form.html',
@@ -16,28 +16,30 @@ define(['backbone',
 		/**
 		 * @param trail: trail obj or id
 		 */
-		initialize: function (trail) {
+		initialize: function (options) {
 			var that = this;
-			that.trail = trail; //Trail.get(trail);
+			that.trail = options.trail; //Trail.get(trail);
+			that.scale = null;
 			// create appropriate scale object
-			if that.trail.get("type") == "downhill":
+			if(that.trail.get("type") == "downhill"){
 				that.scale = new UDH();
-				that.form_tpl = udh_form;
-			else:
+				that.form_tpl = udh_form;	
+			}
+			else{
 				that.scale = new UXC();
 				that.form_tpl = uxc_form;
+			}
+
 			that.render();
-   
-		    
 		},
 		
 		/** renders the whole view. Adds either the udh or uxc form to the view. */
 		render: function(){
-			console.log("render template");
-			var compiledTemplate = _.template(tpl, {trail: this.trail});
+			console.debug("render ratingview template");
+			var compiledTemplate = _.template(tpl, {scale: this.scale, trail: this.trail});
 			$(this.el).html(compiledTemplate);
 			//add form to div
-			var compiledForm = _.template(form_tpl, {trail: this.trail});
+			var compiledForm = _.template(this.form_tpl, {trail: this.trail});
 			$('#form_container').html(compiledForm);
 			this.set_up_form();
 		},
