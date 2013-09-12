@@ -1,0 +1,30 @@
+<div class="two_third" id="import_div">
+    <h2>Rate this trail with the <%= scale %> Scale</h2>
+    <p>
+    You can rate the trail <%= trail %> with the form given below.
+    Most values have been calculated from the track data. You only need to
+    fill in the missing difficulty ratings.
+    </p>
+    
+    <form id="rating_form" enctype="multipart/form-data" method="post" action="#/trails/upload">
+	    <div>
+	       <input type="file" class="label" name="gpx" id="gpx"/>
+	    </div>
+	    <div>
+	       <a href="#" class="button" id="submit">Import</a>
+	    </div>
+	       <div class="progress hidden">
+            <div class="bar"></div >
+            <div class="percent">0%</div >
+        </div>
+        <div id="status"></div>
+    </form>
+</div>
+
+<div class="one_third" id="rating_div">
+    <h2>Muni Difficulty Score</h2>
+    <p>
+    [The scores go in here.]
+    [Each score should get a little description which explains how it was calculated.]
+    </p>
+</div>
