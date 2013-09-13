@@ -79,7 +79,7 @@ scale.full_dehydrate(bundle)
     def prepend_urls(self):
         return [
             url(r"^(?P<resource_name>%s)/calculate/$" % 
-                self._meta.resource_name, self.wrap_view('get_score'), name="api_dispatch_detail"),
+                self._meta.resource_name, self.wrap_view('get_score'), name="calc_udh_score"),
         ]
         
     def get_score(self, request, **kwargs):
@@ -100,4 +100,20 @@ class UXCResource(ModelResource):
     
     class Meta:
         queryset = UXCscale.objects.all()
-        resource_name = 'uxc-scale'    
+        resource_name = 'uxc-scale'
+    
+    #FIXME: duplicate code, refactor!
+    def prepend_urls(self):
+        return [
+            url(r"^(?P<resource_name>%s)/calculate/$" % 
+                self._meta.resource_name, self.wrap_view('get_score'), name="calc_uxc_score"),
+        ]
+    
+    def get_score(self, request, **kwargs):
+        '''
+        Return the score for the calculation
+        '''
+        scale = UXCResource()
+        #TODO: check input data
+        scale_bundle = scale.build_bundle(data=request.POST, request=request)
+        return self.create_response(request, scale_bundle)
