@@ -14,6 +14,11 @@ define(['models/BaseModel'],
 			"type":	 "unknown",
 			"description": "-",
 		},
+		
+		validate: function(attributes, options){
+			//TODO: validation logic
+		},
+		
 		prefix: "#/trails/",
 		urlRoot: "api/v1/trails",
 	
