@@ -1,21 +1,21 @@
 <form id="scale_form" method="post">
     <div>
-        <label for="avg_diff">Average difficulty</label>
-        <input type="number" name="avg_diff" min="0" max="5"/>
+        <label for="average_difficulty">Average difficulty</label>
+        <input type="number" name="average_difficulty" min="0" max="5"/>
     </div>
     <div>
-        <label for="max_diff">Maximum difficulty</label>
-        <input type="number" name="max_diff" min="0" max="5"/>
+        <label for="maximum_difficulty">Maximum difficulty</label>
+        <input type="number" name="maximum_difficulty" min="0" max="5"/>
     </div>
     <div>
         <label for="max_diff">Total length</label>
         <input type="number" name="total_length" value="<%= trail.get('length') %>"/>
     </div>
     <div>
-        <label for="avg_slope">Average slope</label>
-        <input type="number" name="total_length" value="<%= trail.get('avg_slope') %>"/>
+        <label for="average_slope">Average slope</label>
+        <input type="number" name="average_slope" value="<%= trail.get('avg_slope') %>"/>
     </div>
     <div>
-       <a href="#" class="button" id="submit">Save</a>
+       <a href="#" class="button" id="submit">Save</a> <a href="#" class="button" id="update_score">Update Score</a>
     </div>
 </form>

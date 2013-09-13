@@ -61,26 +61,48 @@ define(['backbone',
 		set_up_form: function(){
 			var csrftoken = $('meta[name=csrf-token]').attr("content");
 			var that = this;
-
-			$('#scale_form').submit(function(){
-				var data = $(this).serializeArray();
-				console.error("form processing not implemented yet");
-				//TODO: validate data
-				// set values for scale object
-				return false;
+			//update scale object when form data is changed
+			$('#scale_form').find(':input').change(function(src){that.form_change_handler(src, that.scale);});
+			
+			$('#submit').click(function(evt){
+				evt.preventDefault();
+				$('#scale_form').submit();
+			});
+			
+			$('#update_score').click(function(evt){
+				evt.preventDefault();
+				that.update_score();
+			});
+			
+			$('#scale_form').submit(function(evt){
+				evt.preventDefault();
+				that.save_rating();
 			});
 		},
 		
+		/** get the current score of the scale object and display it in the view. */
+		update_score: function(){
+			console.error("not yet implemented");
+		},
 		
 		/** persist the rating object */
 		save_rating: function(){
 			//TODO: validate first
 			// upload UXC or UDH object
+			console.error("not yet implemented");
 		},
 		
 		/** handler that updates the preview of the result. */
-		form_change_handler: function(){
-			//TODO: submit scale object to get the scores, but don't save the object
+		form_change_handler: function(field, scale){
+			console.log("form change handler");
+			var fields = $('#scale_form').serializeArray();
+			var that = this;
+			$.each(fields, function(i, field){
+				console.log(field);
+				scale.set(field.name, field.value);
+			});
+			console.log("new scale object:");
+			console.log(scale);
 		}
 		
 			

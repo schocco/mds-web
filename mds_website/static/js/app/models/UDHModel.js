@@ -1,14 +1,9 @@
 define(['models/BaseModel'],
 		function(BaseModel){
-	var UXC = BaseModel.extend({
-		
-		defaults: {
-			"name":  "unnamed",
-			"type":	 "unknown",
-			"description": "-",
-		},
-		prefix: "#/uxc/",
-		urlRoot: "api/v1/uxc",
+	var UDH = BaseModel.extend({
+
+		prefix: "#/udh-scale/",
+		urlRoot: "api/v1/udh-scale",
 		
 		/** retrieve the score for the current values without saving the object. */
 		get_score: function(){
@@ -18,7 +13,7 @@ define(['models/BaseModel'],
 		}
 	
 	});
-	return UXC;
+	return UDH;
 	
 });
 
