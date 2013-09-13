@@ -14,23 +14,36 @@ define(['backbone',
 		el: '#content',		
 		
 		/**
-		 * @param trail: trail obj or id
+		 * @param trail: trail obj
+		 * @param id: trail id must be given if no trail object is provided
 		 */
 		initialize: function (options) {
 			var that = this;
-			that.trail = options.trail; //Trail.get(trail);
 			that.scale = null;
-			// create appropriate scale object
-			if(that.trail.get("type") == "downhill"){
-				that.scale = new UDH();
-				that.form_tpl = udh_form;	
+		    var onDataHandler = function(model) {
+		    	that.read_trail_info();
+		        that.render();
+		    }
+			if(options.trail == undefined){
+				that.trail = new Trail({id: that.id});
+			    that.trail.fetch({success: onDataHandler});
+			} else{
+				that.trail = options.trail;
+				that.read_trail_info();
+				that.render()
+			}
+		},
+		
+		/** create appropriate scale object */
+		read_trail_info: function(){
+			if(this.trail.get("type") == "downhill"){
+				this.scale = new UDH();
+				this.form_tpl = udh_form;	
 			}
 			else{
-				that.scale = new UXC();
-				that.form_tpl = uxc_form;
+				this.scale = new UXC();
+				this.form_tpl = uxc_form;
 			}
-
-			that.render();
 		},
 		
 		/** renders the whole view. Adds either the udh or uxc form to the view. */

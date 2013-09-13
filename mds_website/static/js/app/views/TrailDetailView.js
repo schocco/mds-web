@@ -93,7 +93,6 @@ define(['backbone',
 			var that = this;
 			$('#rate').click(function(event){
 				event.preventDefault();
-				console.log("rate link clicked");
 				var rateview = new TrailRatingView({trail: that.trail});
 			});
 		}

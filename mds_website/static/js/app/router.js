@@ -1,8 +1,9 @@
 define(['backbone',
         'views/TrailListView',
         'views/TrailDetailView',
+        'views/TrailRatingView',
         'views/TrailUploadView',
-        ], function(Backbone, TrailListView, TrailDetailView, TrailUploadView){
+        ], function(Backbone, TrailListView, TrailDetailView, TrailRatingView, TrailUploadView){
 			// Navigation via router events
 			var WorkspaceRouter = Backbone.Router.extend({
 				routes: {
@@ -12,6 +13,7 @@ define(['backbone',
 					"mts": 				"mts",
 					"trails": 			"trails",
 					"trails/upload":	"trail_upload",
+					"trails/:id/rate":	"trail_rate",
 					"trails/:id":		"trail_detail",
 					"contact": 			"contact,"
 				},
@@ -35,6 +37,11 @@ define(['backbone',
 				trails: function() {
 					console.log("trails");
 					var trailView = new TrailListView;
+				},
+				
+				trail_rate: function(id) {
+					console.log("rate trail with id" + id);
+					var trailView = new TrailRatingView({id: id});
 				},
 				
 				trail_detail: function(id) {
