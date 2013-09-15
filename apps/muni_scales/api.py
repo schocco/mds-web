@@ -116,8 +116,9 @@ class UXCResource(ModelResource):
         '''
         Return the score for the calculation
         '''
-        #scale = UXCResource()
-        uxc = UXCscale(**request.POST)
+        scale = UXCResource()
+        bundle = scale.build_bundle(data=request.POST, request=request)
+        uxc = scale.full_hydrate(bundle)
         errors = uxc.full_clean()
         if errors:
             return HttpResponse(errors)
