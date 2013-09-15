@@ -33,22 +33,26 @@ define(['models/BaseModel', 'underscore', 'jquery'],
 			}
 		},
 		
-		/** retrieve the score for the current values without saving the object. */
+		/** retrieve the score for the current values without saving the object.
+		 * The object will trigger an event "score_update". When the request was succesful, no arguments
+		 * are passed with the event, if it fails an error object is submitted as argument.
+		 * */
 		get_score: function(){
 			var uri = this.urlRoot + "/calculate/";
-			//TODO: ajax request to get the calculated value for this object
+			result = {};
+			var that = this;
 			var jqxhr = $.post(uri, this.attributes,
-				function(data) {
-					console.log("Success:");
-					console.log(data);
+				function(data) { 
+					that.score = data.score;
+					that.trigger("score_update");
+					console.log("Updated score for " + that);
 				})
-				.done(function() { console.log("second success"); })
-				.fail(function(data) { console.log("error:" + data); })
-				.always(function() { console.log("finished"); });
-			var score = {};
-			return score;
+				.fail(function(data) {
+					console.log("updating score for " + that + "failed");
+					that.trigger("score_update", data);
+					console.log(data);
+				});
 		}
-	
 	});
 	return UXC;
 	

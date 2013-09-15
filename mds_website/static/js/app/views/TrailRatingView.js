@@ -32,6 +32,9 @@ define(['backbone',
 				that.read_trail_info();
 				that.render()
 			}
+			
+			//listen for changes of the scale object, and update score when it has changed
+			this.listenTo(this.scale, "score_update", this.display_score);
 		},
 		
 		/** create appropriate scale object */
@@ -83,14 +86,16 @@ define(['backbone',
 			});
 		},
 		
-		/** get the current score of the scale object */
+		/** 
+		 * Trigger an ajax request to get the score of the scale object.
+		 * if the scale object is valid. The scale object triggers an event
+		 * when it is done fetching the score.
+		 **/
 		update_score: function(){
 			//make sure form values are stored in scale obj
 			this.form_change_handler(null, this.scale);
-			//get score obj
 			if(this.scale.isValid()){
-				score = this.scale.get_score();
-				this.display_score(score);
+				this.scale.get_score();
 			} else{
 				console.log("cannot get score, while obj isn't valid");
 				console.log("Errors are:" + this.scale.validationError);
@@ -98,24 +103,20 @@ define(['backbone',
 
 		},
 		
-		/** display the values of the score object */
+		/** Callbank function for the score_update event emitted by the scale object
+		 * Displays the values of the score object */
 		display_score: function(score){
 			console.error("not yet implemented");
 			console.log(score);
 		},
 		
-		/** persist the rating object */
-		save_rating: function(){
-			//TODO: make sure scale is complete and linked to the current trail.
-			this.scale.save();
-		},
 		
-		/** handler that updates the preview of the result. */
+		/** handler that updates the values of the scale
+		 * object when values are change din the form. */
 		form_change_handler: function(field, scale){
 			var fields = $('#scale_form').serializeArray();
 			var that = this;
 			$.each(fields, function(i, field){
-				console.log(field);
 				scale.set(field.name, field.value);
 			});
 			
