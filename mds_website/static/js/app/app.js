@@ -1,9 +1,11 @@
 define(['backbone',
         'router', 
+        'collections/MscaleCollection',
+        'collections/TrailCollection',
         'jquery_tipsy', 
         'jquery_localscroll', 
         'jquery_uniform'
-], function(Backbone, Router) {
+], function(Backbone, Router, MscaleCollection, TrailCollection) {
 	var initialize = function() {		
 		// Select nav for smaller resolutions
 		// Select menu for smaller screens
@@ -62,10 +64,11 @@ define(['backbone',
 
 		// Uniform
 		$("select, input:checkbox, input:radio, input:file").uniform();
-
+		
 		// init router
 		Router.initialize();
 	}
+	
 	return {
 		initialize : initialize
 	};

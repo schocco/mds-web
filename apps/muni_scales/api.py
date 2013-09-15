@@ -118,7 +118,7 @@ class UXCResource(ModelResource):
         '''
         scale = UXCResource()
         bundle = scale.build_bundle(data=request.POST, request=request)
-        uxc = scale.full_hydrate(bundle)
+        uxc = scale.full_hydrate(bundle).obj
         errors = uxc.full_clean()
         if errors:
             return HttpResponse(errors)

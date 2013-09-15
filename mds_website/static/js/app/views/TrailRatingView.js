@@ -105,9 +105,14 @@ define(['backbone',
 		
 		/** Callbank function for the score_update event emitted by the scale object
 		 * Displays the values of the score object */
-		display_score: function(score){
+		display_score: function(error){
+			if(error){
+				console.log(error);
+			} else{
+				console.log(this.scale.score);
+			}
 			console.error("not yet implemented");
-			console.log(score);
+			
 		},
 		
 		

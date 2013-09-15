@@ -7,6 +7,7 @@ define(['models/BaseModel', 'underscore', 'jquery'],
 		
 		validate: function(attrs, options){
 			errors = new Array();
+
 			//total length must be a number
 			if(!_.isNumber(parseFloat(attrs.total_length)) || isNaN(parseFloat(attrs.total_length))){
 				errors[errors.length] = "Total length must be a numeric value, got " + attrs.total_length;
@@ -53,6 +54,8 @@ define(['models/BaseModel', 'underscore', 'jquery'],
 					console.log(data);
 				});
 		}
+		
+		
 	});
 	return UXC;
 	
