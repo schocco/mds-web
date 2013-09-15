@@ -107,6 +107,18 @@ class UDH(CalcBase):
     def get_total_score(self):
         score = self.total_length['result'] + self.avg_slope['result'] + self.max_difficulty['result'] + self.avg_difficulty['result']
         return int(round(score))
+    
+    def as_dict(self):
+        '''
+        Return object as a plain dictionary for easy serialization.
+        '''
+        d = {'total_length': self.total_length,
+             'avg_slope': self.avg_slope,
+             'max_difficulty': self.max_difficulty,
+             'avg_difficulty': self.avg_difficulty,
+             'total_score': self.total_score
+             }
+        return d
 
     total_length = property(fget=get_total_length, doc="")
     avg_slope = property(fget=get_avg_slope, doc="")
@@ -139,9 +151,9 @@ class UXC(CalcBase):
         :param obj: an instance of the UDHScale model
         '''
         self.obj = obj
-        self.__total_length = obj.total_length
-        self.__total_ascent = obj.total_ascent
-        self.__max_slope = obj.maximum_slope_uh
+        self.__total_length = float(obj.total_length)
+        self.__total_ascent = float(obj.total_ascent)
+        self.__max_slope = float(obj.maximum_slope_uh)
         self.__max_difficulty = obj.maximum_difficulty
         self.__avg_difficulty = obj.average_difficulty
         
@@ -188,6 +200,19 @@ class UXC(CalcBase):
         score += self.max_slope['result'] + self.max_difficulty['result']
         score += self.avg_difficulty['result']
         return int(round(score))
+    
+    def as_dict(self):
+        '''
+        Return object as a plain dictionary for easy serialization.
+        '''
+        d = {'total_length': self.total_length,
+             'total_ascent': self.total_ascent,
+             'max_slope': self.max_slope,
+             'max_difficulty': self.max_difficulty,
+             'avg_difficulty': self.avg_difficulty,
+             'total_score': self.total_score
+             }
+        return d
     
     total_length = property(get_total_length, None, None, None)
     total_ascent = property(get_total_ascent, None, None, None)

@@ -31,13 +31,17 @@ class MscaleField(DecimalField):
         
     def to_python(self, value):
         ''':returns: value as an Mscale object'''
+        if isinstance(value, list) and len(value) == 1:
+            value = value[0]
         if isinstance(value, Mscale) or value is None:
             return value
-        if isinstance(value, str):
-            str.upper().strip("M")
+        if isinstance(value, (str, unicode)):
+            value = unicode(value.upper().strip("M"))
             value = float(value)
-        if isinstance(value, float) or isinstance(value, int):
+        if isinstance(value, (float, int)):
             value = float(value)
+        else:
+            raise ValueError("Got unexpected format %r" % value)
         return MSCALES.get(value)
     
     def get_db_prep_save(self, value, connection):

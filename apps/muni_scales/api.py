@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+from apps.muni_scales.calculator import UXC
 from apps.muni_scales.fields import MscaleField
 from apps.muni_scales.models import UDHscale, UXCscale
 from apps.muni_scales.mscale import Mscale, MSCALES
 from django.conf.urls import url
+from django.http.response import HttpResponse
 from django.utils import simplejson
 from tastypie import fields
 from tastypie.authorization import Authorization
@@ -97,6 +99,7 @@ class UXCResource(ModelResource):
     '''
     maximum_difficulty = fields.ToOneField(MscaleResource, attribute="maximum_difficulty")
     average_difficulty = fields.ToOneField(MscaleResource, attribute="average_difficulty")
+    score = fields.DictField(attribute='get_score', readonly=True, use_in="detail")
     
     class Meta:
         queryset = UXCscale.objects.all()
@@ -113,7 +116,10 @@ class UXCResource(ModelResource):
         '''
         Return the score for the calculation
         '''
-        scale = UXCResource()
-        #TODO: check input data
-        scale_bundle = scale.build_bundle(data=request.POST, request=request)
-        return self.create_response(request, scale_bundle)
+        #scale = UXCResource()
+        uxc = UXCscale(**request.POST)
+        errors = uxc.full_clean()
+        if errors:
+            return HttpResponse(errors)
+        score = uxc.get_score()
+        return HttpResponse(simplejson.dumps(score.as_dict()))
