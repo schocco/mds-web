@@ -33,10 +33,12 @@ class Mscale(object):
         return force_unicode("M%s" % self.number or u'M')
 
     def __eq__(self, other):
-        if(isinstance(other, Mscale)):
+        if isinstance(other, Mscale):
             return self.number == other.number
-        elif(isinstance(other, int) or isinstance(other, float)):
+        elif isinstance(other, (int, float)):
             return self.number == other
+        elif other is None:
+            return False
         else:
             raise TypeError("Cannot compare Mscale object with %s" % str(other))
 
