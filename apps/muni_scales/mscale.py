@@ -37,10 +37,9 @@ class Mscale(object):
             return self.number == other.number
         elif isinstance(other, (int, float)):
             return self.number == other
-        elif other is None:
-            return False
         else:
-            raise TypeError("Cannot compare Mscale object with %s" % str(other))
+            return False
+            #raise TypeError("Cannot compare Mscale object with %s" % str(other))
 
     def __ne__(self, other):
         return not self.__eq__(other)
