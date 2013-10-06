@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django import forms
 from django.db.models.fields import DecimalField
 from django.db.models.fields.subclassing import SubfieldBase
@@ -38,7 +39,7 @@ class MscaleField(DecimalField):
         if isinstance(value, (str, unicode)):
             value = unicode(value.upper().strip("M"))
             value = float(value)
-        if isinstance(value, (float, int)):
+        if isinstance(value, (float, int, Decimal)):
             value = float(value)
         else:
             raise ValueError("Got unexpected format %r" % value)
