@@ -7,7 +7,10 @@ from django.http.response import HttpResponse
 from tastypie import fields
 from tastypie.authorization import Authorization
 from tastypie.bundle import Bundle
+from tastypie.exceptions import ImmediateHttpResponse, BadRequest
+from tastypie.http import HttpBadRequest
 from tastypie.resources import Resource, ModelResource
+from tastypie.utils.mime import build_content_type
 from tastypie.validation import CleanedDataFormValidation
 
 class MscaleResource(Resource):
@@ -122,10 +125,17 @@ class UXCResource(ModelResource):
         '''
         scale = UXCResource()
         bundle = scale.build_bundle(data=request.POST, request=request)
-        uxc = scale.full_hydrate(bundle).obj
-        errors = uxc.full_clean()
-        if errors:
-            return HttpResponse(errors)
-        score = uxc.get_score()
-        return self.create_response(request, score.as_dict())
-        #return HttpResponse(simplejson.dumps(score.as_dict()))
+        form = UXCscaleForm(request.POST)
+        if form.is_valid():
+            uxc = scale.full_hydrate(bundle).obj
+            score = uxc.get_score()
+            return self.create_response(request, score.as_dict())
+        else:
+            if request:
+                desired_format = self.determine_format(request)
+            else:
+                desired_format = self._meta.default_format
+            errors = form.errors
+            serialized = self.serialize(request, errors, desired_format)
+            response = HttpBadRequest(content=serialized, content_type=build_content_type(desired_format))
+            raise ImmediateHttpResponse(response=response)
