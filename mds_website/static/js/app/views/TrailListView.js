@@ -1,10 +1,11 @@
 define(['backbone',
         'collections/TrailCollection',
+        'cache',
         'underscore',
         'text!templates/trail_list.html',
         'jquery',
         'chart'],
-		function(Backbone, TrailsCollection, _, tpl, $){
+		function(Backbone, TrailsCollection, cache, _, tpl, $){
 	
 	var TrailsView = Backbone.View.extend({
 		el: '#content',
@@ -14,9 +15,11 @@ define(['backbone',
 		    	console.log("fetched data.");
 		        that.render();
 		    }
-		    that.collection = new TrailsCollection([]);
-		    that.collection.fetch({ success : onDataHandler });
+		    //that.collection = new TrailsCollection([]);
+		    //that.collection.fetch({ success : onDataHandler });
+		    that.collection = cache.get('TrailsCollection', TrailsCollection, { success : onDataHandler });
 		    this.collection.on("reset", this.render, this);
+		    this.render();
 		},
 		render: function(){
 			console.log("rendering");
