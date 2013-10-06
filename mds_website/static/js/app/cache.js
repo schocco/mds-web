@@ -13,7 +13,7 @@ define([], function () {
 	  },
 	  
 	  set: function(key, col){
-		  collections[key] = new col();
+		  collections[key] = col;
 	  }
 	  
   }
