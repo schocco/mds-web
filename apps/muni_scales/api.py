@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from apps.muni_scales.calculator import UXC
-from apps.muni_scales.fields import MscaleField
+from apps.muni_scales.forms import UDHscaleForm, UXCscaleForm
 from apps.muni_scales.models import UDHscale, UXCscale
 from apps.muni_scales.mscale import Mscale, MSCALES
 from django.conf.urls import url
@@ -9,8 +8,8 @@ from django.utils import simplejson
 from tastypie import fields
 from tastypie.authorization import Authorization
 from tastypie.bundle import Bundle
-from tastypie.fields import ApiField, CharField
 from tastypie.resources import Resource, ModelResource
+from tastypie.validation import CleanedDataFormValidation
 
 class MscaleResource(Resource):
     '''
@@ -77,6 +76,7 @@ scale.full_dehydrate(bundle)
     class Meta:
         queryset = UDHscale.objects.all()
         resource_name = 'udh-scale'
+        validation = CleanedDataFormValidation(form_class = UDHscaleForm)
         
     def prepend_urls(self):
         return [
@@ -104,6 +104,7 @@ class UXCResource(ModelResource):
     class Meta:
         queryset = UXCscale.objects.all()
         resource_name = 'uxc-scale'
+        validation = CleanedDataFormValidation(form_class = UXCscaleForm)
     
     #FIXME: duplicate code, refactor!
     def prepend_urls(self):

@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
+from apps.trails.forms import TrailForm
 from apps.trails.models import Trail
 from tastypie import fields
 from tastypie.authentication import Authentication
 from tastypie.authorization import Authorization
 from tastypie.contrib.gis.resources import ModelResource
+from tastypie.validation import CleanedDataFormValidation
 
 class TrailResource(ModelResource):
     '''
@@ -25,3 +27,4 @@ class TrailResource(ModelResource):
         #TODO: proper permission checks
         authentication = Authentication()
         authorization = Authorization()
+        validation = CleanedDataFormValidation(form_class = TrailForm)
