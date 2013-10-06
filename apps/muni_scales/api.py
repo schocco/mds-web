@@ -4,7 +4,6 @@ from apps.muni_scales.models import UDHscale, UXCscale
 from apps.muni_scales.mscale import Mscale, MSCALES
 from django.conf.urls import url
 from django.http.response import HttpResponse
-from django.utils import simplejson
 from tastypie import fields
 from tastypie.authorization import Authorization
 from tastypie.bundle import Bundle
@@ -89,9 +88,13 @@ scale.full_dehydrate(bundle)
         Return the score for the calculation
         '''
         scale = UDHResource()
-        #TODO: check input data
-        scale_bundle = scale.build_bundle(data=request.POST, request=request)
-        return self.create_response(request, scale_bundle)
+        bundle = scale.build_bundle(data=request.POST, request=request)
+        udh = scale.full_hydrate(bundle).obj
+        errors = udh.full_clean()
+        if errors:
+            return self.create_response(request, errors)
+        score = udh.get_score()
+        return self.create_response(request, score.as_dict())
     
 class UXCResource(ModelResource):
     '''
@@ -124,4 +127,5 @@ class UXCResource(ModelResource):
         if errors:
             return HttpResponse(errors)
         score = uxc.get_score()
-        return HttpResponse(simplejson.dumps(score.as_dict()))
+        return self.create_response(request, score.as_dict())
+        #return HttpResponse(simplejson.dumps(score.as_dict()))
