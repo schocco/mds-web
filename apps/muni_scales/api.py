@@ -36,6 +36,12 @@ class MscaleResource(Resource):
                 self.wrap_view('dispatch_detail'),
                 name="api_dispatch_detail"),
         ]
+        
+    def apply_sorting(self, obj_list, options=None):
+        """
+        sorts by number
+        """
+        return sorted(obj_list, key=lambda m: m.number)
 
     def detail_uri_kwargs(self, bundle_or_obj):
         kwargs = {}
