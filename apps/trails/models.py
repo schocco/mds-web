@@ -25,6 +25,7 @@ class Trail(models.Model):
     edited = models.DateTimeField(_('last change'), auto_now=True, blank=True)
     description = models.CharField(_('description'), max_length=500, blank=True)
     waypoints = MultiLineStringField(_('waypoints'), dim=3, null=True, blank=True) #include altitude as Z
+    length = models.IntegerField(_('length'), help_text=_("in meters"), blank=True, null=True)
     objects = GeoManager()
     # user
     # comments[]
@@ -168,7 +169,7 @@ class Trail(models.Model):
         return 0
         
      
-    def get_length(self, unit="km"):
+    def get_length(self, unit="m"):
         '''
         Calculates the length of the track by measuring distances between
         each pair of waypoints.
@@ -214,6 +215,8 @@ class Trail(models.Model):
     
     def get_height_at(self, meter):
         '''
+        :param meter: distance from the start point of the track in meters
+        
         Return the approximate height at a given position of a track.
         Interpolates nearest waypoints to get the height in meters.
         '''
@@ -252,7 +255,7 @@ class Trail(models.Model):
         zs = self._flat_z()
         min_height = round(min(zs),1)
         max_height = round(max(zs),1)
-        length = self.get_length()
+        length = self.get_length(unit="km")
 
         step = length / scale_steps
         labels = ['0 km']
