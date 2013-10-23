@@ -1,14 +1,16 @@
 define(['backbone',
+        'cache',
         'models/TrailModel',
         'models/UDHModel',
         'models/UXCModel',
+        'collections/MscaleCollection',
         'underscore',
         'text!templates/trail_rating.html',
         'text!templates/_UDH_form.html',
         'text!templates/_UXC_form.html',
         'jquery',
         'jquery_form'],
-		function(Backbone, Trail, UDH, UXC, _, tpl, udh_form, uxc_form, $){
+		function(Backbone, cache, Trail, UDH, UXC, MscaleCollection, _, tpl, udh_form, uxc_form, $){
 	
 	var TrailRatingView = Backbone.View.extend({
 		el: '#content',		
@@ -20,6 +22,12 @@ define(['backbone',
 		initialize: function (options) {
 			var that = this;
 			that.scale = null;
+			that.ctr = 0;
+			
+			//load mscales synchronously to avoid callback magic that would be required to sync with loading of trail object
+			that.mscales = cache.get('MscaleCollection', MscaleCollection, {async:false});
+			console.log(this.mscales);
+			
 		    var onDataHandler = function(model) {
 		    	that.read_trail_info();
 		        that.render();
@@ -31,8 +39,7 @@ define(['backbone',
 				that.trail = options.trail;
 				that.read_trail_info();
 				that.render()
-			}
-			
+			}			
 			//listen for changes of the scale object, and update score when it has changed
 			this.listenTo(this.scale, "score_update", this.display_score);
 		},
@@ -55,7 +62,7 @@ define(['backbone',
 			var compiledTemplate = _.template(tpl, {scale: this.scale, trail: this.trail});
 			$(this.el).html(compiledTemplate);
 			//add form to div
-			var compiledForm = _.template(this.form_tpl, {trail: this.trail});
+			var compiledForm = _.template(this.form_tpl, {trail: this.trail, mscales: this.mscales.models});
 			$('#form_container').html(compiledForm);
 			this.set_up_form();
 		},
@@ -106,13 +113,7 @@ define(['backbone',
 		/** Callbank function for the score_update event emitted by the scale object
 		 * Displays the values of the score object */
 		display_score: function(error){
-			if(error){
-				console.log(error);
-			} else{
-				console.log(this.scale.score);
-			}
-			console.error("not yet implemented");
-			
+						
 		},
 		
 		

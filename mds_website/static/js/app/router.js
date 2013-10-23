@@ -7,7 +7,7 @@ define(['backbone',
 			// Navigation via router events
 			var WorkspaceRouter = Backbone.Router.extend({
 				routes: {
-					"/":             	"home",   
+					"":             	"home",   
 					"udh-scale":        "udh",  
 					"uxc-scale": 		"uxc", 
 					"mts": 				"mts",

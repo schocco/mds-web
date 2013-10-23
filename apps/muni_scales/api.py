@@ -39,7 +39,7 @@ class MscaleResource(Resource):
         
     def apply_sorting(self, obj_list, options=None):
         """
-        sorts by number
+        sorts by number (always ascending)
         """
         return sorted(obj_list, key=lambda m: m.number)
 

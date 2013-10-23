@@ -1,11 +1,19 @@
 <form id="scale_form" method="post">
     <div>
         <label for="average_difficulty">Average difficulty</label>
-        <input type="number" name="average_difficulty" min="0" max="5"/>
+        <select name="average_difficulty">
+		<% _.each(mscales, function(mscale) { %> 
+		  <option value="<%= mscale.get('resource_uri') %>">m<%= mscale.get('id') %></option>
+		<% }); %>
+        </select>
     </div>
     <div>
         <label for="maximum_difficulty">Maximum difficulty</label>
-        <input type="number" name="maximum_difficulty" min="0" max="5"/>
+        <select name="maximum_difficulty">
+        <% _.each(mscales, function(mscale) { %> 
+          <option value="<%= mscale.get('resource_uri') %>">m<%= mscale.get('id') %></option>
+        <% }); %>
+        </select>
     </div>
     <div>
         <label for="max_diff">Total length</label>
@@ -19,3 +27,4 @@
        <a href="#" class="button" id="submit">Save</a> <a href="#" class="button" id="update_score">Update Score</a>
     </div>
 </form>
+
