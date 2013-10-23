@@ -177,7 +177,8 @@ class Trail(models.Model):
         Uses the Haversine Formula,
         see http://www.movable-type.co.uk/scripts/gis-faq-5.1.html
         
-        :return: the length in km
+        :param str unit: unit to be returned (either "m" or "km")
+        :return: the length in `unit`
         '''
         logger.debug("get length")
         if(self.has_waypoints()):
@@ -192,7 +193,8 @@ class Trail(models.Model):
     def get_total_ascent(self):
         '''
         Calculates the total uphill meters (altitude).
-        Returns the absolute value.
+        
+        :returns: the absolute value.
         '''
         logger.debug("get total ascent")
         total = 0
@@ -204,7 +206,8 @@ class Trail(models.Model):
     def get_total_descent(self):
         '''
         Calculates the total downhill meters (altitude)
-        Returns the absolute value.
+        
+        :returns: the absolute value in meters
         '''
         logger.debug("get total descent")
         total = 0
@@ -215,7 +218,7 @@ class Trail(models.Model):
     
     def get_height_at(self, meter):
         '''
-        :param meter: distance from the start point of the track in meters
+        :param int meter: distance from the start point of the track in meters
         
         Return the approximate height at a given position of a track.
         Interpolates nearest waypoints to get the height in meters.
@@ -245,6 +248,8 @@ class Trail(models.Model):
     
     def get_height_profile(self, scale_steps=20):
         '''
+        :param int scale_steps: specifies how many 
+        
         Creates a dictionary which contains height information
         along a dynamically set scale of distance points.
         Height for each point is calculated via interpolation using the nearest 2
