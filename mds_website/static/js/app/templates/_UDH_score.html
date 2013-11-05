@@ -10,12 +10,25 @@
     <tbody>
         <tr>
             <td>Average difficulty</td>
-            <td>val</td>
+            <td></td>
             <td>score</td>
         </tr>
         <tr class="hidden">
-            <td colspan="3">Explanation why the score is as it i</td>
+            <td colspan="3">Explanation why the score is as it is</td>
         <tr/>
 
     </tbody>
 </table>
+
+<% _.each(Object.keys(score), function(key) { %> 
+        <p><%= key.get('value') %><p>
+<% }); %>
+
+<code>
+var data = { name: 'Property Name', value: 0 };
+
+Object.keys(data); // ['name', 'value']
+Object.keys(data).forEach(function (key) {
+  // do something with data[key]
+});
+</code>

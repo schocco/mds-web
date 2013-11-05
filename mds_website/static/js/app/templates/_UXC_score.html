@@ -8,14 +8,25 @@
     </thead>
 
     <tbody>
+    <% var length = Object.keys(score).length %>
+    <% var ctr = 1 %>
+    <% _.each(Object.keys(score), function(key) { %>
+     <% if ( ctr < length ){ %>
         <tr>
-            <td>Average difficulty</td>
-            <td>val</td>
-            <td>score</td>
+            <td><%= labels[key] || key %></td>
+            <td><%= score[key].value %></td>
+            <td style="text-align:right;" class="tooltip">
+                <%= score[key].result %> <span class="left"><%= score[key].explanation %></span>
+            </td>
         </tr>
-        <tr class="hidden">
-            <td colspan="3">Explanation why the score is as it i</td>
-        <tr/>
+      <% } else { %>
+        <tr>
+        <td colspan=2><%= labels[key] || key %></td>
+        <td style="text-align:right; font-weight: 600;"><%= score[key] %></td>
+        </tr>
+      <% } %>
+      <% ctr = ctr + 1 %>
+    <% }); %>
 
     </tbody>
 </table>

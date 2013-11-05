@@ -16,8 +16,8 @@
         </select>
     </div>
     <div>
-        <label for="total_length">Total length</label>
-        <input type="number" name="total_length" value="<%= Math.round(100*trail.get('length'))/100 %>"/>
+        <label for="total_length">Total length (meters)</label>
+        <input type="number" name="total_length" value="<%= Math.round(trail.get('length')) %>"/>
     </div>
     <div>
         <label for="total_ascent">Total ascent</label>

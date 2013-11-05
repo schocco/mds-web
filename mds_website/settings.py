@@ -119,6 +119,7 @@ PIPELINE_CSS = {
             'css/helpers.css',
             'css/scaffolding.css',
             'css/print.css',
+            'css/tooltip.css',
             'css/application.css',
         ),
         'output_filename': 'css/main.css',

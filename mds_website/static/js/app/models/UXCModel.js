@@ -45,9 +45,9 @@ define(['models/BaseModel', 'underscore', 'jquery'],
 			var that = this;
 			var jqxhr = $.post(uri, this.attributes,
 				function(data) { 
-					that.score = data.score;
-					that.trigger("score_update");
+					that.score = data;
 					console.log("Updated score for " + that);
+					that.trigger("score_update");
 				})
 				.fail(function(data) {
 					console.log("updating score for " + that + "failed");

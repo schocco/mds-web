@@ -13,6 +13,13 @@ define(['backbone',
 		type: null,
 		tpl: null,
 		score: null,
+		labels: {avg_difficulty: "Average difficulty (MTS)",
+				max_difficulty: "Maximum difficulty (MTS)",
+				max_slope: "Maximum slope",
+				total_ascent: "Total ascent",
+				total_length: "Total length (m)",
+				total_score: "Total score"
+				},
 		
 		/**
 		 * @param type: type of the score object (either udh or uxc)
@@ -20,6 +27,7 @@ define(['backbone',
 		 * @param parent: parent dom element
 		 */
 		initialize: function(options) {
+			console.log(options);
 			this.type = options.type;
 			this.score = options.score;
 			this.el = $(options.parent);
@@ -37,7 +45,8 @@ define(['backbone',
 		
 		render: function(){
 			// render tpl with options object
-			var compiledTemplate = _.template( this.tpl, {'score': this.score });
+			console.log(this.score);
+			var compiledTemplate = _.template( this.tpl, {'score': this.score, 'labels': this.labels });
 			$(this.el).html(compiledTemplate);
 		}
 		
