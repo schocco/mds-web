@@ -34,8 +34,9 @@ define(['models/BaseModel', 'underscore', 'jquery'],
 			}
 		},
 		
-		/** retrieve the score for the current values without saving the object.
-		 * The object will trigger an event "score_update". When the request was succesful, no arguments
+		/** 
+		 * Retrieves the score for the current values without saving the object.
+		 * The object will trigger an event "score_update". When the request was successful, no arguments
 		 * are passed with the event, if it fails an error object is submitted as argument.
 		 * */
 		get_score: function(){
@@ -53,6 +54,10 @@ define(['models/BaseModel', 'underscore', 'jquery'],
 					that.trigger("score_update", data);
 					console.log(data);
 				});
+		},
+		
+		toString: function(){
+			return "UXC Scale";
 		}
 		
 		

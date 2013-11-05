@@ -3,6 +3,7 @@ define(['backbone',
         'models/TrailModel',
         'models/UDHModel',
         'models/UXCModel',
+        'views/MtsScoreView',
         'collections/MscaleCollection',
         'underscore',
         'text!templates/trail_rating.html',
@@ -10,7 +11,7 @@ define(['backbone',
         'text!templates/_UXC_form.html',
         'jquery',
         'jquery_form'],
-		function(Backbone, cache, Trail, UDH, UXC, MscaleCollection, _, tpl, udh_form, uxc_form, $){
+		function(Backbone, cache, Trail, UDH, UXC, ScoreView, MscaleCollection, _, tpl, udh_form, uxc_form, $){
 	
 	var TrailRatingView = Backbone.View.extend({
 		el: '#content',		
@@ -47,10 +48,12 @@ define(['backbone',
 		/** create appropriate scale object */
 		read_trail_info: function(){
 			if(this.trail.get("type") == "downhill"){
+				this.type = "udh";
 				this.scale = new UDH();
 				this.form_tpl = udh_form;	
 			}
 			else{
+				this.type = "uxc";
 				this.scale = new UXC();
 				this.form_tpl = uxc_form;
 			}
@@ -95,7 +98,7 @@ define(['backbone',
 		
 		/** 
 		 * Trigger an ajax request to get the score of the scale object.
-		 * if the scale object is valid. The scale object triggers an event
+		 * The scale object triggers an event
 		 * when it is done fetching the score.
 		 **/
 		update_score: function(){
@@ -110,15 +113,23 @@ define(['backbone',
 
 		},
 		
-		/** Callbank function for the score_update event emitted by the scale object
+		/** Callback function for the score_update event emitted by the scale object.
 		 * Displays the values of the score object */
 		display_score: function(error){
-						
+			if(error){
+				console.error(error);
+			} else {
+				var options = {	parent: "#rating_div",
+								type: this.type,
+								score: this.scale.score
+							  }
+				this.scoreView = new ScoreView(options);
+			}
 		},
 		
 		
 		/** handler that updates the values of the scale
-		 * object when values are change din the form. */
+		 * object when values are changed in the form. */
 		form_change_handler: function(field, scale){
 			var fields = $('#scale_form').serializeArray();
 			var that = this;
