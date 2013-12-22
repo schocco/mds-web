@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-from apps.muni_scales.forms import UDHscaleForm, UXCscaleForm
-from apps.muni_scales.models import UDHscale, UXCscale
-from apps.muni_scales.mscale import Mscale, MSCALES
 from django.conf.urls import url
 from django.http.response import HttpResponse
 from tastypie import fields
@@ -12,6 +9,12 @@ from tastypie.http import HttpBadRequest
 from tastypie.resources import Resource, ModelResource
 from tastypie.utils.mime import build_content_type
 from tastypie.validation import CleanedDataFormValidation
+
+from apps.muni_scales.forms import UDHscaleForm, UXCscaleForm
+from apps.muni_scales.models import UDHscale, UXCscale
+from apps.muni_scales.mscale import Mscale, MSCALES
+from apps.trails.models import Trail
+
 
 class MscaleResource(Resource):
     '''

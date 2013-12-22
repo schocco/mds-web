@@ -57,7 +57,7 @@ define(['backbone',
 			if(this.trail.get("type") == "downhill"){
 				this.type = "udh";
 				this.scale = new UDH();
-				this.form_tpl = udh_form;	
+				this.form_tpl = udh_form;
 			}
 			else{
 				this.type = "uxc";
@@ -71,6 +71,7 @@ define(['backbone',
 			console.debug("render ratingview template");
 			var compiledTemplate = _.template(tpl, {scale: this.scale, trail: this.trail});
 			$(this.el).html(compiledTemplate);
+			//TODO: create score object if none present
 			//TODO: add score view to div
 			//TODO: make table editable
 			

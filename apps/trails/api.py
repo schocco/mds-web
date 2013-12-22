@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from apps.trails.forms import TrailForm
-from apps.trails.models import Trail
 from tastypie import fields
 from tastypie.authentication import Authentication
 from tastypie.authorization import Authorization
-from tastypie.contrib.gis.resources import ModelResource
 from tastypie.validation import CleanedDataFormValidation
+
+from apps.muni_scales.api import UXCResource, UDHResource
+from apps.trails.forms import TrailForm
+from apps.trails.models import Trail
+from tastypie.contrib.gis.resources import ModelResource
+
 
 class TrailResource(ModelResource):
     '''
@@ -20,6 +23,8 @@ class TrailResource(ModelResource):
     total_ascent = fields.CharField(attribute='get_total_ascent', readonly=True, use_in="detail")
     total_descent = fields.CharField(attribute='get_total_descent', readonly=True, use_in="detail")
     height_profile = fields.DictField(attribute='get_height_profile', readonly=True, use_in="detail")
+    uxc_ratings = fields.ToManyField(UXCResource, 'uxcscale_set', related_name='uxc-rating', full=True)
+    #udh_ratings = fields.ToManyField(UDHResource, 'udhscale_set', related_name='udh-rating', full=True)
         
     class Meta:
         queryset = Trail.objects.all()

@@ -29,12 +29,15 @@ class UDHscale(BaseScale):
     def __unicode__(self):
         return u'UDH %sm avg %s' % (self.total_length, self.average_difficulty)
     
-    def get_score(self):
+    def get_score(self, as_dict = True):
         '''
         Calculates the score with the given attributes.
         :rtype: :py:class:`apps.muni_scales.calculator.UDH`
         '''
-        return calculator.UDH(self)
+        udh = calculator.UDH(self)
+        if(as_dict):
+            return udh.as_dict()
+        return udh
     
     class Meta:
         verbose_name = "UDH Scale Entity"
@@ -54,10 +57,12 @@ class UXCscale(BaseScale):
     def __unicode__(self):
         return u'UXC %s' % self.average_difficulty
     
-    def get_score(self):
+    def get_score(self, as_dict = True):
         '''
         Calculates the score with the given attributes.
         '''
+        if(as_dict):
+            return calculator.UXC(self).as_dict()
         return calculator.UXC(self)
     
     class Meta:
