@@ -13,16 +13,13 @@
     <p>Altitude difference: <%= trail.get('altitude_difference') %></p>
     <p>Average slope: <%= trail.get('avg_slope') %></p>
     <p>Max slope: <%= trail.get('max_slope') %></p>
-    <p>Length: <%= trail.get('length') %></p>
+    <p>Length (m): <%= trail.get('length') %></p>
     <p>Total ascent: <%= trail.get('total_ascent') %></p>
     <p>Total descent: <%= trail.get('total_descent') %></p>
 </div>
 
-<div class="two_third">
-    <h3>Difficulty rating</h3>
-    <p>Mscale:</p>
-    <p>UDX: 34<p>
-    <a id="rate" href="/#/trails/<%= trail.get('id') %>/rate">Rate this trail</a>
+<div class="two_third" id="score_div">
+<!-- will be filled with a nested view -->
 </div>
 
 <div class="one_full">

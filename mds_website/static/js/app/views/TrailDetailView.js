@@ -1,7 +1,7 @@
 define(['backbone',
         'models/TrailModel',
         'views/_MapView',
-        'views/TrailRatingView',
+        'views/_TrailRatingView',
         'underscore',
         'text!templates/trail_detail.html',
         'jquery',
@@ -77,6 +77,10 @@ define(['backbone',
 			var myNewChart = new Chart(ctx).Line(data, options);
 		},
 		
+		render_score: function(){
+			this.scoreview = new TrailRatingView({parent: "#score_div", trail: this.trail});
+		},
+		
 		/** renders the whole view. */
 		render: function(){
 			console.log("render template");
@@ -88,6 +92,9 @@ define(['backbone',
 			
 			console.log("create map.");
 			this.render_map();
+			
+			console.log("create score/rating view");
+			this.render_score();
 			
 			// add handler to link
 			var that = this;

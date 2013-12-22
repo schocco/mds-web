@@ -1,4 +1,8 @@
-//deprecated. should be replaced by embedded view _TrailRatingView.js
+/**
+ * A wrapper view around the MtsScoreView which adds additional functionality for updating values.
+ * Turns the data table into a form.
+ */
+
 define(['backbone',
         'cache',
         'models/TrailModel',
@@ -7,24 +11,26 @@ define(['backbone',
         'views/MtsScoreView',
         'collections/MscaleCollection',
         'underscore',
-        'text!templates/trail_rating.html',
+        'text!templates/_trail_rating.html',
         'text!templates/_UDH_form.html',
         'text!templates/_UXC_form.html',
         'jquery',
         'jquery_form'],
 		function(Backbone, cache, Trail, UDH, UXC, ScoreView, MscaleCollection, _, tpl, udh_form, uxc_form, $){
 	
-	var TrailRatingView = Backbone.View.extend({
+	var _TrailRatingView = Backbone.View.extend({
 		el: '#content',		
 		
 		/**
 		 * @param trail: trail obj
 		 * @param id: trail id must be given if no trail object is provided
+		 * @param parent: container in which view should be rendered
 		 */
 		initialize: function (options) {
 			var that = this;
-			that.scale = null;
-			that.ctr = 0;
+			this.scale = null;
+			this.ctr = 0;
+			this.el = options.parent;
 			
 			//load mscales synchronously to avoid callback magic that would be required to sync with loading of trail object
 			that.mscales = cache.get('MscaleCollection', MscaleCollection, {async:false});
@@ -65,10 +71,12 @@ define(['backbone',
 			console.debug("render ratingview template");
 			var compiledTemplate = _.template(tpl, {scale: this.scale, trail: this.trail});
 			$(this.el).html(compiledTemplate);
-			//add form to div
-			var compiledForm = _.template(this.form_tpl, {trail: this.trail, mscales: this.mscales.models});
-			$('#form_container').html(compiledForm);
-			this.set_up_form();
+			//TODO: add score view to div
+			//TODO: make table editable
+			
+//			var compiledForm = _.template(this.form_tpl, {trail: this.trail, mscales: this.mscales.models});
+//			$('#form_container').html(compiledForm);
+//			this.set_up_form();
 		},
 		
 		/** add appropriate event handlers to the form */
@@ -124,6 +132,7 @@ define(['backbone',
 								type: this.type,
 								score: this.scale.score
 							  }
+				//TODO: use update method instead of recreating view
 				this.scoreView = new ScoreView(options);
 			}
 		},
@@ -143,7 +152,7 @@ define(['backbone',
 			
 	});
 	
-	return TrailRatingView;
+	return _TrailRatingView;
 	
 });
 
