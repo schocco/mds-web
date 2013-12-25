@@ -74,10 +74,15 @@ define(['backbone',
 			//TODO: create score object if none present
 			//TODO: add score view to div
 			//TODO: make table editable
+			if(this.trail.hasRatings()){
+				console.log("No ratings present -> display form");
+			} else{
+				console.log("Ratings exist, show them and add link to add or edit");
+			}
 			
-//			var compiledForm = _.template(this.form_tpl, {trail: this.trail, mscales: this.mscales.models});
-//			$('#form_container').html(compiledForm);
-//			this.set_up_form();
+			var compiledForm = _.template(this.form_tpl, {trail: this.trail, mscales: this.mscales.models});
+			$('#form_container').html(compiledForm);
+			this.set_up_form();
 		},
 		
 		/** add appropriate event handlers to the form */

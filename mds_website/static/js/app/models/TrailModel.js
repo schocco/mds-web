@@ -19,6 +19,13 @@ define(['models/BaseModel'],
 			//TODO: validation logic
 		},
 		
+		/**
+		 * @return boolean
+		 */
+		hasRatings: function(){
+			return this.get("udh_ratings").length > 0 || this.get("uxc_ratings").length > 0
+		},
+		
 		prefix: "#/trails/",
 		urlRoot: "api/v1/trails"
 	
