@@ -1,3 +1,5 @@
+
+
 <table class="table-striped nb">
     <thead>
         <tr>
@@ -8,21 +10,21 @@
     </thead>
 
     <tbody>
-    <% var length = Object.keys(score).length %>
+    <% var length = Object.keys(labels).length %>
     <% var ctr = 1 %>
-    <% _.each(Object.keys(score), function(key) { %>
+    <% _.each(Object.keys(labels), function(key) { %>
      <% if ( ctr < length ){ %>
         <tr>
             <td><%= labels[key] || key %></td>
-            <td><%= score[key].value %></td>
+            <td id="<%= key %>"><%= scale.score[key].value || "" %></td>
             <td style="text-align:right;" class="tooltip">
-                <%= score[key].result %> <span class="left"><%= score[key].explanation %></span>
+                <%= scale.score[key].result || "" %> <span class="left"><%= scale.score[key].explanation || "" %></span>
             </td>
         </tr>
       <% } else { %>
         <tr>
         <td colspan=2><%= labels[key] || key %></td>
-        <td style="text-align:right; font-weight: 600;"><%= score[key] %></td>
+        <td style="text-align:right; font-weight: 600;"><%= scale.score[key] || "" %></td>
         </tr>
       <% } %>
       <% ctr = ctr + 1 %>
@@ -30,3 +32,5 @@
 
     </tbody>
 </table>
+
+

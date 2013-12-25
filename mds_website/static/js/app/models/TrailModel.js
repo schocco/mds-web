@@ -20,10 +20,10 @@ define(['models/BaseModel'],
 		},
 		
 		/**
-		 * @return boolean
+		 * @return the rating if present
 		 */
-		hasRatings: function(){
-			return this.get("udh_ratings").length > 0 || this.get("uxc_ratings").length > 0
+		hasRating: function(){
+			return this.get("udh_rating") != null || this.get("uxc_rating") != null
 		},
 		
 		prefix: "#/trails/",

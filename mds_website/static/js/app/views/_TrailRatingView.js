@@ -19,7 +19,7 @@ define(['backbone',
 		function(Backbone, cache, Trail, UDH, UXC, ScoreView, MscaleCollection, _, tpl, udh_form, uxc_form, $){
 	
 	var _TrailRatingView = Backbone.View.extend({
-		el: '#content',		
+		el: '#content',
 		
 		/**
 		 * @param trail: trail obj
@@ -56,12 +56,12 @@ define(['backbone',
 		read_trail_info: function(){
 			if(this.trail.get("type") == "downhill"){
 				this.type = "udh";
-				this.scale = new UDH();
+				this.scale = this.trail.get("udh_rating") || new UDH();
 				this.form_tpl = udh_form;
 			}
 			else{
 				this.type = "uxc";
-				this.scale = new UXC();
+				this.scale = this.trail.get("uxc_rating") || new UXC();
 				this.form_tpl = uxc_form;
 			}
 		},
@@ -71,18 +71,38 @@ define(['backbone',
 			console.debug("render ratingview template");
 			var compiledTemplate = _.template(tpl, {scale: this.scale, trail: this.trail});
 			$(this.el).html(compiledTemplate);
-			//TODO: create score object if none present
-			//TODO: add score view to div
-			//TODO: make table editable
-			if(this.trail.hasRatings()){
-				console.log("No ratings present -> display form");
-			} else{
-				console.log("Ratings exist, show them and add link to add or edit");
-			}
+			var options = {	parent: "#rating_div",
+					type: this.type,
+					scale: this.scale
+				  }
+			this.scoreView = new ScoreView(options);
+			this.make_editable();
+//			var compiledForm = _.template(this.form_tpl, {trail: this.trail, mscales: this.mscales.models});
+//			$('#form_container').html(compiledForm);
+//			this.set_up_form();
 			
-			var compiledForm = _.template(this.form_tpl, {trail: this.trail, mscales: this.mscales.models});
-			$('#form_container').html(compiledForm);
-			this.set_up_form();
+			
+		},
+		
+		/** replaces table cells with form fields to allow editing the rating. */
+		make_editable: function(){
+			var replacements = {
+					max_difficulty: _.template('<select name="maximum_difficulty"><% _.each(mscales, function(mscale) { %> \
+				          <option value="<%= mscale.get(\'resource_uri\') %>">m<%= mscale.get(\'id\') %></option><% }); %>\
+				        </select>', {trail: this.trail, mscales: this.mscales.models}),
+					total_length: "bla",
+					total_ascent: "bla",
+					max_slope: "bla",
+					avg_difficulty: "bla",
+					average_slope: "bla"
+			}; //contains udh and uxc fields
+			
+			for (var key in replacements) {
+				$("#"+key).html(replacements[key]);
+			}
+			//TODO: set up form fields, use micro-templates?
+			// iterate thorugh dict with replacements and replace all html nodes that have a matching id
+			// with the rendered content.
 		},
 		
 		/** add appropriate event handlers to the form */

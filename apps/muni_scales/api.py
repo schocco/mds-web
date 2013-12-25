@@ -106,7 +106,7 @@ scale.full_dehydrate(bundle)
         if errors:
             return self.create_response(request, errors)
         score = udh.get_score()
-        return self.create_response(request, score.as_dict())
+        return self.create_response(request, score)
     
 class UXCResource(ModelResource):
     '''
