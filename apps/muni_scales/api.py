@@ -138,7 +138,7 @@ class UXCResource(ModelResource):
         if form.is_valid():
             uxc = scale.full_hydrate(bundle).obj
             score = uxc.get_score()
-            return self.create_response(request, score.as_dict())
+            return self.create_response(request, score)
         else:
             if request:
                 desired_format = self.determine_format(request)

@@ -79,30 +79,31 @@ define(['backbone',
 			this.make_editable();
 //			var compiledForm = _.template(this.form_tpl, {trail: this.trail, mscales: this.mscales.models});
 //			$('#form_container').html(compiledForm);
-//			this.set_up_form();
+			this.set_up_form();
 			
 			
 		},
 		
 		/** replaces table cells with form fields to allow editing the rating. */
 		make_editable: function(){
+			var context = {trail: this.trail, mscales: this.mscales.models};
+			//FIXME: check for correctness of field names and prettify
 			var replacements = {
 					max_difficulty: _.template('<select name="maximum_difficulty"><% _.each(mscales, function(mscale) { %> \
 				          <option value="<%= mscale.get(\'resource_uri\') %>">m<%= mscale.get(\'id\') %></option><% }); %>\
-				        </select>', {trail: this.trail, mscales: this.mscales.models}),
-					total_length: "bla",
-					total_ascent: "bla",
-					max_slope: "bla",
-					avg_difficulty: "bla",
-					average_slope: "bla"
+				        </select>', context),
+					total_length: _.template('<input type="number" name="total_length" value="<%= Math.round(trail.get(\'length\')) %>"/>', context),
+					total_ascent: _.template('<input type="number" name="total_ascent" value="<%= Math.round(trail.get(\'total_ascent\')) %>"/>', context),
+					max_slope: _.template('<input type="number" name="maximum_slope_uh" value="<%= Math.round(trail.get(\'max_slope\')) %>"/>', context),
+					avg_difficulty: _.template('<select name="average_difficulty"><% _.each(mscales, function(mscale) { %> \
+					          <option value="<%= mscale.get(\'resource_uri\') %>">m<%= mscale.get(\'id\') %></option><% }); %>\
+					        </select>', {trail: this.trail, mscales: this.mscales.models}),
+					average_slope: _.template('<input type="number" name="average_slope" value="<%= Math.round(trail.get(\'avg_slope\')) %>"/>', context),
 			}; //contains udh and uxc fields
 			
 			for (var key in replacements) {
 				$("#"+key).html(replacements[key]);
 			}
-			//TODO: set up form fields, use micro-templates?
-			// iterate thorugh dict with replacements and replace all html nodes that have a matching id
-			// with the rendered content.
 		},
 		
 		/** add appropriate event handlers to the form */
@@ -156,7 +157,7 @@ define(['backbone',
 			} else {
 				var options = {	parent: "#rating_div",
 								type: this.type,
-								score: this.scale.score
+								scale: this.scale
 							  }
 				//TODO: use update method instead of recreating view
 				this.scoreView = new ScoreView(options);
