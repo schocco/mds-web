@@ -12,11 +12,9 @@ define(['backbone',
         'collections/MscaleCollection',
         'underscore',
         'text!templates/_trail_rating.html',
-        'text!templates/_UDH_form.html',
-        'text!templates/_UXC_form.html',
         'jquery',
         'jquery_form'],
-		function(Backbone, cache, Trail, UDH, UXC, ScoreView, MscaleCollection, _, tpl, udh_form, uxc_form, $){
+		function(Backbone, cache, Trail, UDH, UXC, ScoreView, MscaleCollection, _, tpl, $){
 	
 	var _TrailRatingView = Backbone.View.extend({
 		el: '#content',
@@ -56,13 +54,11 @@ define(['backbone',
 				this.type = "udh";
 				// creates a new object or converts object to UDH model type
 				this.scale = new UDH(this.trail.get("udh_rating"));
-				this.form_tpl = udh_form;
 			}
 			else{
 				this.type = "uxc";
 				// creates a new object or converts object to UDH model type
 				this.scale = new UXC(this.trail.get("uxc_rating"));
-				this.form_tpl = uxc_form;
 			}
 			// listen for changes of the scale object, and update score when it has changed
 			// do not register in init method to ensure scale objects exists before listener registration
@@ -86,11 +82,12 @@ define(['backbone',
 		
 		/** replaces table cells with form fields to allow editing the rating. */
 		make_editable: function(){
-			var context = {trail: this.trail, mscales: this.mscales.models};
+			var context = {trail: this.trail, mscales: this.mscales.models, scale: this.scale};
 			//FIXME: check for correctness of field names and prettify
+			//TODO: render either with track info or with scale info when scale values exist already
 			var replacements = {
 					max_difficulty: _.template('<select name="maximum_difficulty"><% _.each(mscales, function(mscale) { %> \
-				          <option value="<%= mscale.get(\'resource_uri\') %>">m<%= mscale.get(\'id\') %></option><% }); %>\
+				          <option value="<%= mscale.get(\'resource_uri\') %>" <% if (scale.get(\'maximum_difficulty\') ==  mscale.get(\'resource_uri\')) print("selected"); %>>m<%= mscale.get(\'id\') %></option><% }); %>\
 				        </select>', context),
 					total_length: _.template('<input type="number" name="total_length" value="<%= Math.round(trail.get(\'length\')) %>"/>', context),
 					total_ascent: _.template('<input type="number" name="total_ascent" value="<%= Math.round(trail.get(\'total_ascent\')) %>"/>', context),
@@ -161,6 +158,7 @@ define(['backbone',
 							  }
 				this.scoreView.update(this.scale);
 				this.make_editable(); //TODO: should not be called after saving the object in the backend
+				this.set_up_form();	
 			}
 		},
 		

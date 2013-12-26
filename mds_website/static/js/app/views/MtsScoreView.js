@@ -3,11 +3,10 @@
  */
 define(['backbone',
         'cache',
-        'text!templates/_UDH_score.html',
-        'text!templates/_UXC_score.html',
+        'text!templates/_MTS_score.html',
         'jquery',
         'underscore'],
-		function(Backbone, cache, udh_tpl, uxc_tpl, $, _){
+		function(Backbone, cache, tpl, $, _){
 	
 	var MtsScoreView = Backbone.View.extend({
 		el: null,
@@ -33,14 +32,13 @@ define(['backbone',
 			//this.score = options.score;
 			this.el = $(options.parent);
 			this.scale = options.scale;
+			this.tpl = tpl;
 			if(this.scale.score){
 				console.log("no score yet!");
 			}
 			if(this.type.toLowerCase() == "udh"){
-				this.tpl = udh_tpl;
 				this.labeldict = $.extend({avg_slope: "Average slope (%)"}, this.labels);
 			} else if(this.type.toLowerCase() == "uxc"){
-				this.tpl = uxc_tpl;
 				this.labeldict = $.extend({max_slope: "Maximum slope uphill (%)", total_ascent: "Total ascent (m)"}, this.labels)
 			} else {
 				throw new Error("type option must be 'udh' or 'uxc', but got " + type);
