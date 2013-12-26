@@ -82,19 +82,26 @@ define(['backbone',
 		
 		/** replaces table cells with form fields to allow editing the rating. */
 		make_editable: function(){
-			var context = {trail: this.trail, mscales: this.mscales.models, scale: this.scale};
+			var values = { // use scale values and fallback to trail values
+					max_difficulty: this.scale.get('maximum_difficulty'),
+					length: this.scale.get('total_length') || this.trail.get('length'),
+					total_ascent: this.scale.get('total_ascent') || this.trail.get('total_ascent'),
+					max_slope: this.scale.get('max_slope_uh') || this.trail.get('max_slope'),
+					avg_difficulty: this.scale.get('average_difficulty')
+					}
+			var context = {trail: this.trail, mscales: this.mscales.models, scale: this.scale, values: values};
 			//FIXME: check for correctness of field names and prettify
 			//TODO: render either with track info or with scale info when scale values exist already
 			var replacements = {
 					max_difficulty: _.template('<select name="maximum_difficulty"><% _.each(mscales, function(mscale) { %> \
-				          <option value="<%= mscale.get(\'resource_uri\') %>" <% if (scale.get(\'maximum_difficulty\') ==  mscale.get(\'resource_uri\')) print("selected"); %>>m<%= mscale.get(\'id\') %></option><% }); %>\
+				          <option value="<%= mscale.get(\'resource_uri\') %>" <% if (values["max_difficulty"] ==  mscale.get(\'resource_uri\')) print("selected"); %>>m<%= mscale.get(\'id\') %></option><% }); %>\
 				        </select>', context),
-					total_length: _.template('<input type="number" name="total_length" value="<%= Math.round(trail.get(\'length\')) %>"/>', context),
-					total_ascent: _.template('<input type="number" name="total_ascent" value="<%= Math.round(trail.get(\'total_ascent\')) %>"/>', context),
-					max_slope: _.template('<input type="number" name="maximum_slope_uh" value="<%= Math.round(trail.get(\'max_slope\')) %>"/>', context),
+					total_length: _.template('<input type="number" name="total_length" value="<%= Math.round(values["length"]) %>"/>', context),
+					total_ascent: _.template('<input type="number" name="total_ascent" value="<%= Math.round(values["total_ascent"]) %>"/>', context),
+					max_slope: _.template('<input type="number" name="maximum_slope_uh" value="<%= Math.round(values["max_slope"]) %>"/>', context),
 					avg_difficulty: _.template('<select name="average_difficulty"><% _.each(mscales, function(mscale) { %> \
-					          <option value="<%= mscale.get(\'resource_uri\') %>">m<%= mscale.get(\'id\') %></option><% }); %>\
-					        </select>', {trail: this.trail, mscales: this.mscales.models}),
+					          <option value="<%= mscale.get(\'resource_uri\') %>" <% if (values["avg_difficulty"] ==  mscale.get(\'resource_uri\')) print("selected"); %>>m<%= mscale.get(\'id\') %></option><% }); %>\
+					        </select>', context),
 					average_slope: "bla"//_.template('<input type="number" name="average_slope" value="<%= Math.round(trail.get(\'avg_slope\')) %>"/>', context),
 			}; //contains udh and uxc fields
 			
@@ -103,30 +110,39 @@ define(['backbone',
 			}
 		},
 		
-		/** add appropriate event handlers to the form */
+		/** add appropriate event handlers to the form.
+		 * The form fields are re-rendered when an update of the data occurs, so that the
+		 * input change listener needs to be bound again after a re-rendering. */
 		set_up_form: function(){
 			var csrftoken = $('meta[name=csrf-token]').attr("content");
+			var that = this;
+			//update scale object when form data is changed
+			this.set_up_form_fields();
+			//submit button
+			$('#submit').click(function(evt){
+				evt.preventDefault();
+				$('#scale_form').submit();
+			});
+			//update button
+			$('#update_score').click(function(evt){
+				evt.preventDefault();
+				that.update_score();
+			});
+			//form submission
+			$('#scale_form').submit(function(evt){
+				evt.preventDefault();
+				that.save_rating();
+			});
+		},
+		
+		/** update scale object when form data is changed */
+		set_up_form_fields: function(){
 			var that = this;
 			//update scale object when form data is changed
 			$('#scale_form').find(':input').change(function(src){
 				that.form_change_handler(src, that.scale);
 				that.update_score();
 				});
-			
-			$('#submit').click(function(evt){
-				evt.preventDefault();
-				$('#scale_form').submit();
-			});
-			
-			$('#update_score').click(function(evt){
-				evt.preventDefault();
-				that.update_score();
-			});
-			
-			$('#scale_form').submit(function(evt){
-				evt.preventDefault();
-				that.save_rating();
-			});
 		},
 		
 		/** 
@@ -139,11 +155,25 @@ define(['backbone',
 			this.form_change_handler(null, this.scale);
 			if(this.scale.isValid()){
 				this.scale.get_score(); //triggers an update event
+				this.reset_form_errors();
 			} else{
 				console.log("cannot get score, while obj isn't valid");
 				console.log("Errors are:" + this.scale.validationError);
+				this.show_form_errors(this.scale.validationError);
 			}
 
+		},
+		
+		show_form_errors: function(errors){
+			var tpl = "<ul><% _.each(errors, function(err) { %><li><%= err %></li><% }); %></ul>";
+			var rendered = _.template(tpl, {errors: errors});
+			$("#form_errors").html(rendered);
+			$("#form_errors").show({duration:300});
+		},
+		
+		reset_form_errors: function(){
+			$("#form_errors").html("");
+			$("#form_errors").hide({duration: 0});
 		},
 		
 		/** Callback function for the score_update event emitted by the scale object.
@@ -158,7 +188,8 @@ define(['backbone',
 							  }
 				this.scoreView.update(this.scale);
 				this.make_editable(); //TODO: should not be called after saving the object in the backend
-				this.set_up_form();	
+				// need to bind change events after re-rendering:
+				this.set_up_form_fields();
 			}
 		},
 		
