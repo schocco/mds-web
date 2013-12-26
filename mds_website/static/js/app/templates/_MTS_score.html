@@ -16,9 +16,9 @@
      <% if ( ctr < length ){ %>
         <tr>
             <td><%= labels[key] || key %></td>
-            <td id="<%= key %>"><%= scale.score[key].value || "" %></td>
+            <td id="<%= key %>"><%= scale.score[key].value %></td>
             <td style="text-align:right;" class="tooltip">
-                <%= scale.score[key].result || "" %> <span class="left"><%= scale.score[key].explanation || "" %></span>
+                <%= scale.score[key].result %> <% if(scale.score[key].explanation) {%><span class="left"><%= scale.score[key].explanation %></span><% } %>
             </td>
         </tr>
       <% } else { %>
