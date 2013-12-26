@@ -23,8 +23,8 @@ class TrailResource(ModelResource):
     total_ascent = fields.CharField(attribute='get_total_ascent', readonly=True, use_in="detail")
     total_descent = fields.CharField(attribute='get_total_descent', readonly=True, use_in="detail")
     height_profile = fields.DictField(attribute='get_height_profile', readonly=True, use_in="detail")
-    uxc_rating = fields.ToOneField(UXCResource, 'uxcscale', null=True, full=True)
-    udh_rating = fields.ToOneField(UDHResource, 'udhscale', null=True, full=True)
+    uxc_rating = fields.ToOneField(UXCResource, 'uxcscale', related_name="trail", null=True, blank=True, full=True)
+    udh_rating = fields.ToOneField(UDHResource, 'udhscale', related_name="trail", null=True, blank=True, full=True)
         
     class Meta:
         queryset = Trail.objects.all()

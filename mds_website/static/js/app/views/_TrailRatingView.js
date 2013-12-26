@@ -91,7 +91,6 @@ define(['backbone',
 					}
 			var context = {trail: this.trail, mscales: this.mscales.models, scale: this.scale, values: values};
 			//FIXME: check for correctness of field names and prettify
-			//TODO: render either with track info or with scale info when scale values exist already
 			var replacements = {
 					max_difficulty: _.template('<select name="maximum_difficulty"><% _.each(mscales, function(mscale) { %> \
 				          <option value="<%= mscale.get(\'resource_uri\') %>" <% if (values["max_difficulty"] ==  mscale.get(\'resource_uri\')) print("selected"); %>>m<%= mscale.get(\'id\') %></option><% }); %>\

@@ -77,13 +77,13 @@ define(['backbone',
 			});
 			
 			$('#info_form').submit(function(){
-				var data = $(this).serializeArray();
-				console.log(data);
-				that.trail.set("name", data[0].value);
-				that.trail.set("description", data[1].value);
-				that.trail.set("type", data[2].value);
+				var fields = $(this).serializeArray();
+				$.each(fields, function(i, field){
+					that.trail.set(field.name, field.value);
+				});
 				that.save_trail();
 				that.rate_track();
+
 				return false;
 			});
 		},

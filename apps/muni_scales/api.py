@@ -82,6 +82,7 @@ scale.full_dehydrate(bundle)
     maximum_difficulty = fields.ToOneField(MscaleResource, attribute="maximum_difficulty")
     average_difficulty = fields.ToOneField(MscaleResource, attribute="average_difficulty")
     score = fields.DictField(attribute='get_score', readonly=True, use_in="detail")
+   # trail = fields.ToOneField("apps.trails.api.TrailResource", "trail", related_name="udhscale", null=True);
     
     
     class Meta:
@@ -115,7 +116,8 @@ class UXCResource(ModelResource):
     maximum_difficulty = fields.ToOneField(MscaleResource, attribute="maximum_difficulty")
     average_difficulty = fields.ToOneField(MscaleResource, attribute="average_difficulty")
     score = fields.DictField(attribute='get_score', readonly=True, use_in="detail")
-    
+   # trail = fields.ToOneField("apps.trails.api.TrailResource", "trail", related_name="uxcscale", null=True);
+     
     class Meta:
         queryset = UXCscale.objects.all()
         resource_name = 'uxc-scale'
