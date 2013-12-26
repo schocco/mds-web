@@ -58,7 +58,20 @@ define(['backbone',
 			
 			var compiledTemplate = _.template( this.tpl, {'scale': this.scale, 'labels': this.labeldict });
 			$(this.el).html(compiledTemplate);
-		}
+		},
+		
+		/**
+		 * refresh the view, using information of a new scale object
+		 */
+		update: function(scale){
+			console.log("update MtsScoreView");
+			if(!this.scale.score){
+				throw "Update Error: Need a scale object with score data";
+			}
+			var compiledTemplate = _.template( this.tpl, {'scale': this.scale, 'labels': this.labeldict });
+			$(this.el).html(compiledTemplate);
+		},	
+		
 		
 			
 	});

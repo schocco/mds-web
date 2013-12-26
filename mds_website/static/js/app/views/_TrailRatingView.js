@@ -48,22 +48,25 @@ define(['backbone',
 				that.read_trail_info();
 				that.render()
 			}			
-			//listen for changes of the scale object, and update score when it has changed
-			this.listenTo(this.scale, "score_update", this.display_score);
 		},
 		
-		/** create appropriate scale object */
+		/** create appropriate scale object and listen for scale changes */
 		read_trail_info: function(){
 			if(this.trail.get("type") == "downhill"){
 				this.type = "udh";
-				this.scale = this.trail.get("udh_rating") || new UDH();
+				// creates a new object or converts object to UDH model type
+				this.scale = new UDH(this.trail.get("udh_rating"));
 				this.form_tpl = udh_form;
 			}
 			else{
 				this.type = "uxc";
-				this.scale = this.trail.get("uxc_rating") || new UXC();
+				// creates a new object or converts object to UDH model type
+				this.scale = new UXC(this.trail.get("uxc_rating"));
 				this.form_tpl = uxc_form;
 			}
+			// listen for changes of the scale object, and update score when it has changed
+			// do not register in init method to ensure scale objects exists before listener registration
+			this.listenTo(this.scale, "score_update", this.display_score);
 		},
 		
 		/** renders the whole view. Adds either the udh or uxc form to the view. */
@@ -76,12 +79,9 @@ define(['backbone',
 					scale: this.scale
 				  }
 			this.scoreView = new ScoreView(options);
+			//TODO: do not make editable when data is present or user is unauthorized to edit
 			this.make_editable();
-//			var compiledForm = _.template(this.form_tpl, {trail: this.trail, mscales: this.mscales.models});
-//			$('#form_container').html(compiledForm);
-			this.set_up_form();
-			
-			
+			this.set_up_form();	
 		},
 		
 		/** replaces table cells with form fields to allow editing the rating. */
@@ -98,7 +98,7 @@ define(['backbone',
 					avg_difficulty: _.template('<select name="average_difficulty"><% _.each(mscales, function(mscale) { %> \
 					          <option value="<%= mscale.get(\'resource_uri\') %>">m<%= mscale.get(\'id\') %></option><% }); %>\
 					        </select>', {trail: this.trail, mscales: this.mscales.models}),
-					average_slope: _.template('<input type="number" name="average_slope" value="<%= Math.round(trail.get(\'avg_slope\')) %>"/>', context),
+					average_slope: "bla"//_.template('<input type="number" name="average_slope" value="<%= Math.round(trail.get(\'avg_slope\')) %>"/>', context),
 			}; //contains udh and uxc fields
 			
 			for (var key in replacements) {
@@ -141,7 +141,7 @@ define(['backbone',
 			//make sure form values are stored in scale obj
 			this.form_change_handler(null, this.scale);
 			if(this.scale.isValid()){
-				this.scale.get_score();
+				this.scale.get_score(); //triggers an update event
 			} else{
 				console.log("cannot get score, while obj isn't valid");
 				console.log("Errors are:" + this.scale.validationError);
@@ -159,8 +159,8 @@ define(['backbone',
 								type: this.type,
 								scale: this.scale
 							  }
-				//TODO: use update method instead of recreating view
-				this.scoreView = new ScoreView(options);
+				this.scoreView.update(this.scale);
+				this.make_editable(); //TODO: should not be called after saving the object in the backend
 			}
 		},
 		
@@ -170,6 +170,7 @@ define(['backbone',
 		form_change_handler: function(field, scale){
 			var fields = $('#scale_form').serializeArray();
 			var that = this;
+
 			$.each(fields, function(i, field){
 				scale.set(field.name, field.value);
 			});

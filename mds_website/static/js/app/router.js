@@ -1,7 +1,7 @@
 define(['backbone',
         'views/TrailListView',
         'views/TrailDetailView',
-        'views/TrailRatingView',
+        'views/_TrailRatingView',
         'views/TrailUploadView',
         ], function(Backbone, TrailListView, TrailDetailView, TrailRatingView, TrailUploadView){
 			// Navigation via router events

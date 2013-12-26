@@ -1,7 +1,7 @@
 define(['backbone',
         'models/TrailModel',
         'views/_MapView',
-        'views/TrailRatingView',
+        'views/_TrailRatingView',
         'underscore',
         'text!templates/trail_upload.html',
         'jquery',
