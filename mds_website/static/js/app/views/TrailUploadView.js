@@ -94,7 +94,6 @@ define(['backbone',
 			this.trail.save({},{
 			    wait:true,
 			    success:function(model, response) {
-			        console.log('Successfully saved!');
 			        that.rate_track();
 			    },
 			    error: function(model, error) {
