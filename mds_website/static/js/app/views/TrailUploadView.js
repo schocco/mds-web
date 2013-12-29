@@ -1,13 +1,13 @@
 define(['backbone',
         'models/TrailModel',
         'views/_MapView',
-        'views/_TrailRatingView',
+        'views/TrailDetailView',
         'underscore',
         'text!templates/trail_upload.html',
         'jquery',
         'openlayers',
         'jquery_form'],
-		function(Backbone, Trail, MapView, RatingView, _, tpl, $, OpenLayers){
+		function(Backbone, Trail, MapView, TrailDetailView, _, tpl, $, OpenLayers){
 	
 	var TrailUploadView = Backbone.View.extend({
 		el: '#content',		
@@ -82,8 +82,6 @@ define(['backbone',
 					that.trail.set(field.name, field.value);
 				});
 				that.save_trail();
-				that.rate_track();
-
 				return false;
 			});
 		},
@@ -92,7 +90,18 @@ define(['backbone',
 		/** save details in trail object and save it on the server. */
 		save_trail: function(){
 			//TODO: validate first
-			this.trail.save();
+			var that = this;
+			this.trail.save({},{
+			    wait:true,
+			    success:function(model, response) {
+			        console.log('Successfully saved!');
+			        that.rate_track();
+			    },
+			    error: function(model, error) {
+			        console.log(model.toJSON());
+			        console.log('error.responseText');
+			    }
+			});
 		},
 		
 		/** update map */
@@ -105,8 +114,8 @@ define(['backbone',
 		rate_track: function(){
 			console.log("rate trail");
 			// destroy this view and pass the trail object to the next view?
-			view = new RatingView(this.trail);
-			this.remove();
+			view = new TrailDetailView({id: this.trail.id});
+			//this.remove();
 		}
 			
 	});

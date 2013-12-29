@@ -25,10 +25,12 @@ class TrailResource(ModelResource):
     height_profile = fields.DictField(attribute='get_height_profile', readonly=True, use_in="detail")
     uxc_rating = fields.ToOneField(UXCResource, 'uxcscale', related_name="trail", null=True, blank=True, full=True)
     udh_rating = fields.ToOneField(UDHResource, 'udhscale', related_name="trail", null=True, blank=True, full=True)
+
         
     class Meta:
         queryset = Trail.objects.all()
         resource_name = 'trails'
+        always_return_data = True
         #TODO: proper permission checks
         authentication = Authentication()
         authorization = Authorization()

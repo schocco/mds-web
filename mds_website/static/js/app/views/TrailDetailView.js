@@ -18,9 +18,16 @@ define(['backbone',
 		    	console.log("fetched trail");
 		        that.render();
 		    }
-		    that.id = options.id;
-		    that.trail = new Trail({id: that.id});
-		    that.trail.fetch({success: onDataHandler});
+		    if(options.id){
+			    that.id = options.id;
+			    that.trail = new Trail({id: that.id});
+			    that.trail.fetch({success: onDataHandler});	
+		    } else if(options.trail){
+		    	that.trail = new Trail(options.trail);
+		    	that.render();
+		    } else{
+		    	throw "missing argument, need either id or trail"
+		    }
 		},
 		
 		/**
