@@ -55,10 +55,13 @@ define(['backbone',
 				// creates a new object or converts object to UDH model type
 				this.scale = new UDH(this.trail.get("udh_rating"));
 			}
-			else{
+			else if(this.trail.get("type") == "xc"){
 				this.type = "uxc";
 				// creates a new object or converts object to UDH model type
 				this.scale = new UXC(this.trail.get("uxc_rating"));
+			} else {
+				console.log("Unknown type");
+				this.scale = {};
 			}
 			// listen for changes of the scale object, and update score when it has changed
 			// do not register in init method to ensure scale objects exists before listener registration
@@ -84,9 +87,10 @@ define(['backbone',
 		make_editable: function(){
 			var values = { // use scale values and fallback to trail values
 					max_difficulty: this.scale.get('maximum_difficulty'),
-					length: this.scale.get('total_length') || this.trail.get('length'),
+					length: this.scale.get('total_length') || this.trail.get('length').m,
 					total_ascent: this.scale.get('total_ascent') || this.trail.get('total_ascent'),
 					max_slope: this.scale.get('max_slope_uh') || this.trail.get('max_slope'),
+					avg_slope: this.scale.get('avg_slope') || this.trail.get('avg_slope'),
 					avg_difficulty: this.scale.get('average_difficulty')
 					}
 			var context = {trail: this.trail, mscales: this.mscales.models, scale: this.scale, values: values};
@@ -101,7 +105,7 @@ define(['backbone',
 					avg_difficulty: _.template('<select name="average_difficulty"><% _.each(mscales, function(mscale) { %> \
 					          <option value="<%= mscale.get(\'resource_uri\') %>" <% if (values["avg_difficulty"] ==  mscale.get(\'resource_uri\')) print("selected"); %>>m<%= mscale.get(\'id\') %></option><% }); %>\
 					        </select>', context),
-					average_slope: "bla"//_.template('<input type="number" name="average_slope" value="<%= Math.round(trail.get(\'avg_slope\')) %>"/>', context),
+					avg_slope: _.template('<input type="number" name="average_slope" value="<%= Math.round(trail.get(\'avg_slope\')) %>"/>', context),
 			}; //contains udh and uxc fields
 			
 			for (var key in replacements) {

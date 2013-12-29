@@ -25,7 +25,7 @@ class Trail(models.Model):
     edited = models.DateTimeField(_('last change'), auto_now=True, blank=True)
     description = models.CharField(_('description'), max_length=500, blank=True)
     waypoints = MultiLineStringField(_('waypoints'), dim=3, null=True, blank=True) #include altitude as Z
-    length = models.IntegerField(_('length'), help_text=_("in meters"), blank=True, null=True)
+    trail_length = models.IntegerField(_('length'), help_text=_("in meters"), blank=True, null=True)
     objects = GeoManager()
     # user
     # comments[]
@@ -61,7 +61,7 @@ class Trail(models.Model):
         '''
         if(self.has_waypoints() and self.waypoints[0].z is not None):
             #last point in last linestring - first point in first linestring
-            return self.waypoints[-1].z[-1] - self.waypoints[0].z[0]
+            return self.waypoints[0].z[0] - self.waypoints[-1].z[-1]
         return 0
     
     def _get_altitude_sections(self):
@@ -82,7 +82,7 @@ class Trail(models.Model):
             for altitude in ls.z[idx.next():]:
                 start = dest
                 dest = altitude
-                altitudes.append(dest-start)
+                altitudes.append(start-dest)
         return altitudes
     
     def _get_length_sections(self):
@@ -105,9 +105,10 @@ class Trail(models.Model):
     
     def _flat_z(self):
         zs = []
-        if self.has_waypoints():
-            for ls in self.waypoints:
-                zs = zs + ls.z
+        if not self.has_waypoints() or self.waypoints[0].z is None:
+            return zs
+        for ls in self.waypoints:
+            zs = zs + ls.z
         return zs
     
     def _get_slope_sections(self):

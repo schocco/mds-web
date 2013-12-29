@@ -11,10 +11,24 @@ define(['models/BaseModel', 'underscore', 'jquery'],
 		
 		/** retrieve the score for the current values without saving the object. */
 		get_score: function(){
-			//TODO: ajax request to get the calculated value for this object
-			var url = this.urlRoot + "/score"
-			var score = {};
-			return score;
+			var uri = this.urlRoot + "/calculate/";
+			result = {};
+			var that = this;
+			var jqxhr = $.post(uri, this.attributes,
+				function(data) { 
+					that.score = data;
+					console.log("Updated score for " + that);
+					that.trigger("score_update");
+				})
+				.fail(function(data) {
+					console.log("updating score for " + that + "failed");
+					that.trigger("score_update", data);
+					console.log(data);
+				});
+		},
+		
+		toString: function(){
+			return "UDH Scale";
 		}
 	
 	});

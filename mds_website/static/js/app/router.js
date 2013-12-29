@@ -7,7 +7,7 @@ define(['backbone',
 			// Navigation via router events
 			var WorkspaceRouter = Backbone.Router.extend({
 				routes: {
-					"":             	"home",   
+					"home":            	"home",   
 					"udh-scale":        "udh",  
 					"uxc-scale": 		"uxc", 
 					"mts": 				"mts",
@@ -20,6 +20,7 @@ define(['backbone',
 				
 				home: function() {
 				  console.log("welcome home.");
+				  //var homeView = new HomeView();
 				},
 				
 				udh: function() {
