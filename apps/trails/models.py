@@ -27,6 +27,8 @@ class Trail(models.Model):
     waypoints = MultiLineStringField(_('waypoints'), dim=3, null=True, blank=True) #include altitude as Z
     trail_length = models.IntegerField(_('length'), help_text=_("in meters"), blank=True, null=True)
     objects = GeoManager()
+    #TODO: store original GPX
+    #TODO: store simplified track when track has many waypoints
     # user
     # comments[]
     # country
@@ -61,7 +63,7 @@ class Trail(models.Model):
         '''
         if(self.has_waypoints() and self.waypoints[0].z is not None):
             #last point in last linestring - first point in first linestring
-            return self.waypoints[0].z[0] - self.waypoints[-1].z[-1]
+            return self.waypoints[-1].z[-1] - self.waypoints[0].z[0]
         return 0
     
     def _get_altitude_sections(self):
@@ -90,6 +92,7 @@ class Trail(models.Model):
         :return: a list of distances in meters with
         one element for each pair of consequent waypoints
         '''
+        #FIXME: causes too many operations with big tracks
         if not self.has_waypoints():
             return []
         length_sections = []
@@ -181,6 +184,7 @@ class Trail(models.Model):
         :param str unit: unit to be returned (either "m" or "km")
         :return: the length in `unit`
         '''
+        #FIXME: use length information of postgis backend
         logger.debug("get length")
         if(self.has_waypoints()):
             lengths = self._get_length_sections()
@@ -286,5 +290,5 @@ class Trail(models.Model):
         replace z values with data from 3rd party provider
         as specified in source
         '''
-        #TODO
+        #TODO: use an SRTM api to look up (inexact) altitude information
         raise NotImplementedError("not possible yet.")
