@@ -1,4 +1,7 @@
+from bisect import bisect
+from django.contrib.gis.geos.point import Point
 import math
+
 
 def haversine(origin, destination):
     '''
@@ -43,4 +46,69 @@ def radius_for_lat(lat):
     div = (minr * math.cos(lat))**2 + (maxr * math.sin(lat))**2
     rlat = math.sqrt(d/div)
     return rlat
+
+
+class RasterRow:
+    
+    def __init__(self):
+        self.length_degree = 0
+        self.length_meters = 0
+        self.length_degree_cum = 0
+        self.length_meters_cum = 0
+        self.altitude = 0
+
+class RasterMap:
+    '''
+    Class to calculate information about a trail object.
+    '''
+    def __init__(self, trail):
+        self.linestring = trail.waypoints[0]
+        self.length = trail.waypoints.length
+        self.length_m = trail.trail_length
+        self.rasterRows = []
+        self.distances = [] #4th dimension of linestring with cumulative distance to the start point
+        
+        self.build()
+        self.raster()
+        
+    def build(self):
+        #calculate distance at each point in the linestring
+        b = Point(self.linestring[0])
+        distance_cum = 0
+        for p in self.linestring:
+            a = b
+            b = Point(p)
+            distance = a.distance(b)
+            distance_cum += distance
+            self.distances.append(distance_cum)
+            
+    def raster(self, steps=1000):
+        '''
+        Divide a track into equally long sections and get the altitude at each point.
+        According to the MDS document a section is a part of the track of 5-20 meters.
+        '''
+        #TODO: sections must not be shorter than 5m to avoid weird values such as
+        # slopes of several 1000 %
+        for step in range(steps):
+            row = RasterRow()
+            row.length_degree = self.length / steps
+            row.length_degree_cum = row.length_degree * step
+            row.length_meters = self.length_m / steps
+            row.length_meters_cum = row.length_meters * step
+            if(row.length_degree_cum in self.distances):
+                row.altitude = self.linestring[self.distances.index(row.length_degree_cum)][2]
+            else:
+                # get index of element closest to the needed value
+                right_idx = bisect(self.distances, row.length_degree_cum)
+                # distances[i] is lower than the value, so i+1 is the right neighbour
+                left_idx = right_idx - 1
+                # now interpolate
+                h0 = self.linestring[left_idx][2]
+                h1 = self.linestring[right_idx][2]
+                x0 = self.distances[left_idx]
+                x1 = self.distances[right_idx]
+                row.altitude = h0 + (h1-h0)/(x1-x0) * (row.length_degree_cum - x0)
+            self.rasterRows.append(row)
+
+        
                 

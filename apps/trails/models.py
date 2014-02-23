@@ -1,11 +1,15 @@
-from apps.trails.gis_math import haversine
 from django.contrib.gis.db.models.fields import LineStringField, \
     MultiLineStringField
 from django.contrib.gis.db.models.manager import GeoManager
 from django.db import models
+from django.db.models.signals import pre_save, post_save
+from django.dispatch.dispatcher import receiver
 from django.utils.translation import ugettext_lazy as _
-
 import logging
+
+from apps.trails.gis_math import haversine, RasterMap
+
+
 logger = logging.getLogger(__name__)
 
 TRAIL_TYPE_CHOICES = (
@@ -14,6 +18,9 @@ TRAIL_TYPE_CHOICES = (
                       ("downhill", _("downhill")),
                       ("xc", _("cross country")),                      
                       )
+
+# trails with more points will be simplified for calculation
+LENGTH_THRESHOLD = 500
 
 class Trail(models.Model):
     '''
@@ -27,8 +34,6 @@ class Trail(models.Model):
     waypoints = MultiLineStringField(_('waypoints'), dim=3, null=True, blank=True) #include altitude as Z
     trail_length = models.IntegerField(_('length'), help_text=_("in meters"), blank=True, null=True)
     objects = GeoManager()
-    #TODO: store original GPX
-    #TODO: store simplified track when track has many waypoints
     # user
     # comments[]
     # country
@@ -283,12 +288,54 @@ class Trail(models.Model):
                           'labels': labels,
                           'values': values}
         return height_profile
+    
+    def get_height_profile2(self, scale_steps=35):
+        rm = RasterMap(self)
+        values =  []
+        labels = []
+        zs = self._flat_z()
+        min_height = round(min(zs),1)
+        max_height = round(max(zs),1)
+        
+        nth_el = len(rm.rasterRows)/scale_steps
+        
+        # always use the first and last element, but only use every nth element in between
+        rows = [rm.rasterRows[0]] #first element
+        rows += rm.rasterRows[nth_el:-1:nth_el] #nth elements
+        rows.append(rm.rasterRows[-1]) #last element
+
+        for row in rows:
+            distance = round(float(row.length_meters_cum)/1000,1)
+            labels.append('%.1f km' % distance)
+            values.append(row.altitude)
+        
+        
+            
+        height_profile = {'max_height': max_height,
+                          'min_height': min_height,
+                          'labels': labels,
+                          'values': values}
+        return height_profile
         
     
-    def fetch_altitude_info(self, datasource="OSM"):
+    def fetch_altitude_info(self, datasource="SRTM"):
         '''
         replace z values with data from 3rd party provider
         as specified in source
         '''
         #TODO: use an SRTM api to look up (inexact) altitude information
         raise NotImplementedError("not possible yet.")
+
+
+@receiver(post_save, sender=Trail)
+def length_handler(sender, **kwargs):
+    '''
+    retrieves the calculated distance from the DB 
+    backend and stores it in the trail_length field for faster access.
+    '''
+    instance = kwargs.pop('instance')
+    if(instance.trail_length is None):
+        trail_length = Trail.objects.defer('waypoints', 'description', 'name').length().get(pk=instance.pk).length
+        instance.trail_length = trail_length.m
+        instance.save()
+    

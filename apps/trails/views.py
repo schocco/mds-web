@@ -1,7 +1,10 @@
-from apps.trails.load import GPXReader
+from django.contrib.gis.geos import MultiLineString
 from django.http import HttpResponse
 import os
 import tempfile
+
+from apps.trails.load import GPXReader
+
 
 #TODO: auhtorization
 def load_gpx(request):
@@ -9,7 +12,7 @@ def load_gpx(request):
         gpx_file = request.FILES['gpx']
         ls = None
         # return object serialized to whatever is specified using tastypie functions
-        if(gpx_file.name.endswith(".gpx") or gpx_file.name.endswith(".xml")
+        if(gpx_file.name.lower().endswith(".gpx") or gpx_file.name.lower().endswith(".xml")
            and gpx_file.size < 10000):        
             filehandle, tmpath = tempfile.mkstemp(suffix=".gpx")
             with open(tmpath, 'wb+') as destination:
@@ -19,10 +22,9 @@ def load_gpx(request):
             ls = GPXReader(tmpath)
             # clean up
             os.remove(tmpath)      
-        return HttpResponse(ls.to_linestring().geojson)
-    else:
-        # raise http error
-        return HttpResponse(300)
+            return HttpResponse(MultiLineString(ls.to_linestring().simplify(tolerance=0.00002)).geojson)
+    # raise http error
+    return HttpResponse(300)
     
 #def user_detail(request, username):
 #    ur = UserResource()

@@ -40,7 +40,9 @@ class DistanceField(fields.DictField):
 class TrailResource(ModelResource):
     '''
     API resource which includes dynamically calculated values as readonly
-    fields. Fields are only visible in detail view to avoid high computation overhead.
+    fields. Some fields are only visible in detail view to avoid high computation overhead.
+    
+    The length attribute is added through the query interface with a call to length().
     '''
     altitude_difference = fields.CharField(attribute='get_altitude_difference', readonly=True)
     length = DistanceField(attribute='length', readonly=True, units=("m", "km", "ft", "mi", "yd"), null=True, blank=True)
@@ -48,7 +50,7 @@ class TrailResource(ModelResource):
     avg_slope = fields.CharField(attribute='get_avg_slope', readonly=True, use_in="detail")
     total_ascent = fields.CharField(attribute='get_total_ascent', readonly=True, use_in="detail")
     total_descent = fields.CharField(attribute='get_total_descent', readonly=True, use_in="detail")
-    height_profile = fields.DictField(attribute='get_height_profile', readonly=True, use_in="detail")
+    height_profile = fields.DictField(attribute='get_height_profile2', readonly=True, use_in="detail")
     uxc_rating = fields.ToOneField(UXCResource, 'uxcscale', related_name="trail", null=True, blank=True, full=True)
     udh_rating = fields.ToOneField(UDHResource, 'udhscale', related_name="trail", null=True, blank=True, full=True)
 
