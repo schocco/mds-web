@@ -56,17 +56,20 @@ class RasterRow:
         self.length_degree_cum = 0
         self.length_meters_cum = 0
         self.altitude = 0
+        self.slope = 0
+
 
 class RasterMap:
     '''
-    Class to calculate information about a trail object.
+    Class to calculate approximated information about a trail object.
     '''
     def __init__(self, trail):
         self.linestring = trail.waypoints[0]
         self.length = trail.waypoints.length
-        self.length_m = trail.trail_length
+        self.length_m = trail.trail_length or 0
         self.rasterRows = []
         self.distances = [] #4th dimension of linestring with cumulative distance to the start point
+        
         
         self.build()
         self.raster()
@@ -82,14 +85,28 @@ class RasterMap:
             distance_cum += distance
             self.distances.append(distance_cum)
             
-    def raster(self, steps=1000):
+    def raster(self):
         '''
         Divide a track into equally long sections and get the altitude at each point.
         According to the MDS document a section is a part of the track of 5-20 meters.
         '''
+        # the size of the segments should be chosen so that the calculation effort is not too cpu intensive
+        steps = 0
+        if self.length_m <= 1000:
+            #5m is the minimum section length according to the mds document
+            steps = self.length_m/5
+        elif self.length_m > 30000:
+            #50m segments for tracks longer than 30km
+            steps = self.length_m/50
+        elif self.length_m > 1000:
+            # use 20m segments for tracks between 1 and 30km
+            steps = self.length_m/20
+        
+        row = None
         #TODO: sections must not be shorter than 5m to avoid weird values such as
         # slopes of several 1000 %
         for step in range(steps):
+            prev_row = row
             row = RasterRow()
             row.length_degree = self.length / steps
             row.length_degree_cum = row.length_degree * step
@@ -102,6 +119,7 @@ class RasterMap:
                 right_idx = bisect(self.distances, row.length_degree_cum)
                 # distances[i] is lower than the value, so i+1 is the right neighbour
                 left_idx = right_idx - 1
+                # the right index can be out of range
                 # now interpolate
                 h0 = self.linestring[left_idx][2]
                 h1 = self.linestring[right_idx][2]
@@ -109,6 +127,5 @@ class RasterMap:
                 x1 = self.distances[right_idx]
                 row.altitude = h0 + (h1-h0)/(x1-x0) * (row.length_degree_cum - x0)
             self.rasterRows.append(row)
-
-        
-                
+            if(prev_row is not None and row.length_meters != 0):
+                row.slope = float((row.altitude - prev_row.altitude)/row.length_meters)

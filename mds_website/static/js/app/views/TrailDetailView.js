@@ -79,7 +79,10 @@ define(['backbone',
 					scaleStepWidth : Math.round((profile.max_height - profile.min_height + 10)) / 10,
 					scaleStartValue : Math.round(10* profile.min_height - 5)/10,
 					pointDot : false,
-					scaleLabel : "<%=value%> m"
+					scaleLabel : "<%=value%> m",
+					scaleLineColor : "rgba(0,0,0,.3)",
+					scaleGridLineColor : "rgba(0,0,0,.15)",
+					bezierCurve : false,
 				};
 			var myNewChart = new Chart(ctx).Line(data, options);
 		},

@@ -47,10 +47,10 @@ define(['backbone',
 			var trail = new OpenLayers.Layer.Vector("Trail");
 			var waypoints = new OpenLayers.Layer.Vector("Waypoints");
 			trail.style = {strokeColor:"#0500bd", strokeWidth:3};
+			
 			// get all linestrings from multilinestring
 			for (var k = 0; k < coordinates.length; k++) {
 				ls = coordinates[k]
-				console.log("create linestring #" + k);
 				for (var i = 0; i < ls.length; i++) {
 					points[i] = new OpenLayers.Geometry.Point(ls[i][0], ls[i][1]);
 				}

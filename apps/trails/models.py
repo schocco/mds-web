@@ -165,6 +165,19 @@ class Trail(models.Model):
         elif(uh):
             return max(sections)
         
+    def get_max_slope_uh(self):
+        #return self.get_max_slope(uh=True)
+        rm = RasterMap(self)
+        slopes = [row.slope for row in rm.rasterRows]
+        return 100 * max(slopes)
+    
+    def get_max_slope_dh(self):
+        #return -1 * self.get_max_slope(dh=True)
+        rm = RasterMap(self)
+        slopes = [row.slope for row in rm.rasterRows]
+        return -100 * min(slopes)
+        
+        
     def get_avg_slope(self):
         '''
         Calculates the average slope by dividing total altitude difference
