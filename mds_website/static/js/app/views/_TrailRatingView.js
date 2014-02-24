@@ -89,12 +89,11 @@ define(['backbone',
 					max_difficulty: this.scale.get('maximum_difficulty'),
 					length: this.scale.get('total_length') || this.trail.get('length').m,
 					total_ascent: this.scale.get('total_ascent') || this.trail.get('total_ascent'),
-					max_slope: this.scale.get('max_slope_uh') || this.trail.get('max_slope'),
+					max_slope: this.scale.get('maximum_slope_uh') || this.trail.get('max_slope_uh'),
 					avg_slope: this.scale.get('avg_slope') || this.trail.get('avg_slope'),
 					avg_difficulty: this.scale.get('average_difficulty')
 					}
 			var context = {trail: this.trail, mscales: this.mscales.models, scale: this.scale, values: values};
-			//FIXME: check for correctness of field names and prettify
 			var replacements = {
 					max_difficulty: _.template('<select name="maximum_difficulty"><% _.each(mscales, function(mscale) { %> \
 				          <option value="<%= mscale.get(\'resource_uri\') %>" <% if (values["max_difficulty"] ==  mscale.get(\'resource_uri\')) print("selected"); %>>m<%= mscale.get(\'id\') %></option><% }); %>\
@@ -203,6 +202,7 @@ define(['backbone',
 			var fields = $('#scale_form').serializeArray();
 			var that = this;
 
+			// the field names need to match the scale attribute names!
 			$.each(fields, function(i, field){
 				scale.set(field.name, field.value);
 			});

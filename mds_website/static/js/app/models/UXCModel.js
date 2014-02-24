@@ -22,11 +22,11 @@ define(['models/BaseModel', 'underscore', 'jquery'],
 				errors[errors.length] = "Average difficulty must be set";
 			}
 			//slope must be a number
-			if(_.isEmpty(maxDiff) || !_.isNumber(parseFloat(attrs.total_length)) || isNaN(parseFloat(attrs.total_length))){
+			if(_.isEmpty(attrs.maximum_slope_uh) || !_.isNumber(parseFloat(attrs.maximum_slope_uh)) || isNaN(parseFloat(attrs.maximum_slope_uh))){
 				errors[errors.length] = "Maximum slope (uphill) must be a number";
 			}
 			//total ascent must be a number
-			if(_.isEmpty(maxDiff) || !_.isNumber(parseFloat(attrs.total_length)) || isNaN(parseFloat(attrs.total_length))){
+			if(_.isEmpty(attrs.total_ascent) || !_.isNumber(parseFloat(attrs.total_ascent)) || isNaN(parseFloat(attrs.total_ascent))){
 				errors[errors.length] = "Total ascent must be a number";
 			}
 			if(errors.length > 0){
