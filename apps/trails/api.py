@@ -52,7 +52,7 @@ class TrailResource(ModelResource):
     avg_slope = fields.CharField(attribute='get_avg_slope', readonly=True, use_in="detail")
     total_ascent = fields.CharField(attribute='get_total_ascent', readonly=True, use_in="detail")
     total_descent = fields.CharField(attribute='get_total_descent', readonly=True, use_in="detail")
-    height_profile = fields.DictField(attribute='get_height_profile2', readonly=True, use_in="detail")
+    height_profile = fields.DictField(attribute='get_height_profile', readonly=True, use_in="detail")
     uxc_rating = fields.ToOneField(UXCResource, 'uxcscale', related_name="trail", null=True, blank=True, full=True)
     udh_rating = fields.ToOneField(UDHResource, 'udhscale', related_name="trail", null=True, blank=True, full=True)
 

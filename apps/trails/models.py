@@ -19,9 +19,6 @@ TRAIL_TYPE_CHOICES = (
                       ("xc", _("cross country")),                      
                       )
 
-# trails with more points will be simplified for calculation
-LENGTH_THRESHOLD = 500
-
 class Trail(models.Model):
     '''
     Representation of a muni track.
@@ -45,6 +42,7 @@ class Trail(models.Model):
     
     def _generator(self):
         '''
+        @deprecated: no longer needed
         Yields 1 once, and then 0 for all subsequent calls.
         
         This can be used for loops where the first element in the first linestring
@@ -73,7 +71,7 @@ class Trail(models.Model):
     
     def _get_altitude_sections(self):
         '''
-        returns a list of altitude differences with
+        :return: a list of altitude differences with
         one element for each pair of consequent waypoints.
         
         A positive number means, that the end point is higher than the start point.
@@ -94,6 +92,7 @@ class Trail(models.Model):
     
     def _get_length_sections(self):
         '''
+        @deprecated: should no longer be used.
         :return: a list of distances in meters with
         one element for each pair of consequent waypoints
         '''
@@ -121,6 +120,7 @@ class Trail(models.Model):
     
     def _get_slope_sections(self):
         '''
+        @deprecated: shoul dno longer be used
         returns a list of slopes with
         one element for each pair of consequent waypoints.
         
@@ -143,6 +143,7 @@ class Trail(models.Model):
     
     def get_max_slope(self, dh=None, uh=None):
         '''
+        @deprecated: should no longer be used
         Calculates the slope in % for each pair of waypoints and returns
         the highest slope found.
         By default returns the maximum slope, be it uphill (positive number) or downhill (negative number).
@@ -187,31 +188,9 @@ class Trail(models.Model):
         '''
         logger.debug("get avg slope")
         if(self.has_waypoints()):
-            return (self.get_altitude_difference() / self.get_length(unit="m")) * 100 # in %
+            return (self.get_altitude_difference() / self.trail_length) * 100 # in %
         return 0
         
-     
-    def get_length(self, unit="m"):
-        '''
-        Calculates the length of the track by measuring distances between
-        each pair of waypoints.
-        
-        Uses the Haversine Formula,
-        see http://www.movable-type.co.uk/scripts/gis-faq-5.1.html
-        
-        :param str unit: unit to be returned (either "m" or "km")
-        :return: the length in `unit`
-        '''
-        #FIXME: use length information of postgis backend
-        logger.debug("get length")
-        if(self.has_waypoints()):
-            lengths = self._get_length_sections()
-            if unit == "km":
-                return sum(lengths)/1000
-            if unit == "m":
-                return sum(lengths)
-            else: raise ValueError("Only m or km are allowed.")
-        return 0
         
     def get_total_ascent(self):
         '''
@@ -239,70 +218,23 @@ class Trail(models.Model):
                 total += alt
         return abs(total)
     
-    def get_height_at(self, meter):
+    def get_min_height(self):
         '''
-        :param int meter: distance from the start point of the track in meters
-        
-        Return the approximate height at a given position of a track.
-        Interpolates nearest waypoints to get the height in meters.
+        :return: the lowest position of the track
         '''
-        lengths = self._get_length_sections()
-        # it is necessary to get a flat list of all z values
-        # to look up values that correspond to length sections
         zs = self._flat_z()
-        # transform to cumulative lengths
-        total = 0
-        prev_total = 0
-        for idx, section in enumerate(lengths):
-            prev_total = total
-            total += section
-            lengths[idx] = int(total)
-            # return z value of matching point if present
-            if meter == int(total):
-                return zs[idx]
-            if meter > prev_total and meter < total:
-                h0 = zs[idx-1]
-                h1 = zs[idx]
-                m0 = prev_total
-                m1 = total                
-                result = float(meter - m0) / (m1 - m0) * (h1 - h0) + h0
-                return result
-            
-    
-    def get_height_profile(self, scale_steps=20):
-        '''
-        :param int scale_steps: specifies how many 
-        
-        Creates a dictionary which contains height information
-        along a dynamically set scale of distance points.
-        Height for each point is calculated via interpolation using the nearest 2
-        waypoints.
-        '''
-        logger.debug("get height profile")
-        
-        zs = self._flat_z()
-        min_height = round(min(zs),1)
-        max_height = round(max(zs),1)
-        length = self.get_length(unit="km")
+        return round(min(zs),1)
 
-        step = length / scale_steps
-        labels = ['0 km']
-        values = [round(zs[0],1)]
-        total = 0
-        for i in range(scale_steps-2):
-            total += step
-            labels.append('%.1f km' % total)
-            values.append(round(self.get_height_at(total*1000),1)) # total in meters
-        labels.append('%.1f km' % length)
-        values.append(round(zs[-1],1))
         
-        height_profile = {'max_height': max_height,
-                          'min_height': min_height,
-                          'labels': labels,
-                          'values': values}
-        return height_profile
+    def get_max_height(self):
+        '''
+        :return: the highest position of the track
+        '''
+        zs = self._flat_z()
+        return round(max(zs),1)
+           
     
-    def get_height_profile2(self, scale_steps=35):
+    def get_height_profile(self, scale_steps=35):
         rm = RasterMap(self)
         values =  []
         labels = []
