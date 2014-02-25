@@ -31,6 +31,9 @@ class Mscale(object):
         
     def __unicode__(self):
         return force_unicode("M%s" % self.number or u'M')
+    
+    def __str__(self):
+        return str(self.__unicode__())
 
     def __eq__(self, other):
         if isinstance(other, Mscale):

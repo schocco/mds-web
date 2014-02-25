@@ -1,20 +1,55 @@
 # -*- coding: utf-8 -*-
+
 from django.conf.urls import url
-from django.http.response import HttpResponse
 from tastypie import fields
+from tastypie.authentication import Authentication
 from tastypie.authorization import Authorization
 from tastypie.bundle import Bundle
-from tastypie.exceptions import ImmediateHttpResponse, BadRequest
+from tastypie.exceptions import ImmediateHttpResponse
 from tastypie.http import HttpBadRequest
 from tastypie.resources import Resource, ModelResource
 from tastypie.utils.mime import build_content_type
 from tastypie.validation import CleanedDataFormValidation
 
+from apps.muni_scales.fields import MscaleFieldMixin
 from apps.muni_scales.forms import UDHscaleForm, UXCscaleForm
 from apps.muni_scales.models import UDHscale, UXCscale
 from apps.muni_scales.mscale import Mscale, MSCALES
-from apps.trails.models import Trail
 
+
+
+class MscaleField(fields.ApiField, MscaleFieldMixin):
+    '''
+    A field that accepts an Mscale Resource but stores the integer value in the db.
+    '''
+    dehydrated_type = 'apps.muni_scales.mscale.Mscale'
+    help_text = 'an mscale object'
+    
+    def convert(self, value):
+        print "CONVERT CALLED"
+        if value is None:
+            return None
+        return MSCALES[float(value)]
+    
+    def hydrate(self, bundle):
+        '''
+        Prepare data before saving to the model.
+        '''
+        #check if value present
+        if bundle.data.has_key(self.instance_name):
+            value = bundle.data[self.instance_name]
+            mscale = self.to_mscale(value)
+            print mscale
+            return mscale.number
+        else:
+            return None
+    
+    def dehydrate(self, bundle):
+        '''
+        Prepare data for serialization before sending to the client.
+        '''
+        print "DEHYDRATE CALLED"
+        return self.convert(bundle.data[self.instance_name])
 
 class MscaleResource(Resource):
     '''
@@ -79,16 +114,21 @@ udh = UDHscale(**data)
 bundle = scale.build_bundle(udh)
 scale.full_dehydrate(bundle)
     '''
-    maximum_difficulty = fields.ToOneField(MscaleResource, attribute="maximum_difficulty")
-    average_difficulty = fields.ToOneField(MscaleResource, attribute="average_difficulty")
+    maximum_difficulty = MscaleField(attribute="maximum_difficulty")#fields.ToOneField(MscaleResource, attribute="maximum_difficulty")
+    average_difficulty = MscaleField(attribute="average_difficulty")#fields.ToOneField(MscaleResource, attribute="average_difficulty")
     score = fields.DictField(attribute='get_score', readonly=True, use_in="detail")
    # trail = fields.ToOneField("apps.trails.api.TrailResource", "trail", related_name="udhscale", null=True);
     
+
     
     class Meta:
         queryset = UDHscale.objects.all()
         resource_name = 'udh-scale'
         validation = CleanedDataFormValidation(form_class = UDHscaleForm)
+        always_return_data = True
+        #TODO: proper permission checks
+        authentication = Authentication()
+        authorization = Authorization()
         
     def prepend_urls(self):
         return [
@@ -113,15 +153,19 @@ class UXCResource(ModelResource):
     '''
     UXC Rating
     '''
-    maximum_difficulty = fields.ToOneField(MscaleResource, attribute="maximum_difficulty")
-    average_difficulty = fields.ToOneField(MscaleResource, attribute="average_difficulty")
+    maximum_difficulty = MscaleField(attribute="maximum_difficulty")
+    average_difficulty = MscaleField(attribute="average_difficulty")
     score = fields.DictField(attribute='get_score', readonly=True, use_in="detail")
    # trail = fields.ToOneField("apps.trails.api.TrailResource", "trail", related_name="uxcscale", null=True);
      
     class Meta:
         queryset = UXCscale.objects.all()
         resource_name = 'uxc-scale'
+        always_return_data = True
         validation = CleanedDataFormValidation(form_class = UXCscaleForm)
+        #TODO: proper permission checks
+      #  authentication = Authentication()
+        authorization = Authorization()
     
     #FIXME: duplicate code, refactor!
     def prepend_urls(self):

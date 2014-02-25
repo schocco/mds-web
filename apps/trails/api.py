@@ -19,7 +19,7 @@ class DistanceField(fields.DictField):
 
     def __init__(self, *args, **kwargs):
         '''
-        Like ApiField constructor, but takes additional keyword argument "units".
+        Like DictField constructor, but takes additional keyword argument "units".
         :param units: a list or tuple with units to be included in the object.
                       Supported units are listed at https://docs.djangoproject.com/en/dev/ref/contrib/gis/measure/
         '''

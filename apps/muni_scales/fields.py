@@ -15,7 +15,28 @@ class MscaleFormField(forms.fields.DecimalField):
         widget = Select(choices = MSCALE_CHOICES)
         super(MscaleFormField, self).__init__(*args, widget=widget, **kwargs)
 
-class MscaleField(DecimalField):
+
+class MscaleFieldMixin(object):
+    '''
+    Mixin for the conversion to mscale objects
+    from other representation forms.
+    '''
+    def to_mscale(self, value):
+        ''':returns: value as an Mscale object'''
+        if isinstance(value, list) and len(value) == 1:
+            value = value[0]
+        if isinstance(value, Mscale) or value is None:
+            return value
+        if isinstance(value, (str, unicode)):
+            value = unicode(value.upper().strip("M"))
+            value = float(value)
+        if isinstance(value, (float, int, Decimal)):
+            value = float(value)
+        else:
+            raise ValueError("Got unexpected format %r" % value)
+        return MSCALES.get(value)
+
+class MscaleField(DecimalField, MscaleFieldMixin):
     ''''
     M scale, describing the difficultiy of a single muni trail section.
     '''
@@ -32,18 +53,7 @@ class MscaleField(DecimalField):
         
     def to_python(self, value):
         ''':returns: value as an Mscale object'''
-        if isinstance(value, list) and len(value) == 1:
-            value = value[0]
-        if isinstance(value, Mscale) or value is None:
-            return value
-        if isinstance(value, (str, unicode)):
-            value = unicode(value.upper().strip("M"))
-            value = float(value)
-        if isinstance(value, (float, int, Decimal)):
-            value = float(value)
-        else:
-            raise ValueError("Got unexpected format %r" % value)
-        return MSCALES.get(value)
+        return self.to_mscale(value)
     
     def get_db_prep_save(self, value, connection):
         '''
