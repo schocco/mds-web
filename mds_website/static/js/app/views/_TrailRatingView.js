@@ -96,13 +96,13 @@ define(['backbone',
 			var context = {trail: this.trail, mscales: this.mscales.models, scale: this.scale, values: values};
 			var replacements = {
 					max_difficulty: _.template('<select name="maximum_difficulty"><% _.each(mscales, function(mscale) { %> \
-				          <option value="<%= mscale.get(\'resource_uri\') %>" <% if (values["max_difficulty"] ==  mscale.get(\'resource_uri\')) print("selected"); %>>m<%= mscale.get(\'id\') %></option><% }); %>\
+				          <option value="<%= mscale.get(\'id\') %>" <% if (values["max_difficulty"] ==  mscale.get(\'id\')) print("selected"); %>>m<%= mscale.get(\'id\') %></option><% }); %>\
 				        </select>', context),
 					total_length: _.template('<input type="number" name="total_length" value="<%= Math.round(values["length"]) %>"/>', context),
 					total_ascent: _.template('<input type="number" name="total_ascent" value="<%= Math.round(values["total_ascent"]) %>"/>', context),
 					max_slope: _.template('<input type="number" name="maximum_slope_uh" value="<%= Math.round(values["max_slope"]) %>"/>', context),
 					avg_difficulty: _.template('<select name="average_difficulty"><% _.each(mscales, function(mscale) { %> \
-					          <option value="<%= mscale.get(\'resource_uri\') %>" <% if (values["avg_difficulty"] ==  mscale.get(\'resource_uri\')) print("selected"); %>>m<%= mscale.get(\'id\') %></option><% }); %>\
+					          <option value="<%= mscale.get(\'id\') %>" <% if (values["avg_difficulty"] ==  mscale.get(\'id\')) print("selected"); %>>m<%= mscale.get(\'id\') %></option><% }); %>\
 					        </select>', context),
 					avg_slope: _.template('<input type="number" name="average_slope" value="<%= Math.round(trail.get(\'avg_slope\')) %>"/>', context),
 			}; //contains udh and uxc fields
@@ -133,7 +133,7 @@ define(['backbone',
 			//form submission
 			$('#scale_form').submit(function(evt){
 				evt.preventDefault();
-				that.save_rating();
+				that.save_score();
 			});
 		},
 		
@@ -148,7 +148,7 @@ define(['backbone',
 		},
 		
 		/** 
-		 * Trigger an ajax request to get the score of the scale object.
+		 * Triggers an ajax request to get the score of the scale object.
 		 * The scale object triggers an event
 		 * when it is done fetching the score.
 		 **/
@@ -164,6 +164,15 @@ define(['backbone',
 				this.show_form_errors(this.scale.validationError);
 			}
 
+		},
+		
+		/***
+		 * Persists the current values of the scale in the backend.
+		 * Makes the form non-editable.
+		 */
+		save_score: function(){
+			//TODO: add error handling and success handler.
+			this.scale.save();
 		},
 		
 		show_form_errors: function(errors){
