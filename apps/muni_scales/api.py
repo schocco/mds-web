@@ -29,7 +29,7 @@ class MscaleField(fields.ApiField, MscaleFieldMixin):
         print "CONVERT CALLED"
         if value is None:
             return None
-        return MSCALES[float(value)]
+        return self.to_mscale(value)
     
     def hydrate(self, bundle):
         '''
@@ -44,12 +44,14 @@ class MscaleField(fields.ApiField, MscaleFieldMixin):
         else:
             return None
     
-    def dehydrate(self, bundle):
+    def dehydrate(self, bundle, **kwargs):
         '''
         Prepare data for serialization before sending to the client.
         '''
         print "DEHYDRATE CALLED"
-        return self.convert(bundle.data[self.instance_name])
+        print self.instance_name
+        print bundle.data.has_key(self.instance_name)
+        return self.convert(1)
 
 class MscaleResource(Resource):
     '''
@@ -117,7 +119,7 @@ scale.full_dehydrate(bundle)
     maximum_difficulty = MscaleField(attribute="maximum_difficulty")#fields.ToOneField(MscaleResource, attribute="maximum_difficulty")
     average_difficulty = MscaleField(attribute="average_difficulty")#fields.ToOneField(MscaleResource, attribute="average_difficulty")
     score = fields.DictField(attribute='get_score', readonly=True, use_in="detail")
-   # trail = fields.ToOneField("apps.trails.api.TrailResource", "trail", related_name="udhscale", null=True);
+    trail = fields.ToOneField("apps.trails.api.TrailResource", "trail", related_name="udhscale", null=True);
     
 
     
@@ -156,7 +158,7 @@ class UXCResource(ModelResource):
     maximum_difficulty = MscaleField(attribute="maximum_difficulty")
     average_difficulty = MscaleField(attribute="average_difficulty")
     score = fields.DictField(attribute='get_score', readonly=True, use_in="detail")
-   # trail = fields.ToOneField("apps.trails.api.TrailResource", "trail", related_name="uxcscale", null=True);
+    trail = fields.ToOneField("apps.trails.api.TrailResource", "trail", related_name="uxcscale", null=True);
      
     class Meta:
         queryset = UXCscale.objects.all()

@@ -172,6 +172,8 @@ define(['backbone',
 		 */
 		save_score: function(){
 			//TODO: add error handling and success handler.
+			//make sure the object is assigned to the current trail
+			this.scale.set({"trail": this.trail.url()});
 			this.scale.save();
 		},
 		

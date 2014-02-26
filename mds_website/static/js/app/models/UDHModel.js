@@ -3,7 +3,7 @@ define(['models/BaseModel', 'underscore', 'jquery'],
 	var UDH = BaseModel.extend({
 
 		prefix: "#/udh-scale/",
-		urlRoot: "api/v1/udh-scale",
+		urlRoot: "/api/v1/udh-scale",
 		
 		validate: function(attributes, options){
 			//TODO: validation logic

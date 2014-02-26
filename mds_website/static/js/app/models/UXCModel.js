@@ -3,7 +3,7 @@ define(['models/BaseModel', 'underscore', 'jquery'],
 	var UXC = BaseModel.extend({
 		
 		prefix: "#/uxc-scale/",
-		urlRoot: "api/v1/uxc-scale",
+		urlRoot: "/api/v1/uxc-scale",
 		
 		validate: function(attrs, options){
 			errors = new Array();
