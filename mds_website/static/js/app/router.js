@@ -61,8 +61,14 @@ define(['backbone',
 			});//end router
 			
 			var initialize = function(){
-				var app_router = new WorkspaceRouter;
+				var appRouter = new WorkspaceRouter;
 				Backbone.history.start();
+				// add navigate method to views for easy access
+				Backbone.View.prototype.goTo = function (loc) {
+					appRouter.navigate(loc, true);
+				};
+
+
 			};
 			
 			return {
