@@ -87,7 +87,7 @@ class Trail(models.Model):
             for altitude in ls.z[idx.next():]:
                 start = dest
                 dest = altitude
-                altitudes.append(start-dest)
+                altitudes.append(dest-start)
         return altitudes
     
     def _get_length_sections(self):
