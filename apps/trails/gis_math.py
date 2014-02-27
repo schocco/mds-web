@@ -64,7 +64,8 @@ class RasterMap:
     Class to calculate approximated information about a trail object.
     '''
     def __init__(self, trail):
-        self.linestring = trail.waypoints[0]
+        #flatten multilinestring to linestring
+        self.linestring = [point for linestring in trail.waypoints for point in linestring]
         self.length = trail.waypoints.length
         self.length_m = trail.trail_length or 0
         self.rasterRows = []
@@ -118,13 +119,18 @@ class RasterMap:
                 right_idx = bisect(self.distances, row.length_degree_cum)
                 # distances[i] is lower than the value, so i+1 is the right neighbour
                 left_idx = right_idx - 1
-                # the right index can be out of range
-                # now interpolate
-                h0 = self.linestring[left_idx][2]
-                h1 = self.linestring[right_idx][2]
-                x0 = self.distances[left_idx]
-                x1 = self.distances[right_idx]
-                row.altitude = h0 + (h1-h0)/(x1-x0) * (row.length_degree_cum - x0)
+
+                if(right_idx >= len(self.linestring)):
+                    # the right index can be out of range
+                    # in that case we can simply use the last value instead of interpolating
+                    row.altitude = self.linestring[-1][2]
+                else:
+                    # now interpolate
+                    h0 = self.linestring[left_idx][2]
+                    h1 = self.linestring[right_idx][2]
+                    x0 = self.distances[left_idx]
+                    x1 = self.distances[right_idx]
+                    row.altitude = h0 + (h1-h0)/(x1-x0) * (row.length_degree_cum - x0)
             self.rasterRows.append(row)
             if(prev_row is not None and row.length_meters != 0):
                 row.slope = float((row.altitude - prev_row.altitude)/row.length_meters)
