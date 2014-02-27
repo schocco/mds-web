@@ -1,5 +1,6 @@
 from django.contrib.gis.geos import MultiLineString
 from django.http import HttpResponse
+from django.http.response import HttpResponseBadRequest
 import os
 import tempfile
 
@@ -24,7 +25,7 @@ def load_gpx(request):
             os.remove(tmpath)      
             return HttpResponse(MultiLineString(ls.to_linestring().simplify(tolerance=0.00002)).geojson)
     # raise http error
-    return HttpResponse(300)
+    return HttpResponseBadRequest("only gpx/xml files smaller than 10,000 bytes are allowed.")
     
 #def user_detail(request, username):
 #    ur = UserResource()
