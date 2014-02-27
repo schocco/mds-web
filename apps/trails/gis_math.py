@@ -103,9 +103,8 @@ class RasterMap:
             steps = self.length_m/20
         
         row = None
-        #TODO: sections must not be shorter than 5m to avoid weird values such as
-        # slopes of several 1000 %
-        for step in range(steps):
+
+        for step in range(int(steps)):
             prev_row = row
             row = RasterRow()
             row.length_degree = self.length / steps
