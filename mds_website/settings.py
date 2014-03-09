@@ -2,6 +2,7 @@
 # Django settings for mds_website project.
 import os
 
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -176,6 +177,7 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -260,6 +262,8 @@ LOGGING = {
         }
     }
 }
+
+
 
 # import local settings file if one exists
 # apparantly using system environments is the better solution

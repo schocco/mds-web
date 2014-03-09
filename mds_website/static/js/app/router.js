@@ -13,6 +13,7 @@ define(['backbone',
 					"mts": 				"mts",
 					"trails": 			"trails",
 					"trails/upload":	"trail_upload",
+					"trails/create":	"trail_create",
 					"trails/:id/rate":	"trail_rate",
 					"trails/:id":		"trail_detail",
 					"contact": 			"contact,"
@@ -53,6 +54,11 @@ define(['backbone',
 				trail_upload: function() {
 					console.log("trail upload");
 					var trailUpView = new TrailUploadView();
+				},
+				
+				trail_create: function() {
+					console.log("trail create");
+					//var trailCreateView = new TrailCreateView();
 				},
 				
 				contact: function() {
