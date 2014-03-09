@@ -4,7 +4,8 @@ define(['backbone',
         'collections/TrailCollection',
         'jquery_tipsy', 
         'jquery_localscroll', 
-        'jquery_uniform'
+        'jquery_uniform',
+        'jquery_modal'
 ], function(Backbone, Router, MscaleCollection, TrailCollection) {
 	var initialize = function() {		
 		// Select nav for smaller resolutions
