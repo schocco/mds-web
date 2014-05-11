@@ -1,6 +1,6 @@
 define(['backbone',
         'underscore',
-        'text!templates/auth/login.html',
+        'text!templates/auth/login_form.html',
         'jquery'
         ],
 		function(Backbone, _, tpl, $){
@@ -10,31 +10,18 @@ define(['backbone',
 		
 		
 		initialize: function (options) {
-			var that = this;
+			this.render();
 		},
 
 		
 		/** renders the whole view. */
 		render: function(){
 			console.log("render auth modal");
-			var compiledTemplate = _.template( tpl, {'trail': this.trail });
-			$(this.el).html(compiledTemplate);
+			//var compiledTemplate = _.template( tpl, {'trail': this.trail });
+			$(this.el).html(tpl);
+			// add form submission handlers			
 			
-			console.log("create hight profile");
-			this.render_height_profile();
-			
-			console.log("create map.");
-			this.render_map();
-			
-			console.log("create score/rating view");
-			this.render_score();
-			
-			// add handler to link
-			var that = this;
-			$('#rate').click(function(event){
-				event.preventDefault();
-				var rateview = new TrailRatingView({trail: that.trail});
-			});
+			$(this.el).modal();			
 		}
 			
 	});

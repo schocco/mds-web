@@ -2,11 +2,12 @@ define(['backbone',
         'router', 
         'collections/MscaleCollection',
         'collections/TrailCollection',
+        'views/auth/AuthView',
         'jquery_tipsy', 
         'jquery_localscroll', 
         'jquery_uniform',
         'jquery_modal'
-], function(Backbone, Router, MscaleCollection, TrailCollection) {
+], function(Backbone, Router, MscaleCollection, TrailCollection, AuthView) {
 	var initialize = function() {		
 		// Select nav for smaller resolutions
 		// Select menu for smaller screens
@@ -65,6 +66,9 @@ define(['backbone',
 
 		// Uniform
 		$("select, input:checkbox, input:radio, input:file").uniform();
+		
+		// render authView
+		new AuthView();
 		
 		// init router
 		Router.initialize();

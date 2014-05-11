@@ -28,4 +28,5 @@ urlpatterns = patterns('',
     url(r'^accounts/pw-reset/$', 'django.contrib.auth.views.password_reset'),
     url(r'^accounts/pw-reset-confirm/$', 'django.contrib.auth.views.password_reset_confirm'),
     url(r'^accounts/pw-reset-complete/$', 'django.contrib.auth.views.password_reset_complete'),
+    url('', include('social.apps.django_app.urls', namespace='social')),
 )
