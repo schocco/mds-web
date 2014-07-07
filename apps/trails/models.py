@@ -115,7 +115,7 @@ class Trail(models.Model):
         if not self.has_waypoints() or self.waypoints[0].z is None:
             return zs
         for ls in self.waypoints:
-            zs = zs.append(ls.z)
+            zs = zs + list(ls.z)
         return zs
     
     def _get_slope_sections(self):
