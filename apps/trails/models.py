@@ -242,7 +242,7 @@ class Trail(models.Model):
         min_height = round(min(zs),1)
         max_height = round(max(zs),1)
         
-        nth_el = len(rm.rasterRows)/scale_steps
+        nth_el = len(rm.rasterRows)/scale_steps or 1 # must not be zero, default to one
         
         # always use the first and last element, but only use every nth element in between
         rows = [rm.rasterRows[0]] #first element
