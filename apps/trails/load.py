@@ -47,7 +47,7 @@ class GPXReader(object):
     
     def to_linestring(self, layer=None):
         '''
-        Returns the waypoints/track/route as GEOS LineString. Tries
+        Returns the waypoints/track/route as GEOS MultiLineString. Tries
         to automatically detect which layer to use when no layer is provided.
         
         The following types are not handled:

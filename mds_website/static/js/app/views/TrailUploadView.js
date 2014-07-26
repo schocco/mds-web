@@ -113,7 +113,8 @@ define(['backbone',
 		rate_track: function(){
 			console.log("rate trail");
 			// destroy this view and pass the trail object to the next view?
-			view = new TrailDetailView({id: this.trail.id});
+			//view = new TrailDetailView({id: this.trail.id});
+			this.goTo(this.trail.get_url())
 			//this.remove();
 		}
 			

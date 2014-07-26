@@ -13,6 +13,7 @@ define(['backbone',
 					"mts": 				"mts",
 					"trails": 			"trails",
 					"trails/upload":	"trail_upload",
+					"trails/create":	"trail_create",
 					"trails/:id/rate":	"trail_rate",
 					"trails/:id":		"trail_detail",
 					"contact": 			"contact,"
@@ -55,14 +56,25 @@ define(['backbone',
 					var trailUpView = new TrailUploadView();
 				},
 				
+				trail_create: function() {
+					console.log("trail create");
+					//var trailCreateView = new TrailCreateView();
+				},
+				
 				contact: function() {
 					console.log("contact");
 				}
 			});//end router
 			
 			var initialize = function(){
-				var app_router = new WorkspaceRouter;
+				var appRouter = new WorkspaceRouter;
 				Backbone.history.start();
+				// add navigate method to views for easy access
+				Backbone.View.prototype.goTo = function (loc) {
+					appRouter.navigate(loc, true);
+				};
+
+
 			};
 			
 			return {

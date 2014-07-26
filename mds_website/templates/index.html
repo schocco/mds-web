@@ -1,4 +1,5 @@
 {% load compressed %}
+{% load url from future %}
 {% load static from staticfiles %}
 <!doctype html>
 
@@ -55,6 +56,9 @@
 
 <!-- wrapper -->
 <section class="boxed">
+
+    <!-- auth modal -->
+    <section id="auth" class="modal"></section>
 
 	<!-- main -->
 	<section id="main">
@@ -123,7 +127,8 @@
 		<!-- footer -->
 		<footer class="one_full">
 			<p class="small muted">A project by <a href="//is_gr8.com">Rocco Schulz</a> and the <a href="//iufinc.org">IUF</a>. Design based on the <a href="http://workless.ikreativ.com/">Workless</a> framework</p>
-		    <p class="small muted"><a href="#help">help</a></p>
+		    <a href="/accounts/login" rel="modal:open">log in</a>
+		    <div id="authStatus"></div>
 		</footer>
 		<!-- /footer -->
 

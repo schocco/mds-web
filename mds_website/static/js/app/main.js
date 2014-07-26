@@ -12,6 +12,7 @@ require.config({
 		jquery_uniform: '../jquery/jquery.uniform',
 		jquery_localscroll: '../jquery/jquery.localscroll-1.2.7-min',
 		jquery_scrollto: '../jquery/jquery.scrollTo-1.4.3.1-min',
+		jquery_modal: '../jquery/jquery.modal.min',
 		prettify: '../prettify',
 		openlayers: '../openlayers/OpenLayers'
 	},
@@ -39,7 +40,8 @@ require.config({
 	        'jquery_uniform': ['jquery'],
 	        'jquery_form': ['jquery'],
 	        'jquery_localscroll': ['jquery'],
-	        'jquery_scrollto': ['jquery']
+	        'jquery_scrollto': ['jquery'],
+	        'jquery_modal': ['jquery']
 	    }
 });
 

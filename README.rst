@@ -28,8 +28,19 @@ Requirements
 ************
 
 - Python packages as listed in requirements.txt (created via PIP)
-- PostGIS instance
+- PostGIS instance (see geodjango documentation for setup instructions)
 - GDAL
+- yui-compressor for minification of static files
+
+Deployment
+**********
+
+- install the requirements
+- clone the code
+- create a settings_local.py file and run ``python manage.py syncdb``
+- use e.g. mod_wsgi to point to the wsgi file
+- collect the static files via ``python manage.py collectstatic``
+
 
 
 References

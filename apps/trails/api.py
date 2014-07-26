@@ -19,7 +19,7 @@ class DistanceField(fields.DictField):
 
     def __init__(self, *args, **kwargs):
         '''
-        Like ApiField constructor, but takes additional keyword argument "units".
+        Like DictField constructor, but takes additional keyword argument "units".
         :param units: a list or tuple with units to be included in the object.
                       Supported units are listed at https://docs.djangoproject.com/en/dev/ref/contrib/gis/measure/
         '''
@@ -40,11 +40,15 @@ class DistanceField(fields.DictField):
 class TrailResource(ModelResource):
     '''
     API resource which includes dynamically calculated values as readonly
-    fields. Fields are only visible in detail view to avoid high computation overhead.
+    fields. Some fields are only visible in detail view to avoid high computation overhead.
+    
+    The length attribute is added through the query interface with a call to length().
     '''
     altitude_difference = fields.CharField(attribute='get_altitude_difference', readonly=True)
     length = DistanceField(attribute='length', readonly=True, units=("m", "km", "ft", "mi", "yd"), null=True, blank=True)
     max_slope = fields.CharField(attribute='get_max_slope', readonly=True, use_in="detail")
+    max_slope_uh = fields.CharField(attribute='get_max_slope_uh', readonly=True, use_in="detail")
+    max_slope_dh = fields.CharField(attribute='get_max_slope_dh', readonly=True, use_in="detail")
     avg_slope = fields.CharField(attribute='get_avg_slope', readonly=True, use_in="detail")
     total_ascent = fields.CharField(attribute='get_total_ascent', readonly=True, use_in="detail")
     total_descent = fields.CharField(attribute='get_total_descent', readonly=True, use_in="detail")

@@ -56,6 +56,7 @@ define(['backbone',
 			
 			var compiledTemplate = _.template( this.tpl, {'scale': this.scale, 'labels': this.labeldict });
 			$(this.el).html(compiledTemplate);
+			this.draw_score_chart();
 		},
 		
 		/**
@@ -68,7 +69,43 @@ define(['backbone',
 			}
 			var compiledTemplate = _.template( this.tpl, {'scale': this.scale, 'labels': this.labeldict });
 			$(this.el).html(compiledTemplate);
+			this.draw_score_chart();
 		},	
+		
+		/**
+		 * Draw a radar chart representation of the score.
+		 */
+		draw_score_chart: function(){
+			var options = {//scaleShowLabels : true,
+					//datasetStroke : false,
+					scaleLineColor : "rgba(0,0,0,.15)",
+					//scaleOverride : true,
+					//scaleStepWidth : 1,
+					//scaleSteps : 10
+					};
+			var data = {
+					labels : ["Max Slope UH","Total Ascent","Avg. MDS","Max. MDS","Length"],
+					datasets : [
+						{
+							fillColor : "rgba(220,120,220,0.2)",
+							strokeColor : "rgba(220,220,220,1)",
+							pointColor : "rgba(220,220,220,1)",
+							pointStrokeColor : "#fff",
+							data : [20,20,38,40,35]
+						},
+						{
+							fillColor : "rgba(151,187,205,0.2)",
+							strokeColor : "rgba(151,187,205,1)",
+							pointColor : "rgba(151,187,205,1)",
+							pointStrokeColor : "#fff",
+							data : [15,70,50,50,18]
+						}
+					]
+				}
+			var ctx = document.getElementById("score_chart").getContext("2d");
+			new Chart(ctx).Radar(data,options);
+			
+		}
 		
 		
 			
