@@ -22,7 +22,7 @@ define(['backbone'],
 					that.trigger("score_update", data);
 					console.log(data);
 				});
-		},
+		}
 	
 	});
 	return BaseModel;

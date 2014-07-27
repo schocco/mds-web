@@ -19,6 +19,7 @@ define(['backbone',
 		        that.render();
 		    }
 		    if(options.id){
+		    	//TODO: use trail from cached collection
 			    that.id = options.id;
 			    that.trail = new Trail({id: that.id});
 			    that.trail.fetch({success: onDataHandler});	

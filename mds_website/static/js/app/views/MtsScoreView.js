@@ -78,26 +78,24 @@ define(['backbone',
 			var options = {//scaleShowLabels : true,
 					//datasetStroke : false,
 					scaleLineColor : "rgba(0,0,0,.15)",
-					//scaleOverride : true,
-					//scaleStepWidth : 1,
-					//scaleSteps : 10
+					scaleOverride : true,
+					scaleStepWidth : 1,
+					scaleSteps : 10
 					};
+			var score = this.scale.get("score");
+			var scoreData = [score['avg_slope'].result,
+			                 score['avg_difficulty'].result,
+			                 score['max_difficulty'].result,
+			                 score['total_length'].result];
 			var data = {
-					labels : ["Max Slope UH","Total Ascent","Avg. MDS","Max. MDS","Length"],
+					labels : ["Avg Slope","Avg Difficulty","Max Difficulty","Length"],
 					datasets : [
-						{
-							fillColor : "rgba(220,120,220,0.2)",
-							strokeColor : "rgba(220,220,220,1)",
-							pointColor : "rgba(220,220,220,1)",
-							pointStrokeColor : "#fff",
-							data : [20,20,38,40,35]
-						},
 						{
 							fillColor : "rgba(151,187,205,0.2)",
 							strokeColor : "rgba(151,187,205,1)",
 							pointColor : "rgba(151,187,205,1)",
 							pointStrokeColor : "#fff",
-							data : [15,70,50,50,18]
+							data : scoreData
 						}
 					]
 				}

@@ -120,7 +120,7 @@ scale.full_dehydrate(bundle)
     average_difficulty = MscaleField(attribute="average_difficulty")#fields.ToOneField(MscaleResource, attribute="average_difficulty")
     score = fields.DictField(attribute='get_score', readonly=True, use_in="detail")
     trail = fields.ToOneField("apps.trails.api.TrailResource", "trail", related_name="udhscale", null=True);
-    
+    #TODO: add relative score information (percentage of maximum)    
 
     
     class Meta:

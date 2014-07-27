@@ -21,8 +21,9 @@ define(['backbone',
 		        that.render();
 		    }
 			that.trail = new Trail();
+			//the datahandler is only called when the collection is fetched the first time.
 			that.collection = cache.get('TrailsCollection', TrailCollection, { success : onDataHandler });
-			//that.render();
+			that.render();
    
 		    
 		},
@@ -120,10 +121,7 @@ define(['backbone',
 		/** proceed to next view to allow creating UXC or UDH object and link it to this track. */
 		rate_track: function(){
 			console.log("rate trail");
-			// destroy this view and pass the trail object to the next view?
-			//view = new TrailDetailView({id: this.trail.id});
 			this.goTo(this.trail.get_url())
-			//this.remove();
 		}
 			
 	});
