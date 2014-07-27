@@ -1,5 +1,7 @@
 define(['backbone',
         'models/TrailModel',
+        'collections/TrailCollection',
+        'cache',
         'views/_MapView',
         'views/TrailDetailView',
         'underscore',
@@ -7,15 +9,20 @@ define(['backbone',
         'jquery',
         'openlayers',
         'jquery_form'],
-		function(Backbone, Trail, MapView, TrailDetailView, _, tpl, $, OpenLayers){
+		function(Backbone, Trail, TrailCollection, cache, MapView, TrailDetailView, _, tpl, $, OpenLayers){
 	
 	var TrailUploadView = Backbone.View.extend({
 		el: '#content',		
 		
 		initialize: function () {
 			var that = this;
+		    var onDataHandler = function(collection) {
+		    	console.log("fetched data.");
+		        that.render();
+		    }
 			that.trail = new Trail();
-			that.render();
+			that.collection = cache.get('TrailsCollection', TrailCollection, { success : onDataHandler });
+			//that.render();
    
 		    
 		},
@@ -91,8 +98,9 @@ define(['backbone',
 		save_trail: function(){
 			//TODO: validate first
 			var that = this;
-			this.trail.save({},{
-			    wait:true,
+			//this.trail.save({},{
+			that.collection.create(this.trail, {
+				wait:true,
 			    success:function(model, response) {
 			        that.rate_track();
 			    },
