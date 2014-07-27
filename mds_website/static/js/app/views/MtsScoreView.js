@@ -29,11 +29,10 @@ define(['backbone',
 		initialize: function(options) {
 			console.log(options);
 			this.type = options.type;
-			//this.score = options.score;
 			this.el = $(options.parent);
 			this.scale = options.scale;
 			this.tpl = tpl;
-			if(this.scale.score){
+			if(this.scale.get("score")){
 				console.log("no score yet!");
 			}
 			if(this.type.toLowerCase() == "udh"){
@@ -50,8 +49,8 @@ define(['backbone',
 		render: function(){
 			// render tpl with options object
 			console.log("render MtsScoreView");
-			if(!this.scale.score){
-				this.scale.score = this.labeldict;
+			if(!this.scale.get("score")){
+				this.scale.set("score", this.labeldict);
 			}
 			
 			var compiledTemplate = _.template( this.tpl, {'scale': this.scale, 'labels': this.labeldict });
@@ -64,7 +63,7 @@ define(['backbone',
 		 */
 		update: function(scale){
 			console.log("update MtsScoreView");
-			if(!this.scale.score){
+			if(!this.scale.get("score")){
 				throw "Update Error: Need a scale object with score data";
 			}
 			var compiledTemplate = _.template( this.tpl, {'scale': this.scale, 'labels': this.labeldict });

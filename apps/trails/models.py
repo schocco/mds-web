@@ -16,7 +16,7 @@ TRAIL_TYPE_CHOICES = (
                       ("unknown", _("unknown")),
                       ("uphill", _("uphill")),
                       ("downhill", _("downhill")),
-                      ("xc", _("cross country")),                      
+                      ("xc", _("cross country")),                
                       )
 
 class Trail(models.Model):

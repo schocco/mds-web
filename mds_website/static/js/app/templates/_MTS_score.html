@@ -16,15 +16,15 @@
      <% if ( ctr < length ){ %>
         <tr>
             <td><%= labels[key] || key %></td>
-            <td id="<%= key %>"><%= scale.score[key].value %></td>
+            <td id="<%= key %>"><%= scale.get('score')[key].value %></td>
             <td style="text-align:right;" class="tooltip">
-                <%= scale.score[key].result %> <% if(scale.score[key].explanation) {%><span class="left"><%= scale.score[key].explanation %></span><% } %>
+                <%= scale.get('score')[key].result %> <% if(scale.get('score')[key].explanation) {%><span class="left"><%= scale.get('score')[key].explanation %></span><% } %>
             </td>
         </tr>
       <% } else { %>
         <tr>
         <td colspan=2><%= labels[key] || key %></td>
-        <td style="text-align:right; font-weight: 600;"><%= scale.score[key] || "" %></td>
+        <td style="text-align:right; font-weight: 600;"><%= scale.get('score')[key] || "" %></td>
         </tr>
       <% } %>
       <% ctr = ctr + 1 %>

@@ -78,13 +78,17 @@ define(['backbone',
 					scale: this.scale
 				  }
 			this.scoreView = new ScoreView(options);
-			//TODO: do not make editable when data is present or user is unauthorized to edit
 			this.make_editable();
 			this.set_up_form();	
 		},
 		
 		/** replaces table cells with form fields to allow editing the rating. */
 		make_editable: function(){
+			//TODO: do not make editable when data is present or user is unauthorized to edit
+			if(this.scale.get("id")){
+				console.log("Do not make table editable, its already got a scale object");
+				return;
+			}
 			//WARNING: naming is inconsistent. The scale has different names than the trail. This should be unified, alternatively
 			// constants should be used.
 			var values = { // use scale values and fallback to trail values
