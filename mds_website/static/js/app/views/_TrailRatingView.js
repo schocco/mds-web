@@ -200,12 +200,13 @@ define(['backbone',
 		display_score: function(error){
 			if(error){
 				console.error(error);
+				//TODO display meaningful errors to user
 			} else {
 				var options = {	parent: "#rating_div",
 								type: this.type,
 								scale: this.scale
 							  }
-				this.scoreView.update(this.scale);
+				this.scoreView.update(options);//this.scale);
 				this.make_editable(); //TODO: should not be called after saving the object in the backend
 				// need to bind change events after re-rendering:
 				this.set_up_form_fields();

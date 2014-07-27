@@ -32,9 +32,7 @@ define(['backbone',
 			this.el = $(options.parent);
 			this.scale = options.scale;
 			this.tpl = tpl;
-			if(this.scale.get("score")){
-				console.log("no score yet!");
-			}
+
 			if(this.type.toLowerCase() == "udh"){
 				this.labeldict = $.extend({avg_slope: "Average slope (%)"}, this.labels);
 			} else if(this.type.toLowerCase() == "uxc"){
@@ -61,8 +59,10 @@ define(['backbone',
 		/**
 		 * refresh the view, using information of a new scale object
 		 */
-		update: function(scale){
-			console.log("update MtsScoreView");
+		update: function(options){
+			console.log("update MtsScoreView with this scale object: ");
+			console.log(options.scale);
+			this.scale = options.scale;
 			if(!this.scale.get("score")){
 				throw "Update Error: Need a scale object with score data";
 			}
