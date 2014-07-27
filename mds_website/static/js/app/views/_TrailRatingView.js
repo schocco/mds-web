@@ -85,12 +85,14 @@ define(['backbone',
 		
 		/** replaces table cells with form fields to allow editing the rating. */
 		make_editable: function(){
+			//WARNING: naming is inconsistent. The scale has different names than the trail. This should be unified, alternatively
+			// constants should be used.
 			var values = { // use scale values and fallback to trail values
 					max_difficulty: this.scale.get('maximum_difficulty'),
 					length: this.scale.get('total_length') || this.trail.get('length').m,
 					total_ascent: this.scale.get('total_ascent') || this.trail.get('total_ascent'),
 					max_slope: this.scale.get('maximum_slope_uh') || this.trail.get('max_slope_uh'),
-					avg_slope: this.scale.get('avg_slope') || this.trail.get('avg_slope'),
+					avg_slope: this.scale.get('average_slope') || this.trail.get('avg_slope'),
 					avg_difficulty: this.scale.get('average_difficulty')
 					}
 			var context = {trail: this.trail, mscales: this.mscales.models, scale: this.scale, values: values};
@@ -104,7 +106,7 @@ define(['backbone',
 					avg_difficulty: _.template('<select name="average_difficulty"><% _.each(mscales, function(mscale) { %> \
 					          <option value="<%= mscale.get(\'id\') %>" <% if (values["avg_difficulty"] ==  mscale.get(\'id\')) print("selected"); %>>m<%= mscale.get(\'id\') %></option><% }); %>\
 					        </select>', context),
-					avg_slope: _.template('<input type="number" name="average_slope" value="<%= Math.round(trail.get(\'avg_slope\')) %>"/>', context),
+					avg_slope: _.template('<input type="number" name="average_slope" value="<%= Math.abs(Math.round(values["avg_slope"])) %>"/>', context),
 			}; //contains udh and uxc fields
 			
 			for (var key in replacements) {
