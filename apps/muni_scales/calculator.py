@@ -29,23 +29,23 @@ class CalcBase(object):
         '''
         # return min when value lower than first listvalue
         if(value <= lst[0]):
-            explanation = _("The value (%s) is smaller than the first interval point %s" % (value, lst[0]))
-            return explanation, CalcBase._interval_borders[0] * float(max_pts) / 10
+            explanation = _("The value (%s) is equal to or smaller than the first interval point %s" % (value, lst[0]))
+            return explanation, CalcBase._interval_borders[0] * float(max_pts) / 10, max_pts
         # return max when value higher than last listvalue
         if(value >= lst[-1]):
-            explanation = _("The value (%s) exceeds the last interval point %s" % (value, lst[-1]))
-            return explanation, CalcBase._interval_borders[-1] * float(max_pts) / 10
+            explanation = _("The value (%s) matches or exceeds the last interval point %s" % (value, lst[-1]))
+            return explanation, CalcBase._interval_borders[-1] * float(max_pts) / 10, max_pts
         if(value in lst):
             index = lst.index(value)
             explanation = _("The value (%s) matches an interval point" % value)
-            return explanation, CalcBase._interval_borders[index] * float(max_pts) / 10
+            return explanation, CalcBase._interval_borders[index] * float(max_pts) / 10, max_pts
         #otherwise calculate, using the interval borders
         p0, p1, i0, i1 = UXC.get_boundaries(value, lst, max_pts)
         result = float(p1 - p0) / (i1 - i0) * (value - i0) + p0
         result = round(result,1)
         explanation = _("The score was determined by linear interpolation. The value is in "
                         + "between %s and %s, so that the score has to be in between %s and %s" % (i0, i1, p0, p1))
-        return explanation, result
+        return explanation, result, max_pts
     
 class UDH(CalcBase):
     '''
@@ -84,24 +84,24 @@ class UDH(CalcBase):
     def get_total_length(self):
         calc = {'value': self.__total_length}
         length_km = float(self.__total_length)/1000
-        calc['explanation'], calc['result'] = UDH.get_criteria_score(length_km, UDH._total_length)
+        calc['explanation'], calc['result'], calc['max'] = UDH.get_criteria_score(length_km, UDH._total_length)
         return calc
 
     def get_avg_slope(self):
         calc = {'value': self.__avg_slope}
-        calc['explanation'], calc['result'] = UDH.get_criteria_score(self.__avg_slope, UDH._avg_slope)
+        calc['explanation'], calc['result'], calc['max'] = UDH.get_criteria_score(self.__avg_slope, UDH._avg_slope)
         return calc
 
 
     def get_max_difficulty(self):
         calc = {'value': self.__max_difficulty}
-        calc['explanation'], calc['result'] = UDH.get_criteria_score(self.__max_difficulty.number, UDH._max_difficulty)
+        calc['explanation'], calc['result'], calc['max'] = UDH.get_criteria_score(self.__max_difficulty.number, UDH._max_difficulty)
         return calc
 
 
     def get_avg_difficulty(self):
         calc = {'value': self.__avg_difficulty}
-        calc['explanation'], calc['result'] = UDH.get_criteria_score(self.__avg_difficulty.number, UDH._avg_difficulty)
+        calc['explanation'], calc['result'], calc['max'] = UDH.get_criteria_score(self.__avg_difficulty.number, UDH._avg_difficulty)
         return calc
     
     def get_total_score(self):
@@ -162,21 +162,21 @@ class UXC(CalcBase):
         length = float(self.__total_length) / 1000 #km instead of meters
         max_pts = UXC._total_length_max_pts
         calc = {'value': self.__total_length}
-        calc['explanation'], calc['result'] = UXC.get_criteria_score(length, UXC._total_length, max_pts)
+        calc['explanation'], calc['result'], calc['max'] = UXC.get_criteria_score(length, UXC._total_length, max_pts)
         return calc
 
     def get_total_ascent(self):
         ascent = float(self.__total_ascent)
         max_pts = UXC._total_ascent_max_pts
         calc = {'value': self.__total_ascent}
-        calc['explanation'], calc['result'] = UXC.get_criteria_score(ascent, UXC._total_ascent, max_pts)
+        calc['explanation'], calc['result'], calc['max'] = UXC.get_criteria_score(ascent, UXC._total_ascent, max_pts)
         return calc
 
     def get_max_slope(self):
         slope = self.__max_slope
         max_pts = UXC._max_slope_max_pts
         calc = {'value': self.__max_slope}
-        calc['explanation'], calc['result'] = UXC.get_criteria_score(slope, UXC._max_slope, max_pts)
+        calc['explanation'], calc['result'], calc['max'] = UXC.get_criteria_score(slope, UXC._max_slope, max_pts)
         return calc
 
 
@@ -184,7 +184,7 @@ class UXC(CalcBase):
         diff = self.__max_difficulty.number
         max_pts = UXC._max_difficulty_max_pts
         calc = {'value': self.__max_difficulty}
-        calc['explanation'], calc['result'] = UXC.get_criteria_score(diff, UXC._max_difficulty, max_pts)
+        calc['explanation'], calc['result'], calc['max'] = UXC.get_criteria_score(diff, UXC._max_difficulty, max_pts)
         return calc
 
 
@@ -192,7 +192,7 @@ class UXC(CalcBase):
         diff = self.__avg_difficulty.number
         max_pts = UXC._avg_difficulty_max_pts
         calc = {'value': self.__avg_difficulty}
-        calc['explanation'], calc['result'] = UXC.get_criteria_score(diff, UXC._avg_difficulty, max_pts)
+        calc['explanation'], calc['result'], calc['max'] = UXC.get_criteria_score(diff, UXC._avg_difficulty, max_pts)
         return calc
     
     def get_total_score(self):
