@@ -12,7 +12,8 @@ define(['backbone',
 		function(Backbone, Trail, TrailCollection, cache, MapView, TrailDetailView, _, tpl, $, OpenLayers){
 	
 	var TrailUploadView = Backbone.View.extend({
-		el: '#content',		
+		el: '#content',
+		msg: '#form_errors',
 		
 		initialize: function () {
 			var that = this;
@@ -65,17 +66,26 @@ define(['backbone',
 			        percent.html(percentVal);
 			    },
 				complete: function(xhr) {
-					that.trail.set({waypoints: JSON.parse(xhr.responseText)});
-					// toggle visibility
-					$('#import_div').addClass("hidden");
-					$('#info_div').removeClass('hidden');
-					that.show_map();
+					console.log(xhr);
+					if(xhr.status != 200){
+						//$("#form_errors").html(xhr.responseText);
+						//$("#form_errors").show({duration:300});
+					//	that.messageView.show(xhr.responseText);
+						that.showMessage({msg:xhr.responseText, type:"ERROR"});
+					} else {
+						that.trail.set({waypoints: JSON.parse(xhr.responseText)});
+						// toggle visibility
+						$('#import_div').addClass("hidden");
+						$('#info_div').removeClass('hidden');
+						that.show_map();
+					}
 				}
 			}); 
 
 			//trigger submit when upload link is clicked
 			$('#submit').click(function() {
 				$('#upload_form').submit();
+				//$("#form_errors").hide({duration:50});
 				return false;
 			});
 			
@@ -99,7 +109,6 @@ define(['backbone',
 		save_trail: function(){
 			//TODO: validate first
 			var that = this;
-			//this.trail.save({},{
 			that.collection.create(this.trail, {
 				wait:true,
 			    success:function(model, response) {

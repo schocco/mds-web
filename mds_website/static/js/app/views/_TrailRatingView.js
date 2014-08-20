@@ -89,7 +89,7 @@ define(['backbone',
 				console.log("Do not make table editable, its already got a scale object");
 				return;
 			}
-			//WARNING: naming is inconsistent. The scale has different names than the trail. This should be unified, alternatively
+			//FIXME: naming is inconsistent. The scale has different names than the trail. This should be unified, alternatively
 			// constants should be used.
 			var values = { // use scale values and fallback to trail values
 					max_difficulty: this.scale.get('maximum_difficulty'),
