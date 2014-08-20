@@ -68,10 +68,7 @@ define(['backbone',
 				complete: function(xhr) {
 					console.log(xhr);
 					if(xhr.status != 200){
-						//$("#form_errors").html(xhr.responseText);
-						//$("#form_errors").show({duration:300});
-					//	that.messageView.show(xhr.responseText);
-						that.showMessage({msg:xhr.responseText, type:"ERROR"});
+						that.showMessage({msg:xhr.responseText, type:that.ERROR});
 					} else {
 						that.trail.set({waypoints: JSON.parse(xhr.responseText)});
 						// toggle visibility
@@ -85,7 +82,7 @@ define(['backbone',
 			//trigger submit when upload link is clicked
 			$('#submit').click(function() {
 				$('#upload_form').submit();
-				//$("#form_errors").hide({duration:50});
+				that.hideMessage();
 				return false;
 			});
 			
