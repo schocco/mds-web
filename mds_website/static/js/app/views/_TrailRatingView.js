@@ -18,6 +18,7 @@ define(['backbone',
 	
 	var _TrailRatingView = Backbone.View.extend({
 		el: '#content',
+		msg: '#form_errors',
 		
 		/**
 		 * @param trail: trail obj
@@ -78,19 +79,25 @@ define(['backbone',
 					scale: this.scale
 				  }
 			this.scoreView = new ScoreView(options);
-			//TODO: do not make editable when data is present or user is unauthorized to edit
 			this.make_editable();
 			this.set_up_form();	
 		},
 		
 		/** replaces table cells with form fields to allow editing the rating. */
 		make_editable: function(){
+			//TODO: do not make editable when data is present or user is unauthorized to edit
+			if(this.scale.get("id")){
+				console.log("Do not make table editable, its already got a scale object");
+				return;
+			}
+			//FIXME: naming is inconsistent. The scale has different names than the trail. This should be unified, alternatively
+			// constants should be used.
 			var values = { // use scale values and fallback to trail values
 					max_difficulty: this.scale.get('maximum_difficulty'),
 					length: this.scale.get('total_length') || this.trail.get('length').m,
 					total_ascent: this.scale.get('total_ascent') || this.trail.get('total_ascent'),
 					max_slope: this.scale.get('maximum_slope_uh') || this.trail.get('max_slope_uh'),
-					avg_slope: this.scale.get('avg_slope') || this.trail.get('avg_slope'),
+					avg_slope: this.scale.get('average_slope') || this.trail.get('avg_slope'),
 					avg_difficulty: this.scale.get('average_difficulty')
 					}
 			var context = {trail: this.trail, mscales: this.mscales.models, scale: this.scale, values: values};
@@ -104,7 +111,7 @@ define(['backbone',
 					avg_difficulty: _.template('<select name="average_difficulty"><% _.each(mscales, function(mscale) { %> \
 					          <option value="<%= mscale.get(\'id\') %>" <% if (values["avg_difficulty"] ==  mscale.get(\'id\')) print("selected"); %>>m<%= mscale.get(\'id\') %></option><% }); %>\
 					        </select>', context),
-					avg_slope: _.template('<input type="number" name="average_slope" value="<%= Math.round(trail.get(\'avg_slope\')) %>"/>', context),
+					avg_slope: _.template('<input type="number" name="average_slope" value="<%= Math.abs(Math.round(values["avg_slope"])) %>"/>', context),
 			}; //contains udh and uxc fields
 			
 			for (var key in replacements) {
@@ -157,11 +164,13 @@ define(['backbone',
 			this.form_change_handler(null, this.scale);
 			if(this.scale.isValid()){
 				this.scale.get_score(); //triggers an update event
-				this.reset_form_errors();
+				this.hideMessage();
+				//this.reset_form_errors();
 			} else{
 				console.log("cannot get score, while obj isn't valid");
 				console.log("Errors are:" + this.scale.validationError);
-				this.show_form_errors(this.scale.validationError);
+				this.showMessage({type:this.ERROR, msg:this.scale.validationError});
+				//this.show_form_errors(this.scale.validationError);
 			}
 
 		},
@@ -177,29 +186,30 @@ define(['backbone',
 			this.scale.save();
 		},
 		
-		show_form_errors: function(errors){
-			var tpl = "<ul><% _.each(errors, function(err) { %><li><%= err %></li><% }); %></ul>";
-			var rendered = _.template(tpl, {errors: errors});
-			$("#form_errors").html(rendered);
-			$("#form_errors").show({duration:300});
-		},
+//		show_form_errors: function(errors){
+//			var tpl = "<ul><% _.each(errors, function(err) { %><li><%= err %></li><% }); %></ul>";
+//			var rendered = _.template(tpl, {errors: errors});
+//			$("#form_errors").html(rendered);
+//			$("#form_errors").show({duration:300});
+//		},
 		
-		reset_form_errors: function(){
-			$("#form_errors").html("");
-			$("#form_errors").hide({duration: 0});
-		},
+//		reset_form_errors: function(){
+//			$("#form_errors").html("");
+//			$("#form_errors").hide({duration: 0});
+//		},
 		
 		/** Callback function for the score_update event emitted by the scale object.
 		 * Displays the values of the score object */
 		display_score: function(error){
 			if(error){
 				console.error(error);
+				//TODO display meaningful errors to user
 			} else {
 				var options = {	parent: "#rating_div",
 								type: this.type,
 								scale: this.scale
 							  }
-				this.scoreView.update(this.scale);
+				this.scoreView.update(options);//this.scale);
 				this.make_editable(); //TODO: should not be called after saving the object in the backend
 				// need to bind change events after re-rendering:
 				this.set_up_form_fields();

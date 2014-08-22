@@ -29,13 +29,10 @@ define(['backbone',
 		initialize: function(options) {
 			console.log(options);
 			this.type = options.type;
-			//this.score = options.score;
 			this.el = $(options.parent);
 			this.scale = options.scale;
 			this.tpl = tpl;
-			if(this.scale.score){
-				console.log("no score yet!");
-			}
+
 			if(this.type.toLowerCase() == "udh"){
 				this.labeldict = $.extend({avg_slope: "Average slope (%)"}, this.labels);
 			} else if(this.type.toLowerCase() == "uxc"){
@@ -50,8 +47,8 @@ define(['backbone',
 		render: function(){
 			// render tpl with options object
 			console.log("render MtsScoreView");
-			if(!this.scale.score){
-				this.scale.score = this.labeldict;
+			if(!this.scale.get("score")){
+				this.scale.set("score", this.labeldict);
 			}
 			
 			var compiledTemplate = _.template( this.tpl, {'scale': this.scale, 'labels': this.labeldict });
@@ -62,9 +59,11 @@ define(['backbone',
 		/**
 		 * refresh the view, using information of a new scale object
 		 */
-		update: function(scale){
-			console.log("update MtsScoreView");
-			if(!this.scale.score){
+		update: function(options){
+			console.log("update MtsScoreView with this scale object: ");
+			console.log(options.scale);
+			this.scale = options.scale;
+			if(!this.scale.get("score")){
 				throw "Update Error: Need a scale object with score data";
 			}
 			var compiledTemplate = _.template( this.tpl, {'scale': this.scale, 'labels': this.labeldict });
@@ -79,31 +78,54 @@ define(['backbone',
 			var options = {//scaleShowLabels : true,
 					//datasetStroke : false,
 					scaleLineColor : "rgba(0,0,0,.15)",
-					//scaleOverride : true,
-					//scaleStepWidth : 1,
-					//scaleSteps : 10
+					scaleOverride : true,
+					scaleStepWidth : 1,
+					scaleSteps : 10
 					};
-			var data = {
-					labels : ["Max Slope UH","Total Ascent","Avg. MDS","Max. MDS","Length"],
-					datasets : [
-						{
-							fillColor : "rgba(220,120,220,0.2)",
-							strokeColor : "rgba(220,220,220,1)",
-							pointColor : "rgba(220,220,220,1)",
-							pointStrokeColor : "#fff",
-							data : [20,20,38,40,35]
-						},
-						{
-							fillColor : "rgba(151,187,205,0.2)",
-							strokeColor : "rgba(151,187,205,1)",
-							pointColor : "rgba(151,187,205,1)",
-							pointStrokeColor : "#fff",
-							data : [15,70,50,50,18]
-						}
-					]
-				}
-			var ctx = document.getElementById("score_chart").getContext("2d");
-			new Chart(ctx).Radar(data,options);
+			var score = this.scale.get("score");
+			
+			if(this.type == "udh"){
+				// UDH
+				var scoreData = [score['avg_slope'].result,
+				                 score['avg_difficulty'].result,
+				                 score['max_difficulty'].result,
+				                 score['total_length'].result];
+				var data = {
+						labels : ["Avg Slope","Avg Difficulty","Max Difficulty","Length"],
+						datasets : [
+							{
+								fillColor : "rgba(151,187,205,0.2)",
+								strokeColor : "rgba(151,187,205,1)",
+								pointColor : "rgba(151,187,205,1)",
+								pointStrokeColor : "#fff",
+								data : scoreData
+							}
+						]
+					}
+				var ctx = document.getElementById("score_chart").getContext("2d");
+				new Chart(ctx).Radar(data,options);
+			} else {
+				// UXC 
+				var scoreData = [score['avg_difficulty'].result/score['avg_difficulty'].max*10,
+				                 score['max_difficulty'].result/score['max_difficulty'].max*10,
+				                 score['max_slope'].result/ score['max_slope'].max*10,
+				                 score['total_ascent'].result/score['total_ascent'].max*10,
+								 score['total_length'].result/score['total_length'].max*10];
+				var data = {
+						labels : ["Avg difficulty","Max difficulty","Max slope","Total ascent", "Total length"],
+						datasets : [
+							{
+								fillColor : "rgba(151,187,205,0.2)",
+								strokeColor : "rgba(151,187,205,1)",
+								pointColor : "rgba(151,187,205,1)",
+								pointStrokeColor : "#fff",
+								data : scoreData
+							}
+						]
+					}
+				var ctx = document.getElementById("score_chart").getContext("2d");
+				new Chart(ctx).Radar(data,options);
+			}
 			
 		}
 		

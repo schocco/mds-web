@@ -47,9 +47,8 @@
 
 
 <% _.each(trails, function(trail) { %> 
-    <div class="one_third" style="height:200px;">
+    <div class="one_third" style="height:150px;">
 	    <h3><a href="/<%= trail.get_url() %>"><%= trail.get('name') %></a></h3>
 	    <p><%= trail.get('description') %><p>
-	    <p><%= trail.get('waypoints') %></p>
     </div>
 <% }); %>

@@ -9,8 +9,8 @@
 <hr>
 
 <div class="one_third">
-    <h3>Statistics</h3>
-
+    <h3>Trail Data</h3>
+	<p>Data which has been extracted from the GPS track. The rating data may differ.</p>
     <table class="table-striped nb">
     <thead>
     </thead>
@@ -21,7 +21,7 @@
         </tr>
         <tr>
             <td>Altitude Difference from start to finish</td>
-            <td><%= trail.get('altitude_difference') %> m</td>
+            <td><%= Math.round(trail.get('altitude_difference')) %> m</td>
         </tr>
         <tr>
             <td>Average Slope</td>
@@ -41,11 +41,11 @@
         </tr>
         <tr>
             <td>Total Ascent</td>
-            <td><%= trail.get('total_ascent') %> m</td>
+            <td><%= Math.round(trail.get('total_ascent')) %> m</td>
         </tr>
         <tr>
             <td>Total Descent</td>
-            <td><%= trail.get('total_descent') %> m</td>
+            <td><%= Math.round(trail.get('total_descent')) %> m</td>
         </tr>
         
     </tbody>

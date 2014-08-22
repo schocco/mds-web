@@ -1,5 +1,7 @@
 define(['backbone',
         'models/TrailModel',
+        'collections/TrailCollection',
+        'cache',
         'views/_MapView',
         'views/TrailDetailView',
         'underscore',
@@ -7,14 +9,21 @@ define(['backbone',
         'jquery',
         'openlayers',
         'jquery_form'],
-		function(Backbone, Trail, MapView, TrailDetailView, _, tpl, $, OpenLayers){
+		function(Backbone, Trail, TrailCollection, cache, MapView, TrailDetailView, _, tpl, $, OpenLayers){
 	
 	var TrailUploadView = Backbone.View.extend({
-		el: '#content',		
+		el: '#content',
+		msg: '#form_errors',
 		
 		initialize: function () {
 			var that = this;
+		    var onDataHandler = function(collection) {
+		    	console.log("fetched data.");
+		        that.render();
+		    }
 			that.trail = new Trail();
+			//the datahandler is only called when the collection is fetched the first time.
+			that.collection = cache.get('TrailsCollection', TrailCollection, { success : onDataHandler });
 			that.render();
    
 		    
@@ -57,17 +66,23 @@ define(['backbone',
 			        percent.html(percentVal);
 			    },
 				complete: function(xhr) {
-					that.trail.set({waypoints: JSON.parse(xhr.responseText)});
-					// toggle visibility
-					$('#import_div').addClass("hidden");
-					$('#info_div').removeClass('hidden');
-					that.show_map();
+					console.log(xhr);
+					if(xhr.status != 200){
+						that.showMessage({msg:xhr.responseText, type:that.ERROR});
+					} else {
+						that.trail.set({waypoints: JSON.parse(xhr.responseText)});
+						// toggle visibility
+						$('#import_div').addClass("hidden");
+						$('#info_div').removeClass('hidden');
+						that.show_map();
+					}
 				}
 			}); 
 
 			//trigger submit when upload link is clicked
 			$('#submit').click(function() {
 				$('#upload_form').submit();
+				that.hideMessage();
 				return false;
 			});
 			
@@ -91,14 +106,14 @@ define(['backbone',
 		save_trail: function(){
 			//TODO: validate first
 			var that = this;
-			this.trail.save({},{
-			    wait:true,
+			that.collection.create(this.trail, {
+				wait:true,
 			    success:function(model, response) {
 			        that.rate_track();
 			    },
 			    error: function(model, error) {
+			    	that.showMessage({type:that.ERROR,msg:"Trail could not be saved."});
 			        console.log(model.toJSON());
-			        console.log('error.responseText');
 			    }
 			});
 		},
@@ -111,11 +126,7 @@ define(['backbone',
 		
 		/** proceed to next view to allow creating UXC or UDH object and link it to this track. */
 		rate_track: function(){
-			console.log("rate trail");
-			// destroy this view and pass the trail object to the next view?
-			//view = new TrailDetailView({id: this.trail.id});
 			this.goTo(this.trail.get_url())
-			//this.remove();
 		}
 			
 	});
