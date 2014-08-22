@@ -163,7 +163,7 @@ PIPELINE_JS = {
           'js/require/require.js',
           'js/app/main.js',
         ),
-        'output_filename': 'js/app/main.js',
+        'output_filename': 'js/app/required.js',
     }
 }
 
