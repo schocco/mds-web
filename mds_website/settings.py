@@ -101,7 +101,7 @@ PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 
 PIPELINE_YUI_JS_ARGUMENTS = "--nomunge"
-
+PIPELINE_DISABLE_WRAPPER = True
 
 PIPELINE_CSS = {
     'main': {
@@ -141,7 +141,7 @@ PIPELINE_JS = {
     },
     'jquery': {
         'source_filenames': (
-          'js/jquery/jquery.js',
+          'js/jquery/jquery-1.10.2.min.js'
         ),
         'output_filename': 'js/jquery.js',
     },
