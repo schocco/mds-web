@@ -100,7 +100,7 @@ PIPELINE_YUI_BINARY = "/usr/bin/yui-compressor"
 PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 
-PIPELINE_YUI_JS_ARGUMENTS = "mangle:False"
+PIPELINE_YUI_JS_ARGUMENTS = "--nomunge"
 
 
 PIPELINE_CSS = {
