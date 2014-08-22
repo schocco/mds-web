@@ -1,5 +1,6 @@
 *.pyc
 .settings
+.pydevproject
 *~
 mds_website/settings_local.py
 /sitestatic
