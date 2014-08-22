@@ -112,8 +112,8 @@ define(['backbone',
 			        that.rate_track();
 			    },
 			    error: function(model, error) {
+			    	that.showMessage({type:that.ERROR,msg:"Trail could not be saved."});
 			        console.log(model.toJSON());
-			        console.log('error.responseText');
 			    }
 			});
 		},
@@ -126,7 +126,6 @@ define(['backbone',
 		
 		/** proceed to next view to allow creating UXC or UDH object and link it to this track. */
 		rate_track: function(){
-			console.log("rate trail");
 			this.goTo(this.trail.get_url())
 		}
 			

@@ -18,6 +18,7 @@ define(['backbone',
 	
 	var _TrailRatingView = Backbone.View.extend({
 		el: '#content',
+		msg: '#form_errors',
 		
 		/**
 		 * @param trail: trail obj
@@ -163,11 +164,13 @@ define(['backbone',
 			this.form_change_handler(null, this.scale);
 			if(this.scale.isValid()){
 				this.scale.get_score(); //triggers an update event
-				this.reset_form_errors();
+				this.hideMessage();
+				//this.reset_form_errors();
 			} else{
 				console.log("cannot get score, while obj isn't valid");
 				console.log("Errors are:" + this.scale.validationError);
-				this.show_form_errors(this.scale.validationError);
+				this.showMessage({type:this.ERROR, msg:this.scale.validationError});
+				//this.show_form_errors(this.scale.validationError);
 			}
 
 		},
@@ -183,17 +186,17 @@ define(['backbone',
 			this.scale.save();
 		},
 		
-		show_form_errors: function(errors){
-			var tpl = "<ul><% _.each(errors, function(err) { %><li><%= err %></li><% }); %></ul>";
-			var rendered = _.template(tpl, {errors: errors});
-			$("#form_errors").html(rendered);
-			$("#form_errors").show({duration:300});
-		},
+//		show_form_errors: function(errors){
+//			var tpl = "<ul><% _.each(errors, function(err) { %><li><%= err %></li><% }); %></ul>";
+//			var rendered = _.template(tpl, {errors: errors});
+//			$("#form_errors").html(rendered);
+//			$("#form_errors").show({duration:300});
+//		},
 		
-		reset_form_errors: function(){
-			$("#form_errors").html("");
-			$("#form_errors").hide({duration: 0});
-		},
+//		reset_form_errors: function(){
+//			$("#form_errors").html("");
+//			$("#form_errors").hide({duration: 0});
+//		},
 		
 		/** Callback function for the score_update event emitted by the scale object.
 		 * Displays the values of the score object */

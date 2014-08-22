@@ -86,6 +86,7 @@ class GPXReader(object):
         '''       
         lyr = self._get_layer(layer)
         objs = []
+        #FIXME: causes exception when GPS files from oruxmaps are used
         for feature_idx in range(lyr.GetFeatureCount()):
             feature = lyr.GetFeature(feature_idx)
             gdal_obj = feature.GetGeometryRef()
