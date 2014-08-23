@@ -13,7 +13,7 @@ define(['backbone',
 	
 	var TrailUploadView = Backbone.View.extend({
 		el: '#content',
-		msg: '#form_errors',
+		msg: '#upload_form_errors',
 		
 		initialize: function () {
 			var that = this;
@@ -71,9 +71,16 @@ define(['backbone',
 						that.showMessage({msg:xhr.responseText, type:that.ERROR});
 					} else {
 						that.trail.set({waypoints: JSON.parse(xhr.responseText)});
+						// get filename and prefill name field in info form
+						var path = $("#gpx").val();
+						var fileName = String(path.match(/[^\/\\]+$/));
+						fileName = fileName.slice(0, -4); //strip .gpx
+						$("#name_field").val(fileName);
 						// toggle visibility
 						$('#import_div').addClass("hidden");
 						$('#info_div').removeClass('hidden');
+						// errors will be displayed in other div (other form)
+						that.msg = '#info_form_errors';
 						that.show_map();
 					}
 				}
@@ -96,6 +103,7 @@ define(['backbone',
 				$.each(fields, function(i, field){
 					that.trail.set(field.name, field.value);
 				});
+				that.hideMessage();
 				that.save_trail();
 				return false;
 			});

@@ -151,6 +151,7 @@ PIPELINE_JS = {
           'js/require/*.js',
           'js/underscore/*.js',
           'js/*.js',
+          'js/app/main.js',
           'js/app/models/*.js',
           'js/app/collections/*.js',
           'js/app/views/*.js',
@@ -159,11 +160,11 @@ PIPELINE_JS = {
         'output_filename': 'js/main.js',
     },
     'require': {
-        'source_filenames': (
+          'source_filenames': (
           'js/require/require.js',
           'js/app/main.js',
-        ),
-        'output_filename': 'js/app/required.js',
+    ),
+    'output_filename': 'js/app/required.js',
     }
 }
 

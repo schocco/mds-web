@@ -3,7 +3,6 @@ define(['models/BaseModel'],
 	var Trail = BaseModel.extend({
 		// types allowed
 		type_choices : {
-			"unknown": "unknown",
 			"downhill": "downhill",
 			"uphill": "uphill",
 			"xc": "cross country"
@@ -11,7 +10,7 @@ define(['models/BaseModel'],
 		
 		defaults: {
 			"name":  "unnamed",
-			"type":	 "unknown",
+			"type":	 "xc",
 			"description": "-",
 		},
 		

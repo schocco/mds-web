@@ -4,7 +4,7 @@
     You can import trails that you recorded via GPS.
     Simply upload the GPX file using the form below to get started.
     </p>
-    <div id="form_errors" style="display:none;"></div>
+    <div id="upload_form_errors" style="display:none;"></div>
     <form id="upload_form" enctype="multipart/form-data" method="post" action="#/trails/upload">
 	    <div>
 	       <input type="file" class="label" name="gpx" id="gpx"/>
@@ -23,9 +23,11 @@
 <div class="one_third hidden" id="info_div">
     <h2>Trail information</h2>
     
+    <div id="info_form_errors" style="display:none;"></div>
+    
     <form id="info_form" method="post" action="#/trails/upload">
         <div>
-            <label for="name">Name</label> <input name="name" type="text"></input>
+            <label for="name">Name</label> <input name="name" id="name_field" type="text"></input>
         </div>
         <div>
             <label for="type">Track type</label>
