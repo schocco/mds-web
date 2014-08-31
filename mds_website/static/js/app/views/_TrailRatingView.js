@@ -165,12 +165,10 @@ define(['backbone',
 			if(this.scale.isValid()){
 				this.scale.get_score(); //triggers an update event
 				this.hideMessage();
-				//this.reset_form_errors();
 			} else{
 				console.log("cannot get score, while obj isn't valid");
 				console.log("Errors are:" + this.scale.validationError);
 				this.showMessage({type:this.ERROR, msg:this.scale.validationError});
-				//this.show_form_errors(this.scale.validationError);
 			}
 
 		},
@@ -186,12 +184,14 @@ define(['backbone',
 			this.scale.save(null, {
 			    success: function (model, response) {
 			        // update the score view, no longer editable
+			    	console.log("success");
+			    	that.showMessage({type:that.INFO, msg:"The score has been saved."});
 			    	that.display_score();
 			    },
 			    error: function (model, response) {
 			    	//TODO: add error handling
-			    	this.showMessage({type:that.ERROR, msg:response});
-			        console.error("error: " + response);
+			        console.error(response.responseText);
+			        that.showMessage({type:that.ERROR, msg:response.responseText});
 			    }});
 		},
 		

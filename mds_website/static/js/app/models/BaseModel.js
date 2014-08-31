@@ -10,7 +10,7 @@ define(['backbone'],
 		},
 		
 		get_url: function(){
-			return this.prefix + this.get('id');
+			return this.prefix + this.get('id') + "/";
 		}
 	
 	});
