@@ -8,7 +8,7 @@ define(['backbone'],
 		
 		/** retrieve the score for the current values without saving the object. */
 		get_score: function(){
-			var uri = this.urlRoot + "/calculate/";
+			var uri = this.urlRoot + "calculate/";
 			result = {};
 			var that = this;
 			var jqxhr = $.post(uri, this.attributes,

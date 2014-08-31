@@ -26,7 +26,7 @@ define(['models/BaseModel'],
 		},
 		
 		prefix: "#/trails/",
-		urlRoot: "/api/v1/trails"
+		urlRoot: "/api/v1/trails/"
 	
 	});
 	return Trail;

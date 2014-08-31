@@ -3,7 +3,7 @@ define(['models/BaseModel'],
 	var Mscale = BaseModel.extend({
 		
 		prefix: "#/mscales/",
-		urlRoot: "/api/v1/mscales",
+		urlRoot: "/api/v1/mscales/",
 	
 	});
 	return Mscale;

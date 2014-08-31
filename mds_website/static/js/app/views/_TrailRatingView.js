@@ -35,6 +35,7 @@ define(['backbone',
 			that.mscales = cache.get('MscaleCollection', MscaleCollection, {async:false});
 			console.log(this.mscales);
 			
+			
 		    var onDataHandler = function(model) {
 		    	that.read_trail_info();
 		        that.render();
@@ -85,7 +86,6 @@ define(['backbone',
 		
 		/** replaces table cells with form fields to allow editing the rating. */
 		make_editable: function(){
-			//TODO: do not make editable when data is present or user is unauthorized to edit
 			if(this.scale.get("id")){
 				console.log("Do not make table editable, its already got a scale object");
 				return;
@@ -180,10 +180,19 @@ define(['backbone',
 		 * Makes the form non-editable.
 		 */
 		save_score: function(){
-			//TODO: add error handling and success handler.
 			//make sure the object is assigned to the current trail
+			var that = this;
 			this.scale.set({"trail": this.trail.url()});
-			this.scale.save();
+			this.scale.save(null, {
+			    success: function (model, response) {
+			        // update the score view, no longer editable
+			    	that.display_score();
+			    },
+			    error: function (model, response) {
+			    	//TODO: add error handling
+			    	this.showMessage({type:that.ERROR, msg:response});
+			        console.error("error: " + response);
+			    }});
 		},
 		
 //		show_form_errors: function(errors){
@@ -210,7 +219,7 @@ define(['backbone',
 								scale: this.scale
 							  }
 				this.scoreView.update(options);//this.scale);
-				this.make_editable(); //TODO: should not be called after saving the object in the backend
+				this.make_editable();
 				// need to bind change events after re-rendering:
 				this.set_up_form_fields();
 			}
