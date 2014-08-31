@@ -6,22 +6,24 @@ define(['backbone',
 		function(Backbone, _, tpl, $){
 	
 	var LoginView = Backbone.View.extend({
-		el: '#auth',
-		
+		el: '#authSub',
 		
 		initialize: function (options) {
+			//TODO: try to force HTTPS
 			this.render();
 		},
 
 		
 		/** renders the whole view. */
 		render: function(){
-			console.log("render auth modal");
-			//var compiledTemplate = _.template( tpl, {'trail': this.trail });
+			console.log("render login view");
+			var that = this;
 			$(this.el).html(tpl);
-			// add form submission handlers			
-			
-			$(this.el).modal();			
+			$('#loginSubmit').click(function(e){
+				e.preventDefault();
+				console.log("login clicked.");
+				$('#loginForm').submit();
+			});
 		}
 			
 	});

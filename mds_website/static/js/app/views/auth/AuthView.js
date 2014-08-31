@@ -7,7 +7,7 @@ define(['backbone',
 		function(Backbone, _, tpl, $, LoginView){
 	
 	var AuthView = Backbone.View.extend({
-		el: '#authStatus',
+		el: '#auth',
 		
 		
 		initialize: function (options) {
@@ -25,7 +25,6 @@ define(['backbone',
 			$("#loginLink").click(function(event){
 				event.preventDefault();
 				var view = new LoginView();
-				view.render();
 			});			
 		}
 			

@@ -4,7 +4,8 @@ define(['backbone',
         'views/_TrailRatingView',
         'views/TrailUploadView',
         'views/util/MessageMixin',
-        ], function(Backbone, TrailListView, TrailDetailView, TrailRatingView, TrailUploadView, MessageMixin){
+        'views/auth/AuthView',
+        ], function(Backbone, TrailListView, TrailDetailView, TrailRatingView, TrailUploadView, MessageMixin, AuthView){
 			// Navigation via router events
 			var WorkspaceRouter = Backbone.Router.extend({
 				routes: {
@@ -71,16 +72,16 @@ define(['backbone',
 				var appRouter = new WorkspaceRouter;
 				Backbone.history.start();
 				
+				// render auth view
+				var authView = new AuthView();
+				
+				
 				// add navigate method to views for easy access
 				Backbone.View.prototype.goTo = function (loc) {
 					appRouter.navigate(loc, true);
 				};
 				
 				// add mixin for notifications
-				 var MyMixin = {
-						  foo: "bar",
-						  sayFoo: function(){alert(this.foo);}
-				}
 				_.extend(Backbone.View.prototype, MessageMixin);
 
 			};
