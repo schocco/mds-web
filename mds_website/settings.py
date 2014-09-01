@@ -237,6 +237,7 @@ INSTALLED_APPS = (
     'pipeline', #minify css and js
     'apps.muni_scales',
     'apps.trails',
+    'apps.auth',
 )
 
 # A sample logging configuration. The only tangible logging

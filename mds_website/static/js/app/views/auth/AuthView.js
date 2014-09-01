@@ -2,23 +2,37 @@ define(['backbone',
         'underscore',
         'text!templates/auth/auth.html',
         'jquery',
-        'views/auth/LoginView'
+        'views/auth/LoginView',
+        'collections/auth/UserCollection'
         ],
-		function(Backbone, _, tpl, $, LoginView){
+		function(Backbone, _, tpl, $, LoginView, UserCollection){
 	
 	var AuthView = Backbone.View.extend({
 		el: '#auth',
-		
+		loggedIn: false,
+		user: null,
 		
 		initialize: function (options) {
-			this.render();
+			var that = this;
+			
+		    var userHandler = function(collection){
+		    	that.user = collection.pop();
+		    	loggedIn: true;
+		    	that.render();
+		    };
+		    var errHandler = function(collection, resp, options){
+		    	if(resp.status == 401){
+		    		loggedIn: false;
+		    	that.render();
+		    	}
+		    };
+		    var users = new UserCollection().fetch({success: userHandler, error: errHandler});
 		},
 
 		
 		/** renders the whole view. */
 		render: function(){
-			console.log("render auth view");
-			var compiledTemplate = _.template( tpl, {'user': 'rocco' });
+			var compiledTemplate = _.template( tpl, {'user': this.user });
 			$(this.el).html(compiledTemplate);
 
 			// connect links

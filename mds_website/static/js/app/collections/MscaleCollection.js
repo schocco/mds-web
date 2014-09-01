@@ -1,14 +1,9 @@
-define(['backbone', 'models/MscaleModel'],
-		function(Backbone, Mscale){
+define(['backbone', 'models/MscaleModel', 'collections/BaseCollection'],
+		function(Backbone, Mscale, BaseCollection){
 	
-	var MscaleCollection = Backbone.Collection.extend({
+	var MscaleCollection = BaseCollection.extend({
 		model: Mscale,
-		url : "/api/v1/mscales/?format=json",
-	
-		parse: function(response) {
-			this.recent_meta = response.meta || {};
-			return response.objects || response;
-		}
+		url : "/api/v1/mscales/?format=json"
 	});
 	
 	return MscaleCollection;

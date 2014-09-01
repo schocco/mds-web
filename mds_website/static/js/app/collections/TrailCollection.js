@@ -1,14 +1,9 @@
-define(['backbone', 'models/TrailModel'],
-		function(Backbone, Trail){
+define(['backbone', 'models/TrailModel', 'collections/BaseCollection'],
+		function(Backbone, Trail, BaseCollection){
 	
-	var TrailsCollection = Backbone.Collection.extend({
+	var TrailsCollection = BaseCollection.extend({
 		model: Trail,
-		url : "/api/v1/trails/?format=json",
-	
-		parse: function(response) {
-			this.recent_meta = response.meta || {};
-			return response.objects || response;
-		}
+		url : "/api/v1/trails/?format=json"
 	});
 	
 	return TrailsCollection;

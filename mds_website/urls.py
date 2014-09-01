@@ -1,9 +1,12 @@
-from apps.muni_scales.api import MscaleResource, UDHResource, UXCResource
-from apps.trails.api import TrailResource
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.views.generic.base import TemplateView, RedirectView
 from tastypie.api import Api
+
+from apps.auth.api import SocialSignUpResource, BackendResource, UserResource
+from apps.muni_scales.api import MscaleResource, UDHResource, UXCResource
+from apps.trails.api import TrailResource
+
 
 admin.autodiscover()
 
@@ -12,6 +15,9 @@ v1_api.register(MscaleResource())
 v1_api.register(TrailResource())
 v1_api.register(UDHResource())
 v1_api.register(UXCResource())
+v1_api.register(SocialSignUpResource())
+v1_api.register(BackendResource())
+v1_api.register(UserResource())
 
 urlpatterns = patterns('',
     url(r'^$', TemplateView.as_view(template_name="index.html"), name = 'index'),
@@ -29,4 +35,5 @@ urlpatterns = patterns('',
     url(r'^accounts/pw-reset-confirm/$', 'django.contrib.auth.views.password_reset_confirm'),
     url(r'^accounts/pw-reset-complete/$', 'django.contrib.auth.views.password_reset_complete'),
     url('', include('social.apps.django_app.urls', namespace='social')),
+    url(r'^auth/social', TemplateView.as_view(template_name='social_auth.html')),
 )

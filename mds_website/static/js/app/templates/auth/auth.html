@@ -1,4 +1,9 @@
+<div class="one_full">
+<% if(user != null) { %>
+<p>You are logged in as <%= user.get('username') %></p>
+<a id="logoutLink" href="/accounts/logout">logout</a>
+<% } else { %>
 <a id="loginLink" href="/accounts/login">login</a> | 
-<a id="logoutLink" href="/accounts/logout">logout</a> |
-<a id="changePWLink" href="/accounts/pw-change">change password</a>
+<% } %>
+</div>
 <div id="authSub"></div>

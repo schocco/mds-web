@@ -1,22 +1,26 @@
-<form id="loginForm">
-	<div>
-		<label for="id_username">Username</label>
-		<input id="id_username" type="text" name="username" maxlength="254"/>
-	</div>
-	<div>
-		<label for="id_password">Password</label>
-		<input id="id_password" type="password" name="password"/>
-	</div>
-	<div>
-		<a id="loginSubmit" class="button">login</a>
-	</div>
-</form>
+<div class="one_half">
+    <h4>Login with your MDS account</h3>
+	<form id="loginForm">
+		<div>
+			<label for="id_username">Username</label>
+			<input id="id_username" type="text" name="username" maxlength="254"/>
+		</div>
+		<div>
+			<label for="id_password">Password</label>
+			<input id="id_password" type="password" name="password"/>
+		</div>
+		<div>
+			<a id="loginSubmit" class="button">login</a>
+		</div>
+	</form>
+</div>
 
-<p>Or login with another Account:</p>
-<ul>
-<li>IUF</li>
-<li>Google</li>
-<li>Twitter</li>
-<li>Yahoo</li>
-<li>Github</li>
-</ul>
+<div class="one_half">
+	<h4>Login with another account:</h3>
+	<ul>
+	<% _.each(backends, function(backend) { %> 
+	    <li><a href="<%= backend.get_url() %>"><%= backend.get('name') %></a></li>
+	<% }); %>
+	</ul>
+</div>
+
