@@ -2,8 +2,8 @@ from social.backends.oauth import BaseOAuth2
 # see http://psa.matiasaguirre.net/docs/backends/implementation.html
 
 class IUFOAuth2(BaseOAuth2):
-    """Github OAuth authentication backend"""
-    name = 'github'
+    """IUF OAuth authentication backend"""
+    name = 'iuf'
     AUTHORIZATION_URL = 'https://iufinc.org/login/oauth/authorize'
     ACCESS_TOKEN_URL = 'https://iufinc.org/login/oauth/access_token'
     SCOPE_SEPARATOR = ','
