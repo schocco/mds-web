@@ -5,7 +5,8 @@ define(['backbone',
         'views/TrailUploadView',
         'views/util/MessageMixin',
         'views/auth/AuthView',
-        ], function(Backbone, TrailListView, TrailDetailView, TrailRatingView, TrailUploadView, MessageMixin, AuthView){
+        'views/HomeView',
+        ], function(Backbone, TrailListView, TrailDetailView, TrailRatingView, TrailUploadView, MessageMixin, AuthView, HomeView){
 			// Navigation via router events
 			var WorkspaceRouter = Backbone.Router.extend({
 				routes: {
@@ -22,8 +23,7 @@ define(['backbone',
 				},
 				
 				home: function() {
-				  console.log("welcome home.");
-				  //var homeView = new HomeView();
+				  var homeView = new HomeView();
 				},
 				
 				udh: function() {
