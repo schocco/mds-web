@@ -17,7 +17,7 @@ define(['backbone',
 					"trails/upload":	"trail_upload",
 					"trails/create":	"trail_create",
 					"trails/:id/rate":	"trail_rate",
-					"trails/:id":		"trail_detail",
+					"trails/:id/":		"trail_detail",
 					"contact": 			"contact,"
 				},
 				

@@ -105,23 +105,25 @@ PIPELINE_DISABLE_WRAPPER = True
 
 PIPELINE_CSS = {
     'main': {
-        'source_filenames': (
+        'source_filenames': ( #the order of the css files matters
             'css/plugins.css',
             'css/workless.css',
             'css/typography.css',
-            'css/font.css',
             'css/forms.css',
             'css/tables.css',
             'css/buttons.css',
+            'css/backgrounds.css',
             'css/alerts.css',
-            'css/tabs.css',
             'css/pagination.css',
             'css/breadcrumbs.css',
+            'css/font.css',
             'css/helpers.css',
             'css/scaffolding.css',
             'css/print.css',
-            'css/tooltip.css',
+            'css/animations.css',
             'css/application.css',
+            'css/tooltip.css',
+            'css/responsive.css',            
         ),
         'output_filename': 'css/main.css',
     },

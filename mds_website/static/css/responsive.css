@@ -1,0 +1,147 @@
+/**
+ * Smartphones (portrait)
+ */
+nav#primary ul {
+    display: none;
+}
+
+.open {
+    display: block;
+}
+
+.one-full,
+.one-half,
+.one-third,
+.two-third,
+.one-quarter,
+.one-fifth {
+    width: 260px;
+}
+
+/**
+ * iPads (portrait)
+ */
+@media only screen and (min-width: 767px) {
+	nav#primary ul {
+	    display: none;
+	}
+
+	.open {
+	    display: block;
+	}
+
+    .one-full,
+    .one-half,
+    .one-third,
+    .two-third,
+    .one-quarter,
+    .one-fifth {
+        width: 100%;
+    }
+}
+
+/**
+ * iPads (landscape)
+ */
+@media only screen and (min-width: 1023px) {
+	nav#primary ul {
+        display: none;
+    }
+
+    .open {
+        display: block;
+    }
+
+    .one-half {
+        width: 50%;
+    }
+
+    .one-third {
+        width: 33.33333%;
+    }
+
+    .two-third {
+        width: 66.66666%;
+    }
+
+    .one-quarter {
+        width: 25%;
+    }
+
+    .one-fifth {
+        width: 20%;
+    }
+}
+
+/**
+ * Desktops
+ */
+@media only screen and (min-width: 1279px) {
+	nav#primary ul {
+	    display: inline;
+	}
+
+	.open {
+	    display: none;
+	}
+
+    .one-half {
+        width: 50%;
+    }
+
+    .one-third {
+        width: 33.33333%;
+    }
+
+    .two-third {
+        width: 66.66666%;
+    }
+
+    .one-quarter {
+        width: 25%;
+    }
+
+    .one-fifth {
+        width: 20%;
+    }
+}
+
+/**
+ * Large Desktops
+ */
+@media only screen and (min-width: 1679px) {
+	nav#primary ul {
+	    display: inline;
+	}
+
+	.open {
+	    display: none;
+	}
+
+    .one-half {
+        width: 50%;
+    }
+
+    .one-third {
+        width: 33.33333%;
+    }
+
+    .two-third {
+        width: 66.66666%;
+    }
+
+    .one-quarter {
+        width: 25%;
+    }
+
+    .one-fifth {
+        width: 20%;
+    }
+}
+/* Fix icons in IE */
+@media screen and (min-width:0\0) {
+    [class^="icon-"]:before,
+    [class*=" icon-"]:before {
+        margin-top: -500px!important;
+    }
+}

@@ -2,29 +2,22 @@
 {% load url from future %}
 {% load static from staticfiles %}
 <!doctype html>
-
 <!--[if lt IE 7]> 
 	<html class="nojs ms lt_ie7" lang="en"> 
 <![endif]-->
-
 <!--[if IE 7]>    
 	<html class="nojs ms ie7" lang="en"> 
 <![endif]-->
-
 <!--[if IE 8]>    
 	<html class="nojs ms ie8" lang="en"> 
 <![endif]-->
-
 <!--[if gt IE 8]> 
 	<html class="nojs ms" lang="en"> 
 <![endif]-->
-
 <html lang="en">
-
 <head>
-
 	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=9,chrome=1">
     <meta name="author" content="iKreativ">
 	<meta name="description" content="Workless - A classy HTML5, CSS3 framework">
 	<meta name="keywords" content="workless, classy, css, framework, jquery, bootstrap, h5bp, twitter, bolierplate, jquery, html5, ikreativ">
@@ -32,7 +25,6 @@
 	<meta name="csrf-token" content="{{csrf_token}}">
 	<!--  CSS styles -->
 	{% compressed_css 'main' %}
-	
 	<!-- Mobile Viewport -->
     <meta name="viewport" content="width=device-width">
 
@@ -47,7 +39,7 @@
     <![endif]-->
 </head>
 
-<body class="blueish" id="top">
+<body id="index">
 
 <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6 -->
 <!--[if lt IE 7]>
@@ -55,42 +47,54 @@
 <![endif]-->
 
 <!-- wrapper -->
-<section class="boxed">
+<!-- section class="boxed" -->
+
 
 	<!-- main -->
 	<section id="main">
-
-		<!-- logo -->
-		<div id="logo">
-			<a href="#">
-				<img src="{% static 'img/mds.png' %}" alt="Muni Trail Scale" />
-			</a>
-        	<small><strong>Muni Difficulty Scale</strong>: Reliably measuring muni trail difficulty since 2013</small>
-        </div>
-        <!-- /logo -->
-        
-        <!-- nav -->
+		<!-- nav -->
         <nav id="primary">
-			<ul>
-				<li><a href="#/home">Home</a></li>
-				<li><a href="#/udh-scale">Unicycle DH Scale</a></li>
-				<li><a href="#/uxc-scale">Unicycle XC Scale</a></li>
-                <li><a href="#/mts">Muni Trail Scale</a></li>
-                <li><a href="#/trails">Trails</a></li>
-			</ul>
-		</nav>
-		<!-- /nav -->
-
-		<hr>
-
-		<!-- header -->
-		<header class="bg_shadow">
-        	<h2>Muni Difficulty Scale - a tool to measure trail difficulty</h2>
-		</header>
-		<!-- /header -->
-
+            <div class="boxed">
+	            <ul id="menu-primary">
+	                <li class="workless"><a href="http://workless.ikreativ.com"><img src="{% static 'img/mds.png' %}"/></a></li>
+	                <li><a href="#/home">Home</a></li>
+	                <li><a href="#/udh-scale">Unicycle DH Scale</a></li>
+	                <li><a href="#/uxc-scale">Unicycle XC Scale</a></li>
+	                <li><a href="#/mts">Muni Trail Scale</a></li>
+	                <li><a href="#/trails">Trails</a></li>
+	            </ul>
+            </div>
+            <!-- responsive nav -->
+            <a class="open" href="#menu-primary">Menu</a>
+            <!-- /responsive nav -->
+        </nav>
+        <!-- /nav -->
 		
-		<div id="content">
+		<!-- header -->
+        <header id="header">
+            <div class="boxed textcenter">
+
+		        <!-- logo -->
+		        <div id="logo">
+		            <a href="#home" alt="Muni Trail Scale">
+		                <h1 class="textcenter animated bounceInDown">Muni Difficulty Scale</h1>
+		            </a>
+		        </div>
+		        <!-- /logo -->
+
+                <h2 class="textcenter animated bounceInUp">a tool to measure trail difficulty</h2>
+
+                <a class="button large animated bounceInUp" href="#/home">
+                    Learn more
+                </a>
+
+            </div>
+        </header>
+        <!-- /header -->
+        
+        
+		<section id="content" class="section">
+		<div class="boxed">
 			<div class="one_full">
 				<h2>What is it?</h2>
 				<p>The Muni Difficulty Scale is a collection of three scales which can be used to describe difficulties of trails for
@@ -99,43 +103,60 @@
 				scale that is applicable in the domain of mountain unicycling. This is why a group of mountain unicyclists started to develop
 				the muni difficulty scale in 2012 which eventually became an official IUF standard in 2013.</p>
 			</div>
-	
-			<hr>
-	
-			<div class="one_third">
+
+			<div class="one-third">
 				<h2>M-Scale</h2>
 	        	   	<p>The M-Scale is used to rate the difficulty of muni trail sections</p>
 					<p>It can be used individually from the other two scales to describe the technical difficulty of a trail, independently from its length or other attributes.</p>
 			</div>
 	
-			<div class="one_third">
+			<div class="one-third">
 				<h2>UDH-Scale</h2>
 				<p>The Unicycle Downhill scale is used to rate the overall track difficulty of muni downhill tracks.</p>
 				<p>It takes technical difficulty as well as other factors into account.</p>
 			</div>
 			
-			<div class="one_third last">
+			<div class="one-third last">
 		      	<h2>UXC-Scale</h2>
 	            <p>The Unicycle Cross Country scale is used to rate the overall track difficulty of muni cross country tracks.</p>
 	            <p>It takes technical difficulty as well as other factors into account.</p>
 			</div>
-		
-        </div>
-        <!-- auth -->
-        <hr>
-        <div id="auth"></div>
-		<hr>
-		<!-- footer -->
-		<footer class="one_full">
-			<p class="small muted">A project by <a href="//is-gr8.com">Rocco Schulz</a> and the <a href="//iufinc.org">IUF</a>. Design based on the <a href="http://workless.ikreativ.com/">Workless</a> framework</p>
-		</footer>
-		<!-- /footer -->
+		</div>
+        </section><!-- content -->
+
+
+        <!-- footer -->
+        <footer id="footer" class="textcenter">
+            <div class="boxed">
+                <ul id="sharing" class="nolist">
+                    <li>
+                        <iframe src="http://ghbtns.com/github-btn.html?user=schocco&amp;repo=mds-web&amp;type=watch&amp;count=true" width="100" height="20" title="Star on GitHub"></iframe>
+                    </li>
+                    <li>
+                        <iframe src="http://ghbtns.com/github-btn.html?user=schocco&amp;repo=mds-web&amp;type=fork&amp;count=true" width="102" height="20" title="Fork on GitHub"></iframe>
+                    </li>
+                </ul>
+
+                <p class="small muted">
+                    A project by 
+	                <a href="//is-gr8.com">Rocco Schulz</a> and the 
+	                <a href="//iufinc.org">IUF</a>.
+	                Design based on the
+	                <a href="http://workless.ikreativ.com/">Workless</a> framework
+                </p>
+            </div>
+        </footer>
+        <!-- /footer -->
 
 
 	</section>
 	<!-- /main -->
+	
+	 <!--  auth -->
+    <section id="auth" style="background-color: #eef" class="section textcenter">
+    </section>
 
-</section>
+<!-- /section -->
 <!-- /wrapper -->
 
 <!-- JavaScript at the bottom for fast page loading -->

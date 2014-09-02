@@ -6,32 +6,56 @@ define(['backbone',
         'jquery_tipsy', 
         'jquery_localscroll', 
         'jquery_uniform',
-        'jquery_modal'
+        'jquery_pageslide',
+        'scrollreveal'
 ], function(Backbone, Router, MscaleCollection, TrailCollection, AuthView) {
-	var initialize = function() {		
-		// Select nav for smaller resolutions
-		// Select menu for smaller screens
-		$("<select />").appendTo("nav#primary");
+	var initialize = function() {	
+		
 
-		// Create default option "Menu"
-		$("<option />", {
-		   "selected": "selected",
-		   "value"   : "",
-		   "text"    : "Menu"
-		}).appendTo("nav#primary select");
+	    // instantiate scrollreveal
+	    var config = {
+	        after: '0.02s',
+	        enter: 'bottom',
+	        move: '50px',
+	        over: '0.5s',
+	        easing: 'ease-in-out',
+	        viewportFactor: 0.40,
+	        reset: true,
+	        init: true
+	    };
+	    window.scrollReveal = new scrollReveal( config );
 
-		// Populate dropdown with menu items
-		$("nav#primary a").each(function() {
-		 var el = $(this);
-		 $("<option />", {
-		     "value"   : el.attr("href"),
-		     "text"    : el.text()
-		 }).appendTo("nav select");
-		});
+		// Responsive menu
+	  	$(".open").pageslide();
 
-		$("nav#primary select").change(function() {
-		  window.location = $(this).find("option:selected").val();
-		});
+		// Prettyprint
+		$('pre').addClass('prettyprint');
+		
+		
+		
+//		// Select nav for smaller resolutions
+//		// Select menu for smaller screens
+//		$("<select />").appendTo("nav#primary");
+//
+//		// Create default option "Menu"
+//		$("<option />", {
+//		   "selected": "selected",
+//		   "value"   : "",
+//		   "text"    : "Menu"
+//		}).appendTo("nav#primary select");
+//
+//		// Populate dropdown with menu items
+//		$("nav#primary a").each(function() {
+//		 var el = $(this);
+//		 $("<option />", {
+//		     "value"   : el.attr("href"),
+//		     "text"    : el.text()
+//		 }).appendTo("nav select");
+//		});
+//
+//		$("nav#primary select").change(function() {
+//		  window.location = $(this).find("option:selected").val();
+//		});
 
 		// Tipsy
 		$('.tooltip').tipsy({
@@ -59,13 +83,10 @@ define(['backbone',
 		});
 
 		// Scroll
-		jQuery.localScroll();
-
-		// Prettyprint
-		//$('pre').addClass('prettyprint linenums');
+		//jQuery.localScroll();
 
 		// Uniform
-		$("select, input:checkbox, input:radio, input:file").uniform();
+		//$("select, input:checkbox, input:radio, input:file").uniform();
 		
 		// render authView
 		new AuthView();

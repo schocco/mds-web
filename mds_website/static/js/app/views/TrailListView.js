@@ -15,11 +15,12 @@ define(['backbone',
 		    	console.log("fetched data.");
 		        that.render();
 		    }
-		    //that.collection = new TrailsCollection([]);
-		    //that.collection.fetch({ success : onDataHandler });
-		    that.collection = cache.get('TrailsCollection', TrailsCollection, { success : onDataHandler });
+		    this.collection = cache.get('TrailsCollection', TrailsCollection, { success : onDataHandler });
 		    this.collection.on("reset", this.render, this);
-		    this.render();
+		    if(this.collection.length){
+		    	this.render();
+		    }
+		    
 		},
 		render: function(){
 			console.log("rendering");

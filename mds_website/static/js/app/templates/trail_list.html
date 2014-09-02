@@ -1,3 +1,4 @@
+<div class="boxed">
 <div class="one_full">
     <h3>Trails</h3>
     <p>
@@ -5,23 +6,22 @@
     </p>
 </div>
 
-<div class="one_third">
+<div class="one-third">
     <h4>GPX import</h4>
     <p>
     Аs а registered user, you may <a href="#/trails/upload">upload</a> and rate a new trail with the Muni Trail Scale.
     </p>
 </div>
-<div class="two_third">
+<div class="two-third">
     <h4>Create on map</h4>
     <p>
     If you don't have access to any tracking device, you may also <a href="#/trails/create">create a track on the map</a>.
     This is not very accurate and is hence not recommended.
     </p>
 </div>
-</div>
 
 <hr/>
-<div class="one_full">
+<div class="one-full">
     <h4>Filter</h4>
     <form>
 	<select>
@@ -47,8 +47,9 @@
 
 
 <% _.each(trails, function(trail) { %> 
-    <div class="one_third" style="height:150px;">
+    <div class="one-third" style="height:150px;">
 	    <h3><a href="/<%= trail.get_url() %>"><%= trail.get('name') %></a></h3>
 	    <p><%= trail.get('description') %><p>
     </div>
 <% }); %>
+</div>

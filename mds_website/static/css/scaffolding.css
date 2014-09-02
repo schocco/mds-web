@@ -1,28 +1,48 @@
 /**
  * Scaffolding
  */
-.boxed 
-{
+.boxed {
+    width: 55%;
 	margin: 0 auto;
 	padding: 0;
 }
-.fluid
-{	
-	width: 98%;
-	margin: 0 auto;
-	padding: 0;
-}
-.one_full 
-{ 
-	margin: 0; 
-	float: left; 
-}
-.one_half,
-.one_third, 
-.two_third,
-.one_quarter
-{  
+
+.one-full {
+    width: 100%;
 	margin: 0;
-	float: left; 
+	float: left;
 }
-/* @end Scaffolding */
+
+.one-half,
+.one-third,
+.two-third,
+.one-quarter,
+.one-fifth {
+	margin: 0;
+    padding-right: 25px;
+	float: left;
+}
+
+.one-full {
+    width: 100%;
+}
+
+.one-half {
+    width: 50%;
+}
+
+.one-third {
+    width: 33.33333%;
+}
+
+.two-third {
+    width: 66.66666%;
+}
+
+.one-quarter {
+    width: 25%;
+}
+
+.one-fifth {
+    width: 20%;
+}

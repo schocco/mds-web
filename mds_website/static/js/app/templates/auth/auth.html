@@ -1,9 +1,11 @@
-<div class="one_full">
+<div class="boxed"><div class="one-full">
 <% if(user != null) { %>
-<p>You are logged in as <%= user.get('username') %></p>
-<a id="logoutLink" href="/accounts/logout">logout</a>
+<p>You are logged in as <%= user.get('username') %><br/>
+<a id="logoutLink" href="/accounts/logout" class="button">logout</a></p>
 <% } else { %>
-<a id="loginLink" href="/accounts/login">login</a> | 
+<p>
+<a id="loginLink" href="/accounts/login" class="button green">login</a> </p>
 <% } %>
 </div>
 <div id="authSub"></div>
+</div>

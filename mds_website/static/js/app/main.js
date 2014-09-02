@@ -12,9 +12,11 @@ require.config({
 		jquery_uniform: '../jquery/jquery.uniform',
 		jquery_localscroll: '../jquery/jquery.localscroll-1.2.7-min',
 		jquery_scrollto: '../jquery/jquery.scrollTo-1.4.3.1-min',
+		jquery_pageslide: '../jquery/jquery.pageslide.min',
 		jquery_modal: '../jquery/jquery.modal.min',
 		prettify: '../prettify',
-		openlayers: '../openlayers/OpenLayers'
+		openlayers: '../openlayers/OpenLayers',
+		scrollreveal: '../scrollreveal/scrollReveal'
 	},
 	    shim: {
 	    	'chart': {
@@ -36,6 +38,7 @@ require.config({
 	        	exports: '$'
 	        },
 	        'jquery_easing': ['jquery'],
+	        'jquery_pageslide': ['jquery'],
 	        'jquery_tipsy':  ['jquery'],
 	        'jquery_uniform': ['jquery'],
 	        'jquery_form': ['jquery'],
