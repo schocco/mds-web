@@ -6,16 +6,22 @@ define(['backbone',
         'views/TrailDetailView',
         'underscore',
         'text!templates/trail_upload.html',
+        'views/BaseView',
         'jquery',
         'openlayers',
         'jquery_form'],
-		function(Backbone, Trail, TrailCollection, cache, MapView, TrailDetailView, _, tpl, $, OpenLayers){
+		function(Backbone, Trail, TrailCollection, cache, MapView, TrailDetailView, _, tpl, BaseView, $, OpenLayers){
 	
-	var TrailUploadView = Backbone.View.extend({
+	var TrailUploadView = BaseView.extend({
 		el: '#content',
 		msg: '#upload_form_errors',
+		title: 'Upload a trail',
+//		events: {
+//			""
+//		},
 		
 		initialize: function () {
+			BaseView.prototype.initialize.apply(this);
 			var that = this;
 		    var onDataHandler = function(collection) {
 		    	console.log("fetched data.");
@@ -24,7 +30,10 @@ define(['backbone',
 			that.trail = new Trail();
 			//the datahandler is only called when the collection is fetched the first time.
 			that.collection = cache.get('TrailsCollection', TrailCollection, { success : onDataHandler });
-			that.render();
+			if(that.collection.length){
+				that.render();
+			}
+			
    
 		    
 		},
@@ -32,8 +41,9 @@ define(['backbone',
 		/** renders the whole view. */
 		render: function(){
 			console.log("render template");
+			var that = this;
 			var compiledTemplate = _.template(tpl, {type_choices: this.trail.type_choices});
-			$(this.el).html(compiledTemplate);		
+			this.setContent(compiledTemplate);
 			this.set_up_form()
 		},
 		
@@ -87,10 +97,11 @@ define(['backbone',
 			}); 
 
 			//trigger submit when upload link is clicked
-			$('#submit').click(function() {
+			$('#submit').click(function(e) {
+				e.preventDefault();
+				console.log("click!");
 				$('#upload_form').submit();
 				that.hideMessage();
-				return false;
 			});
 			
 			$('#submit_info').click(function() {

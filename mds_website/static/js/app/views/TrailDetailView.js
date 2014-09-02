@@ -2,18 +2,20 @@ define(['backbone',
         'models/TrailModel',
         'views/_MapView',
         'views/_TrailRatingView',
+        'views/BaseView',
         'underscore',
         'text!templates/trail_detail.html',
         'jquery',
         'openlayers'],
-		function(Backbone, Trail, MapView, TrailRatingView, _, tpl, $, OpenLayers){
+		function(Backbone, Trail, MapView, TrailRatingView, BaseView, _, tpl, $, OpenLayers){
 	
-	var TrailDetailView = Backbone.View.extend({
+	var TrailDetailView = BaseView.extend({
 		el: '#content',
 		
 		
 		initialize: function (options) {
 			var that = this;
+			BaseView.prototype.initialize.apply(this);
 		    var onDataHandler = function(model) {
 		    	console.log("fetched trail");
 		        that.render();
@@ -29,6 +31,12 @@ define(['backbone',
 		    } else{
 		    	throw "missing argument, need either id or trail"
 		    }
+		},
+
+		getTitle: function(){
+			console.log(this);
+			return "Trail details of '" + this.trail.get('name') + "'";
+			
 		},
 		
 		/**
@@ -96,8 +104,7 @@ define(['backbone',
 		render: function(){
 			console.log("render template");
 			var compiledTemplate = _.template( tpl, {'trail': this.trail });
-			$(this.el).html(compiledTemplate);
-			
+			this.setContent(compiledTemplate);
 			console.log("create hight profile");
 			this.render_height_profile();
 			

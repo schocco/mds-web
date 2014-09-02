@@ -30,7 +30,7 @@ define(['backbone',
 			$('#startButton').hide();
 			var that = this;
 			$('#logoCaption').fadeOut(function(){
-				$(this).html(that.title).fadeIn(600);
+				$(this).html(that.title || that.getTitle()).fadeIn(600);
 			});
 			$("html,body").animate({
 			    scrollTop: 50,
@@ -46,10 +46,9 @@ define(['backbone',
 			$(this.el).html('<section class="section"><div class="boxed"><div class="one-full"><p>loading...</p></div></div></section>');
 		},
 		
-		setContent: function(content){
-			$(this.el).fadeOut(function() {
-				  $(this).html(content).fadeIn(600);
-			});
+		setContent: function(content, call){
+			this.$el.hide();
+			this.$el.html(content).fadeIn(600, call);
 		}
 		
 			
