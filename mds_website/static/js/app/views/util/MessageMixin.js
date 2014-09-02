@@ -53,6 +53,7 @@ define(['backbone',
 			$(this.msg).html("");
 			$(this.msg).hide({duration:100});
 		}
+		
 			
 	};
 	

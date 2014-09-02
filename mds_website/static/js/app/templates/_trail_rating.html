@@ -1,21 +1,20 @@
-<div id="rating_form_div" style="display:none;">
-    <h3>Rate this trail with the <%= scale %></h3>
-    <p>
-    You can rate the trail <%= trail %> with the form given below.
-    Most values have been calculated from the track data. You only need to
-    fill in the missing difficulty ratings.
-    </p>
-    <span id="form_container"></span>
+<div class="one-full">
+<h3>Trail Difficulty - <%= scale %></h3>
 </div>
-
-<div>
-    <h3>Trail Difficulty - <%= scale %></h3>
-    <div id="form_errors" class="alert alert-error" style="display:none;"></div>
-    <span>Hover the score with your mouse to see how the score was calculated.</span>
-    <form id="scale_form" method="post">
-	    <div id="rating_div"></div>
-	        <div>
-       <a href="#" class="button" id="submit">Save</a> <a href="#" class="button" id="update_score">Update Score</a>
-    </div>
-    </form>
+<div class="one-half">
+	<div id="form_errors" class="alert alert-error" style="display: none;"></div>
+	<span>Hover the score with your mouse to see how the score was
+		calculated.</span>
+	<form id="scale_form" method="post">
+		<div id="rating_div"></div>
+		<div>
+			<a href="#" class="button" id="submit">Save</a> <a href="#"
+				class="button" id="update_score">Update Score</a>
+		</div>
+	</form>
+</div>
+<div id="radarChartDiv" class="one-half">
+Visual representation
+<canvas id="score_chart" width="450" height="400">
+Canvas not supported by your browser</canvas>
 </div>

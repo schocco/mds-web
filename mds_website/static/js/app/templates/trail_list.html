@@ -1,35 +1,44 @@
+<section class="section" style="background-color: #eeffff;">
 <div class="boxed">
 <div class="one_full">
-    <h3>Trails</h3>
-    <p>
-    This is a small collection of trails, that have been uploaded by our users.
-    </p>
+    <h3>
+    Create a new trail
+    </h3>
 </div>
-
 <div class="one-third">
-    <h4>GPX import</h4>
+    <h6>GPX import</h6>
     <p>
-    Аs а registered user, you may <a href="#/trails/upload">upload</a> and rate a new trail with the Muni Trail Scale.
+    Аs а registered user, you may <a href="#/trails/upload">upload</a> and rate a new trail with the Muni Trail Scale.<br>
+    <a href="#/trails/upload" class="button">upload file</a>
     </p>
 </div>
 <div class="two-third">
-    <h4>Create on map</h4>
+    <h6>Create on map</h6>
     <p>
     If you don't have access to any tracking device, you may also <a href="#/trails/create">create a track on the map</a>.
-    This is not very accurate and is hence not recommended.
+    This is not very accurate and is hence not recommended.<br>
+    <a href="#/trails/create" class="button">create on map</a>
     </p>
 </div>
+</div>
+</section>
 
-<hr/>
-<div class="one-full">
-    <h4>Filter</h4>
-    <form>
+<section class="section">
+<div class="boxed">
+<div class="one_full">
+    <h3>View existing trails</h3>
+</div>
+
+<form>
+<div class="one-half">
 	<select>
 	  <option value="---">Type</option>
 	  <option value="uphill">uphill</option>
 	  <option value="downhill">downhill</option>
 	  <option value="xc">cross country</option>
 	</select>
+</div>
+<div class="one-half">
 	<select>
 	  <option value="---">Region</option>
 	  <option value="Europe">Europe</option>
@@ -39,10 +48,11 @@
 	  <option value="Asia">Asia</option>
 	  <option value="Australia">Australia</option>
 	</select>
-	<a href="#" class="button">apply filters</a>
-	<a href="#" class="button">reset filters</a>
-	</form>
 </div>
+<div class="one-full"> 
+<a href="#" class="button">apply filters</a>
+<a href="#" class="button">reset filters</a></div>
+</form>
 <hr/>
 
 
@@ -53,3 +63,4 @@
     </div>
 <% }); %>
 </div>
+</section>
