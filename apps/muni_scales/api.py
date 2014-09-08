@@ -5,7 +5,7 @@ from tastypie import fields
 from tastypie.authentication import Authentication
 from tastypie.authorization import Authorization
 from tastypie.bundle import Bundle
-from tastypie.exceptions import ImmediateHttpResponse
+from tastypie.exceptions import ImmediateHttpResponse, NotFound
 from tastypie.http import HttpBadRequest
 from tastypie.resources import Resource, ModelResource
 from tastypie.utils.mime import build_content_type
@@ -15,7 +15,6 @@ from apps.muni_scales.fields import MscaleFieldMixin
 from apps.muni_scales.forms import UDHscaleForm, UXCscaleForm
 from apps.muni_scales.models import UDHscale, UXCscale
 from apps.muni_scales.mscale import Mscale, MSCALES
-
 
 
 class MscaleField(fields.ApiField, MscaleFieldMixin):
@@ -71,7 +70,7 @@ class MscaleResource(Resource):
 
     def prepend_urls(self):
         return [
-            url(r"^(?P<resource_name>%s)/(?P<pk>[\w\d_.-]+)/$" %
+            url(r"^(?P<resource_name>%s)/(?P<pk>[0-9]+)/$" %
                     self._meta.resource_name,
                 self.wrap_view('dispatch_detail'),
                 name="api_dispatch_detail"),
@@ -100,8 +99,13 @@ class MscaleResource(Resource):
         return self.get_object_list(request)
 
     def obj_get(self, request=None, **kwargs):
-        pk = float(kwargs['pk'])
-        return MSCALES[pk]
+        try:
+            pk = float(kwargs['pk'])
+            return MSCALES[pk]
+        except KeyError:
+            raise NotFound("Invalid lookup ID provided.")
+        except ValueError:
+            raise NotFound()
 
 class UDHResource(ModelResource):
     '''
