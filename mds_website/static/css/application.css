@@ -269,3 +269,22 @@ footer#footer a:hover {
 #sharing li {
     display: inline;
 }
+
+/** boxes in the trail list view */
+
+div.trail-box {
+	overflow:hidden;
+	height: 155px;
+	margin-bottom: 15px;
+}
+
+div.trail-box h3 {
+	overflow: hidden; 
+	text-overflow: ellipsis; 
+	white-space: nowrap;
+}
+
+div.trailbox p {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
