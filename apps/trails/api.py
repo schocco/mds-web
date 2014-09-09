@@ -1,16 +1,25 @@
 # -*- coding: utf-8 -*-
 
+import os
+import tempfile
+
+from django.conf.urls import url
+from django.contrib.gis.geos.collections import MultiLineString
 from django.contrib.gis.measure import Distance
+from django.http.response import HttpResponse
 from tastypie import fields
 from tastypie.authentication import Authentication, SessionAuthentication
 from tastypie.authorization import DjangoAuthorization
 from tastypie.contrib.gis.resources import ModelResource
+from tastypie.exceptions import BadRequest
+from tastypie.utils.urls import trailing_slash
 from tastypie.validation import CleanedDataFormValidation
 
-from apps.auth.authorization import ReadAllDjangoAuthorization,\
+from apps.auth.authorization import ReadAllDjangoAuthorization, \
     ReadAllSessionAuthentication
 from apps.muni_scales.api import UXCResource, UDHResource
 from apps.trails.forms import TrailForm
+from apps.trails.load import GPXReader
 from apps.trails.models import Trail
 
 
@@ -59,12 +68,38 @@ class TrailResource(ModelResource):
     uxc_rating = fields.ToOneField(UXCResource, 'uxcscale', related_name="trail", null=True, blank=True, full=True)
     udh_rating = fields.ToOneField(UDHResource, 'udhscale', related_name="trail", null=True, blank=True, full=True)
 
-        
     class Meta:
         queryset = Trail.objects.all().length()
         resource_name = 'trails'
         always_return_data = True
-        #TODO: proper permission checks
         authentication = ReadAllSessionAuthentication()
         authorization = ReadAllDjangoAuthorization()
         validation = CleanedDataFormValidation(form_class = TrailForm)
+
+    def prepend_urls(self):
+        return [
+            url(r"^(?P<resource_name>%s)/load-gpx%s$" %
+                (self._meta.resource_name, trailing_slash()),
+                self.wrap_view('load_gpx'), name="api_load_gpx"),
+        ]
+
+    def load_gpx(self, request, **kwargs):
+        if request.method == 'POST':
+            gpx_file = request.FILES['gpx']
+            ls = None
+            if(gpx_file.name.lower().endswith(".gpx") or gpx_file.name.lower().endswith(".xml")
+               and gpx_file.size < 10000):        
+                filehandle, tmpath = tempfile.mkstemp(suffix=".gpx")
+                with open(tmpath, 'wb+') as destination:
+                    for chunk in gpx_file.chunks():
+                        destination.write(chunk)
+                #get linestring
+                ls = GPXReader(tmpath)
+                os.remove(tmpath)
+                response = MultiLineString(ls.to_linestring().simplify(tolerance=0.00002)).geojson
+                # do not use create_response here, the linestring is already serialized to geojson
+                return HttpResponse(response)
+        # raise http error
+        raise BadRequest("only gpx/xml files smaller than 10,000 bytes are allowed.")
+        
+    

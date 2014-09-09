@@ -61,7 +61,7 @@ define(['backbone',
 			        bar.width(percentVal)
 			        percent.html(percentVal);
 			    },
-			    url: "load-gpx/",
+			    url: that.trail.urlRoot + "load-gpx/",
 			    dataType: "json",
 			    uploadProgress: function(event, position, total, percentComplete) {
 			        var percentVal = percentComplete + '%';

@@ -6,7 +6,10 @@ define(['backbone',
         'views/util/MessageMixin',
         'views/auth/AuthView',
         'views/HomeView',
-        ], function(Backbone, TrailListView, TrailDetailView, TrailRatingView, TrailUploadView, MessageMixin, AuthView, HomeView){
+        'jquery',
+        'jquery_cookie'
+        ], function(Backbone, TrailListView, TrailDetailView, 
+        		TrailRatingView, TrailUploadView, MessageMixin, AuthView, HomeView, $){
 			// Navigation via router events
 			var WorkspaceRouter = Backbone.Router.extend({
 				routes: {

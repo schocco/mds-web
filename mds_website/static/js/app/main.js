@@ -14,6 +14,7 @@ require.config({
 		jquery_scrollto: '../jquery/jquery.scrollTo-1.4.13-min',
 		jquery_pageslide: '../jquery/jquery.pageslide.min',
 		jquery_modal: '../jquery/jquery.modal.min',
+		jquery_cookie: '../jquery/jquery.cookie.1.4.1',
 		prettify: '../prettify',
 		openlayers: '../openlayers/OpenLayers',
 		scrollreveal: '../scrollreveal/scrollReveal'

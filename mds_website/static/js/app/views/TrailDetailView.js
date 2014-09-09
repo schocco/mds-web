@@ -6,8 +6,9 @@ define(['backbone',
         'underscore',
         'text!templates/trail_detail.html',
         'jquery',
-        'openlayers'],
-		function(Backbone, Trail, MapView, TrailRatingView, BaseView, _, tpl, $, OpenLayers){
+        'openlayers',
+        'chart'],
+		function(Backbone, Trail, MapView, TrailRatingView, BaseView, _, tpl, $, OpenLayers, chart){
 	
 	var TrailDetailView = BaseView.extend({
 		el: '#content',
@@ -21,7 +22,7 @@ define(['backbone',
 		        that.render();
 		    }
 		    if(options.id){
-		    	//TODO: use trail from cached collection
+		    	//XXX: cannot use trail from cached collection as some fields are only available in the detail view
 			    that.id = options.id;
 			    that.trail = new Trail({id: that.id});
 			    that.trail.fetch({success: onDataHandler});	
@@ -93,7 +94,7 @@ define(['backbone',
 					scaleGridLineColor : "rgba(0,0,0,.15)",
 					bezierCurve : false,
 				};
-			var myNewChart = new Chart(ctx).Line(data, options);
+			var heightProfileChart = new Chart(ctx).Line(data, options);
 		},
 		
 		render_score: function(){

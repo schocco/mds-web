@@ -5,7 +5,7 @@ define(['backbone',
         'views/BaseView',
         'text!templates/trail_list.html',
         'jquery',
-        'chart'],
+        ],
 		function(Backbone, TrailsCollection, cache, _, BaseView, tpl, $){
 	
 	var TrailsView = BaseView.extend({
