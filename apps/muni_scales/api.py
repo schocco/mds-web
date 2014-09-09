@@ -2,8 +2,8 @@
 
 from django.conf.urls import url
 from tastypie import fields
-from tastypie.authentication import Authentication
-from tastypie.authorization import Authorization
+from tastypie.authentication import Authentication, SessionAuthentication
+from tastypie.authorization import Authorization, DjangoAuthorization
 from tastypie.bundle import Bundle
 from tastypie.exceptions import ImmediateHttpResponse, NotFound
 from tastypie.http import HttpBadRequest
@@ -11,6 +11,8 @@ from tastypie.resources import Resource, ModelResource
 from tastypie.utils.mime import build_content_type
 from tastypie.validation import CleanedDataFormValidation
 
+from apps.auth.authorization import ReadAllSessionAuthentication, \
+    ReadAllDjangoAuthorization
 from apps.muni_scales.fields import MscaleFieldMixin
 from apps.muni_scales.forms import UDHscaleForm, UXCscaleForm
 from apps.muni_scales.models import UDHscale, UXCscale
@@ -25,7 +27,6 @@ class MscaleField(fields.ApiField, MscaleFieldMixin):
     help_text = 'an mscale object'
     
     def convert(self, value):
-        print "CONVERT CALLED"
         if value is None:
             return None
         return self.to_mscale(value)
@@ -38,7 +39,6 @@ class MscaleField(fields.ApiField, MscaleFieldMixin):
         if bundle.data.has_key(self.instance_name):
             value = bundle.data[self.instance_name]
             mscale = self.to_mscale(value)
-            print mscale
             return mscale.number
         else:
             return None
@@ -47,9 +47,6 @@ class MscaleField(fields.ApiField, MscaleFieldMixin):
         '''
         Prepare data for serialization before sending to the client.
         '''
-        print "DEHYDRATE CALLED"
-        print self.instance_name
-        print bundle.data.has_key(self.instance_name)
         return self.convert(1)
 
 class MscaleResource(Resource):
@@ -124,7 +121,6 @@ scale.full_dehydrate(bundle)
     average_difficulty = MscaleField(attribute="average_difficulty")#fields.ToOneField(MscaleResource, attribute="average_difficulty")
     score = fields.DictField(attribute='get_score', readonly=True, use_in="detail")
     trail = fields.ToOneField("apps.trails.api.TrailResource", "trail", related_name="udhscale", null=True);
-    #TODO: add relative score information (percentage of maximum)    
 
     
     class Meta:
@@ -133,8 +129,8 @@ scale.full_dehydrate(bundle)
         validation = CleanedDataFormValidation(form_class = UDHscaleForm)
         always_return_data = True
         #TODO: proper permission checks
-        authentication = Authentication()
-        authorization = Authorization()
+        authentication = ReadAllSessionAuthentication()
+        authorization = ReadAllDjangoAuthorization()
         
     def prepend_urls(self):
         return [
@@ -169,9 +165,8 @@ class UXCResource(ModelResource):
         resource_name = 'uxc-scale'
         always_return_data = True
         validation = CleanedDataFormValidation(form_class = UXCscaleForm)
-        #TODO: proper permission checks
-      #  authentication = Authentication()
-        authorization = Authorization()
+        authentication = ReadAllSessionAuthentication()
+        authorization = ReadAllDjangoAuthorization()
     
     #FIXME: duplicate code, refactor!
     def prepend_urls(self):

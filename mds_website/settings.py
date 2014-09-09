@@ -56,6 +56,7 @@ USE_TZ = True
 #dont force trailing backslash
 #APPEND_SLASH = False
 #TASTYPIE_ALLOW_MISSING_SLASH = APPEND_SLASH
+TASTYPIE_DEFAULT_FORMATS = ['json']
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"

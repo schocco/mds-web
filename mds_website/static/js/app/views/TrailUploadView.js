@@ -53,7 +53,6 @@ define(['backbone',
 			var bar = $('.bar');
 			var percent = $('.percent');
 			var status = $('#status');
-			var csrftoken = $('meta[name=csrf-token]').attr("content");
 			var that = this;
 			$('#upload_form').ajaxForm({
 			    beforeSend: function(xhr, settings) {
@@ -61,7 +60,6 @@ define(['backbone',
 			        var percentVal = '0%';
 			        bar.width(percentVal)
 			        percent.html(percentVal);
-			        xhr.setRequestHeader("X-CSRFToken", csrftoken);
 			    },
 			    url: "load-gpx/",
 			    dataType: "json",

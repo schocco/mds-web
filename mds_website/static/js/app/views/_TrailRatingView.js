@@ -184,13 +184,11 @@ define(['backbone',
 			this.scale.save(null, {
 			    success: function (model, response) {
 			        // update the score view, no longer editable
-			    	console.log("success");
+			    	that.scale = model;
 			    	that.showMessage({type:that.INFO, msg:"The score has been saved."});
 			    	that.display_score();
 			    },
 			    error: function (model, response) {
-			    	//TODO: add error handling
-			        console.error(response.responseText);
 			        that.showMessage({type:that.ERROR, msg:response.responseText});
 			    }});
 		},

@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 
+from django.contrib.gis.measure import Distance
 from tastypie import fields
-from tastypie.authentication import Authentication
-from tastypie.authorization import Authorization
+from tastypie.authentication import Authentication, SessionAuthentication
+from tastypie.authorization import DjangoAuthorization
+from tastypie.contrib.gis.resources import ModelResource
 from tastypie.validation import CleanedDataFormValidation
 
+from apps.auth.authorization import ReadAllDjangoAuthorization,\
+    ReadAllSessionAuthentication
 from apps.muni_scales.api import UXCResource, UDHResource
 from apps.trails.forms import TrailForm
 from apps.trails.models import Trail
-from tastypie.contrib.gis.resources import ModelResource
-from django.contrib.gis.measure import Distance
+
 
 class DistanceField(fields.DictField):
     '''
@@ -62,6 +65,6 @@ class TrailResource(ModelResource):
         resource_name = 'trails'
         always_return_data = True
         #TODO: proper permission checks
-        authentication = Authentication()
-        authorization = Authorization()
+        authentication = ReadAllSessionAuthentication()
+        authorization = ReadAllDjangoAuthorization()
         validation = CleanedDataFormValidation(form_class = TrailForm)
