@@ -5,6 +5,7 @@ usually be retrieved via template/context processors.
 '''
 from django.conf import settings
 from django.conf.urls import url
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from social.apps.django_app.utils import load_strategy
 from social.backends import utils
@@ -13,7 +14,9 @@ from tastypie.authentication import Authentication, SessionAuthentication
 from tastypie.authorization import Authorization, DjangoAuthorization
 from tastypie.bundle import Bundle
 from tastypie.exceptions import BadRequest
+from tastypie.http import HttpForbidden, HttpUnauthorized
 from tastypie.resources import BaseModelResource, ModelResource, Resource
+from tastypie.utils.urls import trailing_slash
 
 
 class SocialSignUpResource(BaseModelResource):
@@ -47,13 +50,75 @@ class UserResource(ModelResource):
         #model = User
         queryset = User.objects.all()
         resource_name = 'user'
-        list_allowed_methods = ['get']
+        list_allowed_methods = ['get', 'post']
         authentication = SessionAuthentication()
         authorization = DjangoAuthorization()
         fields = ['username', 'email', 'last_login', 'first_name', 'last_name']
     
     def get_object_list(self, request): 
         return super(UserResource, self).get_object_list(request).filter(pk=request.user.pk)
+    
+    def prepend_urls(self):
+        return [
+            url(r"^(?P<resource_name>%s)/login%s$" %
+                (self._meta.resource_name, trailing_slash()),
+                self.wrap_view('login'), name="api_login"),
+            url(r'^(?P<resource_name>%s)/logout%s$' %
+                (self._meta.resource_name, trailing_slash()),
+                self.wrap_view('logout'), name='api_logout'),
+            url(r'^(?P<resource_name>%s)/auth-status%s$' %
+                (self._meta.resource_name, trailing_slash()),
+                self.wrap_view('check_auth_status'), name='api_auth-status'),
+        ]
+    
+    def login(self, request, **kwargs):
+        '''
+        Uses the django auth module to authenticate a user with the posted credentials.
+        
+        Code source: taken from https://stackoverflow.com/questions/11770501/how-can-i-login-to-django-using-tastypie
+        '''
+        self.method_check(request, allowed=['post'])
+        data = self.deserialize(request, request.raw_post_data, format=request.META.get('CONTENT_TYPE', 'application/json'))
+        username = data.get('username', '')
+        password = data.get('password', '')
+
+        user = authenticate(username=username, password=password)
+        if user:
+            if user.is_active:
+                login(request, user)
+                return self.create_response(request, {
+                    'success': True
+                })
+            else:
+                return self.create_response(request, {
+                    'success': False,
+                    'reason': 'disabled',
+                    }, HttpForbidden )
+        else:
+            return self.create_response(request, {
+                'success': False,
+                'reason': 'incorrect',
+                }, HttpUnauthorized )
+
+    def logout(self, request, **kwargs):
+        self.method_check(request, allowed=['get'])
+        if request.user and request.user.is_authenticated():
+            logout(request)
+            return self.create_response(request, { 'success': True })
+        else:
+            return self.create_response(request, { 'success': False }, HttpUnauthorized)
+        
+    def check_auth_status(self, request, **kwargs):
+        '''
+        :return: 'loggedin' when the user is authenticated, otherwise 'loggedout'
+        '''
+        self.method_check(request, allowed=['get'])
+        if request.user and request.user.is_authenticated():
+            return self.create_response(request, { 'status': 'loggedin' })
+        else:
+            return self.create_response(request, { 'status': 'loggedout' })
+        
+        
 
         
  

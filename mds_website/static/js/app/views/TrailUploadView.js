@@ -99,7 +99,6 @@ define(['backbone',
 			//trigger submit when upload link is clicked
 			$('#submit').click(function(e) {
 				e.preventDefault();
-				console.log("click!");
 				$('#upload_form').submit();
 				that.hideMessage();
 			});

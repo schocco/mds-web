@@ -3,9 +3,10 @@ define(['backbone',
         'text!templates/auth/auth.html',
         'jquery',
         'views/auth/LoginView',
-        'collections/auth/UserCollection'
+        'collections/auth/UserCollection',
+        'models/auth/UserModel'
         ],
-		function(Backbone, _, tpl, $, LoginView, UserCollection){
+		function(Backbone, _, tpl, $, LoginView, UserCollection, UserModel){
 	
 	var AuthView = Backbone.View.extend({
 		el: '#auth',
@@ -23,10 +24,18 @@ define(['backbone',
 		    var errHandler = function(collection, resp, options){
 		    	if(resp.status == 401){
 		    		loggedIn: false;
-		    	that.render();
 		    	}
+		    	that.render();
 		    };
-		    var users = new UserCollection().fetch({success: userHandler, error: errHandler});
+		    var loggedInHandler = function(){
+		    	var users = new UserCollection().fetch({success: userHandler, error: errHandler});
+		    };
+		    var loggedOutHandler = function(){
+		    	loggedIn: false;
+		    	that.render();
+		    }
+		    
+		    UserModel.isAuthenticated({loggedIn: loggedInHandler, loggedOut: loggedOutHandler});
 		},
 
 		

@@ -20,7 +20,7 @@ define(['backbone',
 		 */
 		showMessage: function (options) {
 			var type = options.type;
-			var message = options.msg;
+			var message = options.msg || options.message;
 			var content;
 			var msgEl = $(this.msg);
 			
@@ -40,7 +40,7 @@ define(['backbone',
 				var tpl = "<ul><% _.each(errors, function(err) { %><li><%= err %></li><% }); %></ul>";
 				content = _.template(tpl, {errors: errors});
 			} else {
-				throw "Unexpected input: need string or array to display message.";
+				throw "Unexpected input: need string or array to display message. Got " + Object.prototype.toString.call(message) + " instead";
 			}
 			msgEl.html(content);
 			msgEl.show({duration: 300});
