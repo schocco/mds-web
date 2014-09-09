@@ -14,58 +14,15 @@ define(['models/BaseModel'],
 			return this.prefix + this.get('name') + "/";
 		},
 		
-		/** Authenticates the user.
-		 * @param success callback function
-		 * @param error callback function
-		 * */
-		login: function(options){
-			var uri = this.urlRoot + "login/";
-			var that = this;
-			var loginData = {username: that.get("username"), password: that.get("password")};
-			$.ajax(uri, {
-					data: JSON.stringify(loginData),
-					type: "POST",
-					contentType:"application/json; charset=utf-8"
-				})
-				.done(function(data) {
-					//TODO: set user data
-					console.log("user logged in");
-					console.log(data);
-					that.trigger("user_login");
-					if(options.success){
-						options.success(data.responseJSON);
-					}
-				})
-				.fail(function(data) {
-					console.log("login failed");
-					that.trigger("user_login_failed", data.responseJSON);
-					if(options.error){
-						options.error(data.responseJSON);
-					}
-				});
-		},
 		
-		/** Terminates the session. */
-		logout: function(){
-			var uri = this.urlRoot + "calculate/";
-			result = {};
-			var that = this;
-			var jqxhr = $.post(uri, this.attributes,
-				function(data) { 
-					that.set("score", data);
-					console.log("Updated score for " + that);
-					that.trigger("score_update");
-				})
-				.fail(function(data) {
-					console.log("updating score for " + that + "failed");
-					that.trigger("score_update", data);
-					console.log(data);
-				});
-		}
 	
 	},
 	/* static methods */
 	{
+		
+		/** field which is used to trigger events. */
+		events: _.extend({}, Backbone.Events),
+		
 		/** Checks if the current user is logged in by sending a request to the server.
 		 * If no sessionid cookie is sent or the session has expired, the user is not logged in.
 		 * 
@@ -91,7 +48,56 @@ define(['models/BaseModel'],
 				.fail(function(data) {
 					if(options.error){options.error(data);}
 				});
-		}
+		},
+		
+		/** Terminates the session. */
+		logout: function(){
+			
+			var uri = urlRoot + "logout/";
+			var that = this;
+			$.getJSON(uri).done(
+				function(data) {
+					console.log("logged out");
+					that.events.trigger("user_logout");
+				})
+				.fail(function(data) {
+					console.log("logout error");
+					console.log(data);
+				});
+		},
+		
+		/** Authenticates the user.
+		 * @param username
+		 * @param password
+		 * @param options with keys: 
+		 * 		success (callback function) & 
+		 * 		error (callback function)
+		 * */
+		login: function(username, password, options){
+			var uri = urlRoot + "login/";
+			var that = this;
+			var loginData = {username: username, password: password};
+			$.ajax(uri, {
+					data: JSON.stringify(loginData),
+					type: "POST",
+					contentType:"application/json; charset=utf-8"
+				})
+				.done(function(data) {
+					that.events.trigger("user_login");
+					if(options.success){
+						options.success(data.responseJSON);
+					}
+				})
+				.fail(function(data) {
+					that.events.trigger("user_login_failed", data.responseJSON);
+					if(options.error){
+						options.error(data.responseJSON);
+					}
+				});
+		},
+		
+
+		
 	});
 	
 	return UserModel;

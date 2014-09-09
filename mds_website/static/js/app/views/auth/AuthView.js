@@ -8,6 +8,10 @@ define(['backbone',
         ],
 		function(Backbone, _, tpl, $, LoginView, UserCollection, UserModel){
 	
+	/**
+	 * The view initially checks if the user is logged in and either renders a login or a logout button accordingly.
+	 * If the authentication status changes (events of UserModel), then the view is re-rendered.
+	 */
 	var AuthView = Backbone.View.extend({
 		el: '#auth',
 		loggedIn: false,
@@ -18,12 +22,13 @@ define(['backbone',
 			
 		    var userHandler = function(collection){
 		    	that.user = collection.pop();
-		    	loggedIn: true;
+		    	that.loggedIn = true;
 		    	that.render();
 		    };
 		    var errHandler = function(collection, resp, options){
 		    	if(resp.status == 401){
-		    		loggedIn: false;
+		    		that.loggedIn = false;
+		    		that.user = null;
 		    	}
 		    	that.render();
 		    };
@@ -31,11 +36,15 @@ define(['backbone',
 		    	var users = new UserCollection().fetch({success: userHandler, error: errHandler});
 		    };
 		    var loggedOutHandler = function(){
-		    	loggedIn: false;
+		    	console.log("logouthandler");
+		    	that.loggedIn = false;
+		    	that.user = null;
 		    	that.render();
 		    }
 		    
 		    UserModel.isAuthenticated({loggedIn: loggedInHandler, loggedOut: loggedOutHandler});
+			UserModel.events.on("user_login", loggedInHandler, this);
+			UserModel.events.on("user_logout", loggedOutHandler, this);
 		},
 
 		
@@ -43,12 +52,21 @@ define(['backbone',
 		render: function(){
 			var compiledTemplate = _.template( tpl, {'user': this.user });
 			$(this.el).html(compiledTemplate);
-
+			var that = this;
 			// connect links
 			$("#loginLink").click(function(event){
 				event.preventDefault();
+				$(this).hide();
 				var view = new LoginView();
-			});			
+			});
+			$('#logoutLink').click(function(event){
+				event.preventDefault();
+				that.logout();
+			});
+		},
+		
+		logout: function(){
+			UserModel.logout();			
 		}
 			
 	});
