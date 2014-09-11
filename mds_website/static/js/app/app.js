@@ -2,7 +2,7 @@ define(['backbone',
         'router', 
         'collections/TrailCollection',
         'collections/MscaleCollection',
-        'views/auth/AuthView',
+        'models/auth/UserModel',
         'module',
         'cache',
         'jquery_tipsy', 
@@ -10,7 +10,7 @@ define(['backbone',
         'jquery_uniform',
         'jquery_pageslide',
         'scrollreveal',
-], function(Backbone, Router, TrailCollection, MscaleCollection, AuthView, module, cache) {
+], function(Backbone, Router, TrailCollection, MscaleCollection, UserModel, module, cache) {
 	var initialize = function() {
 		
 
@@ -33,11 +33,6 @@ define(['backbone',
 		// Prettyprint
 		$('pre').addClass('prettyprint');
 		
-		//this is the module conf!
-		console.log("module conf in App");
-		console.log(module.config());
-
-
 		// Tipsy
 		$('.tooltip').tipsy({
 			gravity: $.fn.tipsy.autoNS,
@@ -70,6 +65,7 @@ define(['backbone',
 		//$("select, input:checkbox, input:radio, input:file").uniform();
 
 		bootstrapMscales();
+		setCurrentUser();
 		
 		// init router
 		Router.initialize();
@@ -82,9 +78,25 @@ define(['backbone',
 	var bootstrapMscales = function(){
 		var mscaleJson = module.config().mscaleCollection
 		var mscales = new MscaleCollection;
-		mscales.reset(mscaleJson);
+		mscales.reset(JSON.parse(mscaleJson));
+		console.log(mscales);
 		cache.set('MscaleCollection', mscales);
 	};
+	
+	/**
+	 * Reads the bootstrapped user object and sets it as static field
+	 * on the UserModel class.
+	 * 
+	 * Listens for logout event to reset the user when a logout occurs.
+	 * Listens for login events to set the user when a login occurs.
+	 */
+	var setCurrentUser = function(){
+		var userJson = module.config().current_user
+		var user = new UserModel(JSON.parse(userJson));
+		console.log(user);
+		UserModel.currentUser = user;
+		
+	}
 	
 	return {
 		initialize : initialize

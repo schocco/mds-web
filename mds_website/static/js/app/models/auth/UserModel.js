@@ -7,30 +7,49 @@ define(['models/BaseModel'],
 		urlRoot: "/api/v1/user/",
 		defaults: {
 			username: "anonymous",
-			password: "",
 		},
 		
 		get_url: function(){
 			return this.prefix + this.get('name') + "/";
 		},
 		
+		isAuthenticated : function(){
+			var un = this.get("username");
+			return un != "anonymous" && !_.isEmpty(un);
+		}
+		
 		
 	
 	},
-	/* static methods */
+	/* static methods and fields */
 	{
 		
 		/** field which is used to trigger events. */
 		events: _.extend({}, Backbone.Events),
 		
-		/** Checks if the current user is logged in by sending a request to the server.
+		/**
+		 * The currently logged in user.
+		 */
+		currentUser: null,
+		
+		/** 
+		 * Checks if the current user is logged in by sending a request to the server.
 		 * If no sessionid cookie is sent or the session has expired, the user is not logged in.
 		 * 
 		 * @param loggedIn	 a function that is called when the user is logged in
 		 * @param loggedOut	 a function that is called when the user is logged out
 		 * @param error		 a function that is called when an error occurs
 		 * */
-		isAuthenticated: function(options){
+//		isAuthenticated: function(options){
+//			if(this.currentUser == null || this.currentUser.get("username") =="anonymous"){
+//				return false;
+//			} else {
+//				return true;
+//			}
+//		},
+		
+		checkAuthStatus: function(options){
+			
 			//var urlRoot = "/api/v1/user/"
 			var uri = urlRoot + "auth-status/";
 			var that = this;

@@ -101,14 +101,14 @@
 		         * @see: http://requirejs.org/docs/api.html#config-moduleconfig
 		         */
 			     {% if user.is_authenticated %}
-			        var user = "{{user}}";
+			        var user = "{{ current_user|escapejs }}";
 			     {% else %}
 			        user = null;
 			     {% endif %}
 			     var require = {
 			    		 config: {
 			    	            app : { 
-			    	                current_user : "{{ current_user|escapejs }}",
+			    	                current_user : user,
 			    	                mscaleCollection : "{{ mscale_collection|escapejs }}"
 			    	            }
 			    	        }

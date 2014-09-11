@@ -22,6 +22,7 @@ define(['backbone',
 			
 		    var userHandler = function(collection){
 		    	that.user = collection.pop();
+		    	UserModel.c
 		    	that.loggedIn = true;
 		    	that.render();
 		    };
@@ -42,7 +43,10 @@ define(['backbone',
 		    	that.render();
 		    }
 		    
-		    UserModel.isAuthenticated({loggedIn: loggedInHandler, loggedOut: loggedOutHandler});
+		    //this.loggedIn = UserModel.isAuthenticated({loggedIn: loggedInHandler, loggedOut: loggedOutHandler});
+		    this.user = UserModel.currentUser;
+		   // this.loggedIn = user.isAuthenticated();
+		    this.render();
 			UserModel.events.on("user_login", loggedInHandler, this);
 			UserModel.events.on("user_logout", loggedOutHandler, this);
 		},
@@ -50,7 +54,7 @@ define(['backbone',
 		
 		/** renders the whole view. */
 		render: function(){
-			var compiledTemplate = _.template( tpl, {'user': this.user });
+			var compiledTemplate = _.template( tpl, {'user': this.user, 'loggedIn': this.loggedIn });
 			$(this.el).html(compiledTemplate);
 			var that = this;
 			// connect links
