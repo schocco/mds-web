@@ -18,42 +18,16 @@ define(['backbone',
 		user: null,
 		
 		initialize: function (options) {
-			var that = this;
-			
-		    var userHandler = function(collection){
-		    	that.user = collection.pop();
-		    	UserModel.c
-		    	that.loggedIn = true;
-		    	that.render();
-		    };
-		    var errHandler = function(collection, resp, options){
-		    	if(resp.status == 401){
-		    		that.loggedIn = false;
-		    		that.user = null;
-		    	}
-		    	that.render();
-		    };
-		    var loggedInHandler = function(){
-		    	var users = new UserCollection().fetch({success: userHandler, error: errHandler});
-		    };
-		    var loggedOutHandler = function(){
-		    	console.log("logouthandler");
-		    	that.loggedIn = false;
-		    	that.user = null;
-		    	that.render();
-		    }
-		    
-		    //this.loggedIn = UserModel.isAuthenticated({loggedIn: loggedInHandler, loggedOut: loggedOutHandler});
-		    this.user = UserModel.currentUser;
-		   // this.loggedIn = user.isAuthenticated();
 		    this.render();
-			UserModel.events.on("user_login", loggedInHandler, this);
-			UserModel.events.on("user_logout", loggedOutHandler, this);
+			UserModel.events.on("user_change", this.render, this);
 		},
 
 		
 		/** renders the whole view. */
 		render: function(){
+		    this.user = UserModel.currentUser;
+		    this.loggedIn = UserModel.currentUser.isAuthenticated();
+		    
 			var compiledTemplate = _.template( tpl, {'user': this.user, 'loggedIn': this.loggedIn });
 			$(this.el).html(compiledTemplate);
 			var that = this;

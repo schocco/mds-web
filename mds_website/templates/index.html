@@ -110,6 +110,10 @@
 			    	            app : { 
 			    	                current_user : user,
 			    	                mscaleCollection : "{{ mscale_collection|escapejs }}"
+			    	            },
+			    	            "models/auth/UserSessionMonitor": {
+			    	            	interval: 2000,
+			    	            	maxRetries: 3
 			    	            }
 			    	        }
 			    	    }

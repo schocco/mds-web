@@ -32,6 +32,14 @@ define(['models/BaseModel'],
 		 */
 		currentUser: null,
 		
+		/**
+		 * Sets the current user and triggers a change event.
+		 */
+		setCurrentUser: function(user){
+			this.currentUser = user;
+			this.events.trigger("user_change");
+		},
+		
 		/** 
 		 * Checks if the current user is logged in by sending a request to the server.
 		 * If no sessionid cookie is sent or the session has expired, the user is not logged in.
@@ -40,14 +48,6 @@ define(['models/BaseModel'],
 		 * @param loggedOut	 a function that is called when the user is logged out
 		 * @param error		 a function that is called when an error occurs
 		 * */
-//		isAuthenticated: function(options){
-//			if(this.currentUser == null || this.currentUser.get("username") =="anonymous"){
-//				return false;
-//			} else {
-//				return true;
-//			}
-//		},
-		
 		checkAuthStatus: function(options){
 			
 			//var urlRoot = "/api/v1/user/"
@@ -56,11 +56,8 @@ define(['models/BaseModel'],
 			var jqxhr = $.get(uri, this.attributes,
 				function(data) { 
 					if(data.status == "loggedin"){
-						console.log("logged in, data:");
-						console.log(data);
 						if(options.loggedIn){options.loggedIn(data);}						
 					} else {
-						console.log("not logged in, data:");
 						if(options.loggedOut){options.loggedOut(data);}
 					}
 				})
@@ -85,6 +82,8 @@ define(['models/BaseModel'],
 					console.log(data);
 				});
 		},
+		
+		
 		
 		/** Authenticates the user.
 		 * @param username
@@ -115,6 +114,8 @@ define(['models/BaseModel'],
 					}
 				});
 		},
+		
+		
 		
 
 		

@@ -3,6 +3,7 @@ define(['backbone',
         'collections/TrailCollection',
         'collections/MscaleCollection',
         'models/auth/UserModel',
+        'models/auth/UserSessionMonitor',
         'module',
         'cache',
         'jquery_tipsy', 
@@ -10,7 +11,7 @@ define(['backbone',
         'jquery_uniform',
         'jquery_pageslide',
         'scrollreveal',
-], function(Backbone, Router, TrailCollection, MscaleCollection, UserModel, module, cache) {
+], function(Backbone, Router, TrailCollection, MscaleCollection, UserModel,UserSessionMonitor, module, cache) {
 	var initialize = function() {
 		
 
@@ -95,7 +96,9 @@ define(['backbone',
 		var user = new UserModel(JSON.parse(userJson));
 		console.log(user);
 		UserModel.currentUser = user;
-		
+		//start monitoring the user session
+		UserSessionMonitor.start();
+		console.log("set user.");
 	}
 	
 	return {

@@ -75,9 +75,6 @@ define(['backbone',
 				var appRouter = new WorkspaceRouter;
 				Backbone.history.start();
 				
-				// render auth view
-				var authView = new AuthView();
-				
 				
 				// add navigate method to views for easy access
 				Backbone.View.prototype.goTo = function (loc) {
@@ -100,6 +97,8 @@ define(['backbone',
 				        }
 				    }
 				});
+				
+				new AuthView;
 
 			};
 			
