@@ -20,10 +20,11 @@ class HomeView(TemplateView):
         '''
         res = MscaleResource()
         request_bundle = res.build_bundle(request=self.request)
-        queryset = res.obj_get_list(request_bundle)
+        obj_lst = res.obj_get_list(request_bundle)
+        obj_lst = res.apply_sorting(obj_lst)
      
         bundles = []
-        for obj in queryset:
+        for obj in obj_lst:
             bundle = res.build_bundle(obj=obj, request=self.request)
             bundles.append(res.full_dehydrate(bundle, for_list=True))
         json = res.serialize(None, bundles, "application/json")
