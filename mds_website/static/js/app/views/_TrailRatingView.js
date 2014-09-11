@@ -31,10 +31,7 @@ define(['backbone',
 			this.ctr = 0;
 			this.el = options.parent;
 			
-			//load mscales synchronously to avoid callback magic that would be required to sync with loading of trail object
-			that.mscales = cache.get('MscaleCollection', MscaleCollection, {async:false});
-			console.log(this.mscales);
-			
+			this.mscales = cache.get('MscaleCollection');
 			
 		    var onDataHandler = function(model) {
 		    	that.read_trail_info();
