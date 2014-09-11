@@ -102,6 +102,8 @@ define(['models/BaseModel'],
 					contentType:"application/json; charset=utf-8"
 				})
 				.done(function(data) {
+					var user = new UserModel(JSON.parse(data.user));
+					that.setCurrentUser(user);
 					that.events.trigger("user_login");
 					if(options.success){
 						options.success(data.responseJSON);

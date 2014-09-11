@@ -86,8 +86,11 @@ class UserResource(ModelResource):
         if user:
             if user.is_active:
                 login(request, user)
+                ur_bundle = self.build_bundle(obj=user, request=request)
+                json = self.serialize(None, self.full_dehydrate(ur_bundle), 'application/json')
                 return self.create_response(request, {
-                    'success': True
+                    'success': True,
+                    'user': json
                 })
             else:
                 return self.create_response(request, {

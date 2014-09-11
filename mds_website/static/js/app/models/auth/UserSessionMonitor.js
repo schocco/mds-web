@@ -15,7 +15,6 @@ define(['models/auth/UserModel', 'module'],	function(UserModel, module){
 		
 		var loggedInHandler = function(){
 			// session valid, keep checking
-			console.log("keep checking, next check in " + interval + "ms");
 			setTimeout(doSessionCheck, interval);
 		};
 		var loggedOutHandler = function(){
@@ -29,23 +28,20 @@ define(['models/auth/UserModel', 'module'],	function(UserModel, module){
 			// keep checking unless too many errors
 			that.errorCount++;
 			if(that.errorCount < maxRetries){
-				console.log("Cannot check session, retry later.")
 				setTimeout(that.doSessionCheck, interval);
 			} else {
 				that.loggedOutHandler();
+				that.errorCount = 0;
 			}
 		}
 		
 		// only need to check when the session seems to be valid,
 		// anything else is handled by events
 		if(UserModel.currentUser.isAuthenticated()){
-			console.log("user is authenticated, checking session.");
 			UserModel.checkAuthStatus({
 				loggedIn: loggedInHandler,
 				loggedOut: loggedOutHandler,
 				error: errorHandler});
-		} else {
-			console.log("no reason to check session, user is logged out.");
 		}
 
 	};
@@ -62,7 +58,6 @@ define(['models/auth/UserModel', 'module'],	function(UserModel, module){
 		// set up event listeners
 		UserModel.events.on("user_login", doSessionCheck, this);
 		UserModel.events.on("user_logout", function(){
-			console.log("logout caught in sessionmonitor");
 			var anonymous = new UserModel;
 			UserModel.setCurrentUser(anonymous);
 		}, this)
@@ -71,7 +66,6 @@ define(['models/auth/UserModel', 'module'],	function(UserModel, module){
 		if(UserModel.currentUser.isAuthenticated){
 			doSessionCheck();
 		}
-		
 		
 	};
 	
