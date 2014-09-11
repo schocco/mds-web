@@ -5,24 +5,30 @@ define(['backbone',
         'views/TrailUploadView',
         'views/util/MessageMixin',
         'views/auth/AuthView',
+        'models/auth/UserModel',
         'views/HomeView',
         'jquery',
-        'jquery_cookie'
+        'jquery_cookie',
+        'backbone_routefilter'
         ], function(Backbone, TrailListView, TrailDetailView, 
-        		TrailRatingView, TrailUploadView, MessageMixin, AuthView, HomeView, $){
+        		TrailRatingView, TrailUploadView, MessageMixin, AuthView, UserModel, HomeView, $){
 			// Navigation via router events
 			var WorkspaceRouter = Backbone.Router.extend({
 				routes: {
-					"home":            	"home",   
+					"home":            	"home",
 					"udh-scale":        "udh",  
 					"uxc-scale": 		"uxc", 
 					"mts": 				"mts",
 					"trails": 			"trails",
 					"trails/upload":	"trail_upload",
 					"trails/create":	"trail_create",
-					"trails/:id/rate":	"trail_rate",
 					"trails/:id/":		"trail_detail",
 					"contact": 			"contact,"
+				},
+
+						
+				before : function(route, params) {
+					console.log("before " + route);
 				},
 				
 				home: function() {
@@ -46,13 +52,7 @@ define(['backbone',
 					var trailView = new TrailListView;
 				},
 				
-				trail_rate: function(id) {
-					console.log("rate trail with id" + id);
-					var trailView = new TrailRatingView({id: id});
-				},
-				
 				trail_detail: function(id) {
-					console.log("trail_detail for id " + id);
 					var trailView = new TrailDetailView({id: id});
 				},
 				

@@ -1,14 +1,14 @@
 define(['backbone',
         'router', 
-        'collections/MscaleCollection',
         'collections/TrailCollection',
         'views/auth/AuthView',
+        'module',
         'jquery_tipsy', 
         'jquery_localscroll', 
         'jquery_uniform',
         'jquery_pageslide',
         'scrollreveal'
-], function(Backbone, Router, MscaleCollection, TrailCollection, AuthView) {
+], function(Backbone, Router, TrailCollection, AuthView, module) {
 	var initialize = function() {	
 		
 
@@ -30,6 +30,10 @@ define(['backbone',
 
 		// Prettyprint
 		$('pre').addClass('prettyprint');
+		
+		//this is the module conf!
+		console.log("module conf in App");
+		console.log(module.config());
 		
 		
 		
@@ -89,7 +93,7 @@ define(['backbone',
 		//$("select, input:checkbox, input:radio, input:file").uniform();
 		
 		// render authView
-		new AuthView();
+		//new AuthView();
 		
 		// init router
 		Router.initialize();

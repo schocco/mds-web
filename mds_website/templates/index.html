@@ -93,7 +93,28 @@
         <!-- /header -->
         
         <!-- content div which holds the sections with actual content -->
-        <div id="content"></div>
+        <div id="content">
+	        <script>
+		        /* 
+		         * Bootstrap some data for the first page load. 
+		         * This will be replaced by the first view that is rendered.
+		         * @see: http://requirejs.org/docs/api.html#config-moduleconfig
+		         */
+			     {% if user.is_authenticated %}
+			        var user = "{{user}}";
+			     {% else %}
+			        user = null;
+			     {% endif %}
+			     var require = {
+			    		 config: {
+			    	            app : { 
+			    	                user : "{{ current_user|escapejs }}",
+			    	                mscales : "{{ mscale_collection|escapejs }}"
+			    	            }
+			    	        }
+			    	    }
+			</script>
+        </div>
 
 
         <!-- footer -->

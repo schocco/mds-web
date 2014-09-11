@@ -48,6 +48,7 @@ define(['models/BaseModel'],
 				.fail(function(data) {
 					if(options.error){options.error(data);}
 				});
+			return this;
 		},
 		
 		/** Terminates the session. */

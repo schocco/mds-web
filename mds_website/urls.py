@@ -1,11 +1,11 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from django.views.generic.base import TemplateView, RedirectView
 from tastypie.api import Api
 
 from apps.auth.api import SocialSignUpResource, BackendResource, UserResource
 from apps.muni_scales.api import MscaleResource, UDHResource, UXCResource
 from apps.trails.api import TrailResource
+from mds_website.views import HomeView
 
 
 admin.autodiscover()
@@ -20,8 +20,7 @@ v1_api.register(BackendResource())
 v1_api.register(UserResource())
 
 urlpatterns = patterns('',
-    url(r'^$', TemplateView.as_view(template_name="index.html"), name = 'index'),
-    url(r'^go-to-django/$', RedirectView.as_view(url='http://djangoproject.com'), name='go-to-django'),
+    url(r'^$', HomeView.as_view(), name = 'index'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(v1_api.urls)),
     # authentication stuff

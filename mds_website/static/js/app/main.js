@@ -6,6 +6,7 @@ require.config({
 		jquery: '../jquery/jquery-1.10.2.min', 
 		underscore: '../underscore/underscore-min', 
 		backbone: '../backbone-min.1.0',
+		backbone_routefilter: '../backbone.routefilter-0.2.1.min',
 		jquery_easing: '../jquery/jquery.easing.1.3',
 		jquery_tipsy: '../jquery/jquery.tipsy',
 		jquery_form: '../jquery/jquery.form.min',
