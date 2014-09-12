@@ -1,3 +1,6 @@
+import logging
+
+from django.contrib.auth.models import User
 from django.contrib.gis.db.models.fields import LineStringField, \
     MultiLineStringField
 from django.contrib.gis.db.models.manager import GeoManager
@@ -5,7 +8,6 @@ from django.db import models
 from django.db.models.signals import pre_save, post_save
 from django.dispatch.dispatcher import receiver
 from django.utils.translation import ugettext_lazy as _
-import logging
 
 from apps.trails.gis_math import haversine, RasterMap
 
@@ -24,6 +26,7 @@ class Trail(models.Model):
     Representation of a muni track.
     '''
     name = models.CharField(_('name'), max_length=100, blank=False)
+    owner = models.ForeignKey(User)
     type = models.CharField(_('trail type'), choices = TRAIL_TYPE_CHOICES, max_length=100)
     created = models.DateTimeField(_('created'), auto_now_add=True, blank=True)
     edited = models.DateTimeField(_('last change'), auto_now=True, blank=True)

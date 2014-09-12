@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError
 
 from apps.trails.models import Trail
 from django.utils import simplejson
+from django.forms.fields import CharField
 
 # method accept the core arguments mentioned above (required, label, initial, widget, help_text).
 class GeoJsonFormField(forms.Field):
@@ -44,8 +45,7 @@ class TrailForm(ModelForm):
     Trail form used to clean data prior to passing them to tastypie.
     '''
     waypoints = GeoJsonFormField(required=True, geom_type="MultiLineString")
-    #TODO: introduce geojson field type
-    #waypoints = forms.CharField(max_length=20000)
     
     class Meta:
         model = Trail
+        exclude = ['owner']

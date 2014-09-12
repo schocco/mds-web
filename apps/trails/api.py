@@ -4,17 +4,20 @@ import os
 import tempfile
 
 from django.conf.urls import url
+from django.contrib.auth.models import User
 from django.contrib.gis.geos.collections import MultiLineString
 from django.contrib.gis.measure import Distance
 from django.http.response import HttpResponse
 from tastypie import fields
 from tastypie.authentication import Authentication, SessionAuthentication
 from tastypie.authorization import DjangoAuthorization
+from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.contrib.gis.resources import ModelResource
 from tastypie.exceptions import BadRequest
 from tastypie.utils.urls import trailing_slash
 from tastypie.validation import CleanedDataFormValidation
 
+from apps.auth.api import UserResource
 from apps.auth.authorization import ReadAllDjangoAuthorization, \
     ReadAllSessionAuthentication
 from apps.muni_scales.api import UXCResource, UDHResource
@@ -56,6 +59,7 @@ class TrailResource(ModelResource):
     
     The length attribute is added through the query interface with a call to length().
     '''
+    #owner = fields.ToOneField(UserResource, 'owner', null=True, blank=True)
     altitude_difference = fields.CharField(attribute='get_altitude_difference', readonly=True)
     length = DistanceField(attribute='length', readonly=True, units=("m", "km", "ft", "mi", "yd"), null=True, blank=True)
     max_slope = fields.CharField(attribute='get_max_slope', readonly=True, use_in="detail")
@@ -75,6 +79,18 @@ class TrailResource(ModelResource):
         authentication = ReadAllSessionAuthentication()
         authorization = ReadAllDjangoAuthorization()
         validation = CleanedDataFormValidation(form_class = TrailForm)
+        filtering = {
+                     'type': ALL,
+                     'owner': ALL_WITH_RELATIONS,
+                     'created': ALL,
+                     'edited': ALL,
+                     'name': ALL,
+                     }
+
+    
+    def obj_create(self, bundle, **kwargs):
+        'automatically adds the current user to the created model.'
+        return super(TrailResource, self).obj_create(bundle, owner=bundle.request.user)
 
     def prepend_urls(self):
         return [
