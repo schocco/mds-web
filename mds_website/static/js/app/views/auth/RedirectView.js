@@ -13,11 +13,18 @@ define(['backbone',
 	 * Forward to the url that is given in the options if a login event occurs.
 	 */
 	var RedirectView = BaseView.extend({
-		loggedIn: false,
 		msg: "#redirectMsg",
 		
 		initialize: function (options) {
+			console.log("redirect view");
+			this.next = options.next;
+			this.params = options.params;
+			UserModel.events.on("user_change", this.proceed, this);
 			this.render();
+		},
+		
+		proceed: function(){
+			this.goTo(Backbone.history.location.hash);
 		},
 
 		

@@ -30,7 +30,7 @@ define(['backbone',
 					"trails": 			"trails",
 					"trails/upload":	{func:"trail_upload", authRequired:true},
 					"trails/create":	{func:"trail_create", authRequired:true},
-					"trails/:id/":		"trail_detail",
+					"trails/:id/":		{func: "trail_detail", authRequired:true},
 					"contact": 			"contact,"
 				},
 				
@@ -98,16 +98,8 @@ define(['backbone',
 			
 			var initialize = function(){
 				// add mixin for notifications
-				_.extend(Backbone.View.prototype, MessageMixin);
+				_.extend(Backbone.View.prototype, MessageMixin);	
 				
-				var appRouter = new WorkspaceRouter;
-				Backbone.history.start();
-				
-				
-				// add navigate method to views for easy access
-				Backbone.View.prototype.goTo = function (loc) {
-					appRouter.navigate(loc, true);
-				};
 				
 				// add mixin for notifications
 				_.extend(Backbone.View.prototype, MessageMixin);
@@ -127,6 +119,16 @@ define(['backbone',
 				});
 				
 				new AuthView;
+				
+				//start routing
+				var appRouter = new WorkspaceRouter;
+				Backbone.history.start();
+				
+				// add navigate method to views for easy access
+				Backbone.View.prototype.goTo = function (loc) {
+					appRouter.navigate(loc, true);
+				};
+				
 
 			};
 			
