@@ -16,9 +16,6 @@ define(['backbone',
 		msg: "#redirectMsg",
 		
 		initialize: function (options) {
-			console.log("redirect view");
-			this.next = options.next;
-			this.params = options.params;
 			UserModel.events.on("user_change", this.proceed, this);
 			this.render();
 		},

@@ -51,7 +51,7 @@ define(['backbone',
 				before: function(route, params) {
 					var authRequired = this.routesPlus[route].authRequired
 					if(authRequired && !UserModel.currentUser.isAuthenticated()){
-						new RedirectView({next: route, params: params});
+						new RedirectView();
 						return false;
 					}
 				},
