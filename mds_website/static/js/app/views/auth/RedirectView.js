@@ -16,6 +16,7 @@ define(['backbone',
 		msg: "#redirectMsg",
 		
 		initialize: function (options) {
+			BaseView.prototype.initialize.apply(this);
 			UserModel.events.on("user_change", this.proceed, this);
 			this.render();
 		},
