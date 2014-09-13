@@ -32,8 +32,15 @@ define(['backbone',
 			$('#logoCaption').fadeOut(function(){
 				$(this).html(that.title || that.getTitle()).fadeIn(600);
 			});
+			function getPos(el) {
+			    for (var lx=0, ly=0;
+			         el != null;
+			         lx += el.offsetLeft, ly += el.offsetTop, el = el.offsetParent);
+			    return {x: lx,y: ly};
+			}
+			
 			$("html,body").animate({
-			    scrollTop: 50,
+			    scrollTop: 80,
 			    scrollLeft: 0
 			});
 		},

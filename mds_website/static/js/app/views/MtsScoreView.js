@@ -89,7 +89,7 @@ define(['backbone',
 			var canvas = document.getElementById("score_chart");
 			console.log("canvas will be set to:");
 			console.log("h:" + div.offsetHeight + " w:" + div.offsetWidth);
-			canvas.height = div.offsetHeight;
+			canvas.height = 450;
 			canvas.width  = div.offsetWidth;
 			
 			if(this.type == "udh"){

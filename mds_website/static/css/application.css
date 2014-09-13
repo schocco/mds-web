@@ -30,7 +30,7 @@ blockquote {
 
 a:hover,
 a:visited:hover {
-	color: #f36;
+	color: #BF5AA8;
 }
 
 a:active {
@@ -69,6 +69,7 @@ nav#primary ul li {
 	margin-left: 25px;
 	display: inline;
 }
+
 
 nav#primary ul li a {
 	font-size: 14px;
@@ -199,8 +200,8 @@ a:hover.open {
 
 #header a:hover.button
 {
-    border: 2px solid #f36!important;;
-    background: #f36!important;
+    border: 2px solid #BF5AA8!important;;
+    background: #BF5AA8!important;
     color: #ffffff!important;
 }
 /**
@@ -232,7 +233,7 @@ ul.icons li {
 }
 
 ul.icons li:hover {
-    background: #f36;
+    background: #BF5AA8;
     color: #ffffff;
 }
 
@@ -242,20 +243,46 @@ ul.icons li i {
     text-align: center;
     display: block;
 }
+
+
+/**
+* Login section
+*/
+#auth {
+	color: #eee;
+	background-color: #333333;
+	padding: 20px;
+}
+#auth a{
+	color: #ffffff;
+}
+#auth a:hover {
+    color: #BF5AA8;
+}
+#auth input {
+	background-color: #aaa;
+	padding; 4px;
+}
+#auth label {
+	font-weight: 400;
+}
+
+
 /**
  * Footer
  */
 footer#footer {
     color: #666666;
+    background-color: #521829;
     font-size: 14px;
-    border-top: 1px solid #eeeeee;
+    border-top: 1px solid #111;
     width: 100%;
 	padding: 100px;
 	float: left;
 }
 
 footer#footer a {
-    color: #f36;
+    color: #BF5AA8;
 }
 
 footer#footer a:hover {

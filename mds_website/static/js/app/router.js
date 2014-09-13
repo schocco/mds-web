@@ -30,7 +30,7 @@ define(['backbone',
 					"trails": 			"trails",
 					"trails/upload":	{func:"trail_upload", authRequired:true},
 					"trails/create":	{func:"trail_create", authRequired:true},
-					"trails/:id/":		{func: "trail_detail", authRequired:true},
+					"trails/:id/":		"trail_detail",
 					"contact": 			"contact,"
 				},
 				

@@ -1,10 +1,11 @@
 <div class="boxed"><div class="one-full">
 <% if(user.isAuthenticated()) { %>
-<p>You are logged in as <%= user.get('username') %><br/>
+<p class="textcenter">You are logged in as <%= user.get('username') %><br/>
 <a id="logoutLink" href="/accounts/logout" class="button">logout</a></p>
 <% } else { %>
-<p>
-<a id="loginLink" href="/accounts/login" class="button green">login</a> </p>
+<p class="textcenter">
+<a id="loginLink" href="/accounts/login" class="button green">login</a>
+</p>
 <% } %>
 </div>
 <div id="authSub"></div>
