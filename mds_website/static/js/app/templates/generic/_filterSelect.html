@@ -1,0 +1,7 @@
+ <select name="<%= filter.field %>">
+   <option value=""><%= filter.label %></option>
+   <option>-------</option>
+ <% _.each(filter.choices, function(choice, key, list){ %>
+   <option value="<%= choice[0] %>"><%= choice[1] %></option>
+ <% }); %>
+ </select> 

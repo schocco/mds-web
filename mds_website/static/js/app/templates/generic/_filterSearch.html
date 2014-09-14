@@ -1,0 +1,7 @@
+<select>
+<option value="">search by...</option>
+<% _.each(fields, function(field, key, list){  %>
+   <option value="<%= field.field %>"><%= field.label || field.field  %></option>
+<% }); %>
+</select>
+<input type="text" placeholder="search"></input>
