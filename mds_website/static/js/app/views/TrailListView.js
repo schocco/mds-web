@@ -26,11 +26,25 @@ define(['backbone',
 		    }
 		    
 		},
+		
+		loadNextPage: function(e){
+			e.preventDefault();
+			console.log("getting next page");
+			this.collection.getNextPage();
+		},
+		
+		loadPrevPage: function(e){
+			e.preventDefault();
+			console.log("getting prev page");
+			this.collection.getPreviousPage();
+		},
+		
 		render: function(){
-			console.log("rendering");
-			console.log(this.collection.models);
-			var compiledTemplate = _.template( tpl, {'trails': this.collection.models });
+			var compiledTemplate = _.template( tpl, {'trails': this.collection });
 			this.setContent(compiledTemplate);
+			_.bindAll(this, "loadNextPage", "loadPrevPage");
+			$('#nextPage').click(this.loadNextPage);
+			$('#prevPage').click(this.loadPrevPage);
 			
 		},
 			
