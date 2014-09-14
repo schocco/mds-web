@@ -3,7 +3,8 @@ define(['backbone', 'models/TrailModel', 'collections/BaseCollection'],
 	
 	var TrailsCollection = BaseCollection.extend({
 		model: Trail,
-		url : "/api/v1/trails/?format=json"
+		baseUrl: "/api/v1/trails/"
+		//url : "/api/v1/trails/"
 	});
 	
 	return TrailsCollection;

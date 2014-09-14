@@ -14,7 +14,10 @@ define(['backbone', 'models/TrailModel'],
 	        "total_count": null
 		},
 		
-		settings: {	},
+		settings: {
+			"offset": 0,
+			"limit": 20
+		},
 
 		/**
 		 * Set the META returned by the API and return the resources.
@@ -22,6 +25,21 @@ define(['backbone', 'models/TrailModel'],
 		parse: function(response) {
 			this.recentMeta = response.meta || {};
 			return response.objects || response;
+		},
+		
+		url : function() {
+			urlparams = {
+					offset : this.settings.offset,
+					limit : this.settings.limit || this.recentMeta.limit
+			};
+			urlparams = $.extend(urlparams, this.settings.filterOptions);
+			if (this.settings.sortBy) {
+				urlparams = $.extend(urlparams, {
+					sort_by : this.settings.sortingOrder + this.settings.sortBy
+				});
+			}
+			console.log("url");
+			return this.baseUrl + '?' + $.param(urlparams);
 		},
 
 		hasNextPage: function() {
@@ -32,33 +50,33 @@ define(['backbone', 'models/TrailModel'],
 			return this.recentMeta.previous != null;
 		},
 		
+		getPage: function(num){
+			if(_.isNumber(num) && this.getTotalPages() >= num && num > 0){
+				this.settings.offset = (num - 1) * this.getLimit();
+			}
+		},
+		
 		getFirstPage: function() {
-			this.fetch({reset: true, data: this.settings});
+			this.getPage(1);
 		},
 		
 		getLastPage: function() {
-			var lastOffset = (this.getTotalPages - 1) * this.getOffset();
-			var last = {offset: lastOffset};
-			this.fetch({reset: true, data: _.extend(this.settings, last)});
+			getPage(this.getTotalPages());
 		},
 
 		getNextPage: function() {
 			if(this.hasNextPage()){
-				//transform query params to dict
-				var nxt = this.recentMeta.next;
-				nxt = nxt.substr(nxt.lastIndexOf("?")+1);
-				var nxtDict = JSON.parse('{"' + nxt.replace(/&/g, '","').replace(/=/g,'":"') + '"}');
-				this.fetch({reset: true, data: _.extend(nxtDict, this.settings)});
+				nxt = this.urlToDict(this.recentMeta.next);
+				this.settings.offset = nxt.offset;
+				this.fetch({reset: true});
 			}
 		},
 
 		getPreviousPage: function() {
 			if(this.hasPreviousPage()){
-				//transform query params to dict
-				var prev = this.recentMeta.previous;
-				prev = prev.substr(prev.lastIndexOf("?")+1);
-				var prevDict = JSON.parse('{"' + prev.replace(/&/g, '","').replace(/=/g,'":"') + '"}');
-				this.fetch({reset: true, data: _.extend(prevDict, this.settings)});
+				prev = this.urlToDict(this.recentMeta.previous);
+				this.settings.offset = prev.offset;
+				this.fetch({reset: true});
 			}
 		},
 
@@ -66,25 +84,70 @@ define(['backbone', 'models/TrailModel'],
 			return Math.ceil(this.recentMeta.total_count / this.recentMeta.limit);
 		},
 
+		
 		getTotalItems: function() {
 			return this.recentMeta.total_count;
 		},
 		
-		setFilter: function(filter) {
-			this.settings.filter = filter;
+		/**
+		 * Provide filter options.
+		 */
+		setFilterOptions: function(filter) {
+			this.settings.filterOptions = filter;
+			return this;
 		},
 		
+		/**
+		 * Sets the field that should be used for sorting.
+		 */
 		setSorting: function(sorting) {
-			this.settings.sorting = sorting;
+			this.settings.sortBy = sorting;
+			return this;
 		},
 		
-		setOffset: function(offset) {
-			this.settings.offset = offset;
+		/**
+		 * Sets the order for the sorting.
+		 * Can be either "+" (ascendind) or "-" (descending)
+		 */
+		setSortOrder: function(order){
+			if(order == "+" || order == "-"){
+				this.settings.sortingOrder = order;
+				return this;
+			} else {
+				throw "illegalArgument: must be '+' or '-'";
+			}
+			
 		},
 		
-		getOffset: function() {
-			return this.settings.offset || this.recentMeta.offset;
+		
+		setPageSize: function(size){
+			if(_.isNumber(size) && size > 0){
+				this.settings.limit = size;
+				return this;
+			} else {
+				throw "illegalArgument: argument must be a positive integer";
+			}
+		},
+		
+		getPageSize: function(){
+			return this.settings.limit || this.recentMeta.limit;
+		},
+		
+		/**
+		 * Transforms query params to dict
+		 */
+		urlToDict: function(uri){
+			queryParams = uri.substr(uri.lastIndexOf("?")+1);
+			var dict = JSON.parse('{"' + queryParams.replace(/&/g, '","').replace(/=/g,'":"') + '"}');
+			return dict;
+		},
+		
+		clearSettings: function() {
+			this.settings = {};
+			return this;
 		}
+		
+
 
 	});
 
