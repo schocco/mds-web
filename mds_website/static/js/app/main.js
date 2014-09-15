@@ -7,6 +7,7 @@ require.config({
 		underscore: '../underscore/underscore-min', 
 		backbone: '../backbone-min.1.0',
 		backbone_routefilter: '../backbone.routefilter-0.2.1.min',
+		backbone_paginator: '../backbone.paginator.min',
 		jquery_easing: '../jquery/jquery.easing.1.3',
 		jquery_tipsy: '../jquery/jquery.tipsy',
 		jquery_form: '../jquery/jquery.form.min',

@@ -30,9 +30,10 @@ define(['backbone', 'models/TrailModel'],
 		url : function() {
 			urlparams = {
 					offset : this.settings.offset,
-					limit : this.settings.limit || this.recentMeta.limit
+					limit : this.getPageSize()
 			};
 			urlparams = $.extend(urlparams, this.settings.filterOptions);
+			console.log(urlparams);
 			if (this.settings.sortBy) {
 				urlparams = $.extend(urlparams, {
 					sort_by : this.settings.sortingOrder + this.settings.sortBy
@@ -52,8 +53,9 @@ define(['backbone', 'models/TrailModel'],
 		
 		getPage: function(num){
 			if(_.isNumber(num) && this.getTotalPages() >= num && num > 0){
-				this.settings.offset = (num - 1) * this.getLimit();
+				this.settings.offset = (num - 1) * this.getPageSize();
 			}
+			return this.fetch({reset: true});
 		},
 		
 		getFirstPage: function() {
@@ -131,6 +133,10 @@ define(['backbone', 'models/TrailModel'],
 		
 		getPageSize: function(){
 			return this.settings.limit || this.recentMeta.limit;
+		},
+		
+		currentPageNumber: function(){
+			return Math.floor(this.recentMeta.offset / this.getLimit) + 1;
 		},
 		
 		/**

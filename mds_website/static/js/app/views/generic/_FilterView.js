@@ -100,6 +100,24 @@ define(['backbone',
 			
 		},
 		
+		/**
+		 * Returns a list of objects. Each object represents one filter and has the
+		 * attributes name and value.
+		 */
+		getFilters: function(){
+			console.log("read filter vals");
+			var filters = {};
+			$(this.filterEl + " input[type=checkbox]:checked").each(function(idx){
+				var checkbox = $(this);
+				filters[checkbox.attr('name')] = checkbox.val();
+			});
+			$(this.filterEl + " select option:selected").each(function(idx){
+				var option = $(this);
+				filters[option.parent().attr('name')] = option.val();
+			});
+			return filters;
+		},
+		
 	});
 	
 	return FilterView;

@@ -8,11 +8,12 @@ define(['backbone',
         'views/auth/RedirectView',
         'models/auth/UserModel',
         'views/HomeView',
+        'views/generic/_FilterView',
         'jquery',
         'jquery_cookie',
         'backbone_routefilter'
         ], function(Backbone, TrailListView, TrailDetailView, 
-        		TrailRatingView, TrailUploadView, MessageMixin, AuthView, RedirectView, UserModel, HomeView, $){
+        		TrailRatingView, TrailUploadView, MessageMixin, AuthView, RedirectView, UserModel, HomeView, FilterView, $){
 			// Navigation via router events
 			var WorkspaceRouter = Backbone.Router.extend({
 				
@@ -31,7 +32,8 @@ define(['backbone',
 					"trails/upload":	{func:"trail_upload", authRequired:true},
 					"trails/create":	{func:"trail_create", authRequired:true},
 					"trails/:id/":		"trail_detail",
-					"contact": 			"contact,"
+					"contact": 			"contact",
+					"test":				"test"
 				},
 				
 				routes: function(){
@@ -41,6 +43,20 @@ define(['backbone',
 						routes[key] = value.func || value;
 					}, this);
 					return routes;
+				},
+				
+				test: function(){
+					console.log("ztesz");
+					var options = {
+							el: "#content",
+							searchFields: [{field: "name"},
+							               {field: "length"}
+							],
+							filters: [{field: "type", choices: [["dh", "downhill"],["uh", "uphill"]], label: "Type"},
+							          {field: "owner", choices: ["rocco"], label: "my uploads"}],
+							pageSize: 10
+					};
+					new FilterView(options);
 				},
 				
 				

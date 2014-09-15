@@ -3,14 +3,23 @@ define(['backbone',
         'cache',
         'underscore',
         'views/BaseView',
+        'views/generic/_FilterView',
         'text!templates/trail_list.html',
         'jquery',
         ],
-		function(Backbone, TrailsCollection, cache, _, BaseView, tpl, $){
+		function(Backbone, TrailsCollection, cache, _, BaseView, FilterView, tpl, $){
 	
 	var TrailsView = BaseView.extend({
 		el: '#content',
 		title: "Trails",
+		filterOptions: {
+			el: "#filters",
+			searchFields: [{field: "name"},{field: "length"}],
+			filters: [{field: "type", choices: [["downhill","downhill"],["uh","uphill"]], label: "type"},
+			          {field: "owner", choices: ["rocco"], label: "uploaded by me"},
+			          {field: "type", choices: ["downhill"], label: "downhill"},
+			          {field: "type", choices: ["xc"], label: "cross country"}]
+		},
 		
 		initialize: function () {
 			BaseView.prototype.initialize.apply(this);
@@ -25,6 +34,12 @@ define(['backbone',
 		    	this.render();
 		    }
 		    
+		},
+		
+		applyFilters: function(e){
+			e.preventDefault();
+			var filters = this.filterView.getFilters();
+			this.collection.setFilterOptions(filters).getFirstPage();
 		},
 		
 		loadNextPage: function(e){
@@ -42,9 +57,11 @@ define(['backbone',
 		render: function(){
 			var compiledTemplate = _.template( tpl, {'trails': this.collection });
 			this.setContent(compiledTemplate);
-			_.bindAll(this, "loadNextPage", "loadPrevPage");
+			this.filterView = new FilterView(this.filterOptions, {el:"#filters"});
+			_.bindAll(this, "loadNextPage", "loadPrevPage", "applyFilters");
 			$('#nextPage').click(this.loadNextPage);
 			$('#prevPage').click(this.loadPrevPage);
+			$('#applyFilters').click(this.applyFilters);
 			
 		},
 			

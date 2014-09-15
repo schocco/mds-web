@@ -29,31 +29,8 @@
     <h3>View existing trails</h3>
 </div>
 
-<form>
-<div class="one-half">
-	<select>
-	  <option value="---">Type</option>
-	  <option value="uphill">uphill</option>
-	  <option value="downhill">downhill</option>
-	  <option value="xc">cross country</option>
-	</select>
-</div>
-<div class="one-half">
-	<select>
-	  <option value="---">Region</option>
-	  <option value="Europe">Europe</option>
-	  <option value="North America">North America</option>
-	  <option value="South America">South America</option>
-	  <option value="Africa">Africa</option>
-	  <option value="Asia">Asia</option>
-	  <option value="Australia">Australia</option>
-	</select>
-</div>
-<div class="one-full"> 
-<a href="#" class="button">apply filters</a>
-<a href="#" class="button">reset filters</a></div>
-</form>
-<hr/>
+<div id="filters"></div>
+<div id="pages"></div>
 
 <p class="textcenter">
 <% if(trails.hasPreviousPage()){ %>
@@ -66,7 +43,7 @@
 
 <% _.each(trails.models, function(trail) { %> 
     <div class="one-half trail-box">
-	    <h3><a href="/<%= trail.get_url() %>"><%= trail.get('name') %></a></h3>
+	    <h5><a href="/<%= trail.get_url() %>"><%= trail.get('name') %></a></h5>
 	    <p>Type: <%= trail.get('type') %></p>
 	    <p><%= trail.get('description') %><p>
     </div>

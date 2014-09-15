@@ -61,7 +61,16 @@ define(['backbone',
 		
 		addSearchFields: function() {
 			//TODO: iterate fields, create html and append it
-		}
+		},
+		
+		
+		getSearch: function(){
+			var search = {
+				searchBy: "",
+				value: ""
+			};
+			return search
+		},
 		
 	});
 	

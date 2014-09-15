@@ -315,3 +315,26 @@ div.trailbox p {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+
+/** filter/pagination widget */
+#filterContainer{
+	padding: 10px;
+	background-color: #eef;
+	margin-bottom: 20px;
+}
+
+#filterContainer .button{
+	padding: 5px;
+	margin-bottom: 10px;
+}
+
+#filterContainer select {
+	padding: 2px;
+	border-width: 1px;
+	width: auto;
+}
+
+#filterContainer input {
+	padding: 5px;
+	width: auto;
+}
