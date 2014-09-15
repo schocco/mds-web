@@ -18,7 +18,8 @@ define(['backbone',
 			filters: [{field: "type", choices: [["downhill","downhill"],["uh","uphill"]], label: "type"},
 			          {field: "owner", choices: ["rocco"], label: "uploaded by me"},
 			          {field: "type", choices: ["downhill"], label: "downhill"},
-			          {field: "type", choices: ["xc"], label: "cross country"}]
+			          {field: "type", choices: ["xc"], label: "cross country"}],
+			sorting: [["name", "name"], ["length","length"]]
 		},
 		
 		initialize: function () {
@@ -39,7 +40,12 @@ define(['backbone',
 		applyFilters: function(e){
 			e.preventDefault();
 			var filters = this.filterView.getFilters();
-			this.collection.setFilterOptions(filters).getFirstPage();
+			var sorting = this.filterView.getSorting();
+			this.collection
+			.setFilterOptions(filters)
+			.setSorting(sorting.field)
+			.setSortOrder(sorting.order)
+			.getFirstPage();
 		},
 		
 		loadNextPage: function(e){

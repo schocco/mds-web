@@ -16,21 +16,24 @@ define(['backbone',
         'text!templates/generic/_filterSearch.html',
         'text!templates/generic/_filterSelect.html',
         'text!templates/generic/_filterCheckbox.html',
+        'text!templates/generic/_filterSort.html',
         'jquery',
         'views/BaseView'
         ],
-		function(Backbone, _, tpl, searchTpl, selectTpl, checkboxTpl, $, BaseView){
+		function(Backbone, _, tpl, searchTpl, selectTpl, checkboxTpl, sortTpl, $, BaseView){
 	
 	var FilterView = Backbone.View.extend({
 		
 		searchFields: null,
 		filters: null,
+		sorting: null,
 		pageSize: null,
 		page: 1,
 		totalPages: null,
 		filterEl: "#filterFields",
 		searchEl: "#searchFields",
 		pagesEl: "#pageList",
+		sortingEl: "#sortFields",
 		
 		initialize: function (options) {
 			this.readUrlParams();
@@ -40,6 +43,7 @@ define(['backbone',
 				this.el = options.parent || this.el;
 				this.searchFields = options.searchFields;
 				this.filters = options.filters;
+				this.sortFields = options.sorting;
 				this.pageSize = options.pageSize;
 				this.page = options.page;
 				this.totalPages = options.totalPages;
@@ -59,6 +63,7 @@ define(['backbone',
 			this.addFilters();
 			this.addSearchFields();
 			this.addPages();
+			this.addSorting();
 		},
 		
 		readUrlParams: function(){
@@ -97,7 +102,17 @@ define(['backbone',
 		},
 		
 		addSorting: function() {
-			
+			var sort = _.template(sortTpl, {fields: this.sortFields});
+			$(this.sortingEl).append(sort);
+		},
+		
+		/**
+		 * Reads sorting information
+		 */
+		getSorting: function() {
+			var sortField = $("#filterOrderField").val();
+			var sortOrder = $("#filterOrder").val();
+			return {field: sortField, order: sortOrder};
 		},
 		
 		/**

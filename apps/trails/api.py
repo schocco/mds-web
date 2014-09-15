@@ -86,6 +86,7 @@ class TrailResource(ModelResource):
                      'edited': ALL,
                      'name': ALL,
                      }
+        ordering = ["name", "length"]
 
     
     def obj_create(self, bundle, **kwargs):

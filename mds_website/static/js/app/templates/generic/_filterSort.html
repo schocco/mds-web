@@ -1,0 +1,12 @@
+ <select id="filterOrderField">
+   <option value="">order by</option>
+   <option>-------</option>
+ <% _.each(fields, function(field, key, list){ %>
+   <option value="<%= field[0] %>"><%= field[1] %></option>
+ <% }); %>
+ </select> 
+ 
+  <select id="filterOrder">
+   <option value="">ascending</option>
+   <option value="-">descending</option>
+ </select> 
