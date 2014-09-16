@@ -1,9 +1,17 @@
 <p>
-Page <%= current %> of <%= total %>
+
 <% if(pages.length > 1){ %>
- | 
-<% _.each(pages, function(page){ %> 
-<a href="#<%= page %>" class="label pageLink"><%= page %></a>
-<% }); %>
+	|
+	<a href="#previous" class="label prevPage <% if(current <= 1){ %>hidden<% } %>"><i class="icon-arrow-left"></i></a>
+	
+	<% _.each(pages, function(page){ %> 
+		<% if(page==current){ %>
+			<span class="label blue"><%= page %></span> 
+		<% } else { %>
+			<a href="#<%= page %>" class="label pageLink"><%= page %></a>
+		<% } %>
+	<% }); %>
+	<a href="#next" class="label nextPage <% if(current == total){ %>hidden<% } %>"><i class="icon-arrow-right"></i></a>
+	
 <% } %>
 </p>

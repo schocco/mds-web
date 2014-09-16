@@ -1,5 +1,5 @@
-define(['backbone', 'models/TrailModel', 'collections/BaseCollection'],
-		function(Backbone, Trail, BaseCollection){
+define(['backbone', 'models/TrailModel', 'collections/BaseCollection', 'models/auth/UserModel'],
+		function(Backbone, Trail, BaseCollection, UserModel){
 	
 	var TrailsCollection = BaseCollection.extend({
 		model: Trail,
@@ -7,7 +7,6 @@ define(['backbone', 'models/TrailModel', 'collections/BaseCollection'],
 		searchFields: [{field: "name"}],
 		filters: [
 		          {field: "type", choices: [["downhill","downhill"],["xc","cross country"]], label: "type"},
-		          {field: "owner__username", choices: ["rocco"], label: "uploaded by me"}
 		          ],
 		sortFields: [["name", "name"], ["length","length"]]
 		//url : "/api/v1/trails/"

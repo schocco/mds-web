@@ -123,7 +123,6 @@ define(['backbone', 'models/TrailModel'],
 			
 		},
 		
-		
 		setPageSize: function(size){
 			if(_.isNumber(size) && size > 0){
 				this.settings.limit = size;

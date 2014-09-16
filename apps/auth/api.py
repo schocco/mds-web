@@ -53,7 +53,7 @@ class UserResource(ModelResource):
         list_allowed_methods = ['get', 'post']
         authentication = SessionAuthentication()
         authorization = DjangoAuthorization()
-        fields = ['username', 'email', 'last_login', 'first_name', 'last_name']
+        fields = ['id', 'username', 'email', 'last_login', 'first_name', 'last_name']
     
     def get_object_list(self, request): 
         return super(UserResource, self).get_object_list(request).filter(pk=request.user.pk)

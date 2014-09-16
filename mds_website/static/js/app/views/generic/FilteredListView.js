@@ -1,18 +1,7 @@
 /**
- * Generic view to render any collection with a bar for filtering and pagination.
- */
-/**
- * Generic filter bar to display pagination options, search fields and
- * selects or checkboxes.
- * This is a nonfunctional view that only renders the data it is passed in as options.
+ * Generic ListView for backbone collections that provide 
+ * filtering and pagination functionality.
  * 
- * Requires a pageable collection
- * 
- * Example
- * searchableFields = ["name"]
- * filters = [{field: type, choices: ["dh","uh"], label: "Type"}, {field: "owner", choices: [], label: "my uploads"}]
- * pageSize = 10
- * page = 1
  */
 define(['backbone',
         'underscore',
@@ -23,7 +12,7 @@ define(['backbone',
         ],
         function(Backbone, _, tpl, $, BaseView, FilterView){
 
-	var FilteredListView = Backbone.View.extend({
+	var FilteredListView = BaseView.extend({
 
 		searchFields: null,
 		filters: null,
@@ -43,15 +32,15 @@ define(['backbone',
 		 * 										pagination support
 		 * @param {String} options.template 	The template string for rendering 
 		 * 										with underscore. The template must contain a 
-		 * 										dom element with id=filters and an element with the id=items
-		 * @param {String} options.itemTemplate	Template for a single list item
-		 * @param (object} options.context		Context object for template rendering
+		 * 										dom element with id=filters and an element with the id=items.
+		 * 										Elements with the class "pageList" will be filled with links for
+		 * 										navigation between pages.
+		 * @param {String} options.itemTemplate	Template for a single list item.
+		 * @param (object} options.context		Context object for template rendering (available in both templates)
 		 * @param {boolean} options.filtered 	Whether or not the filter-box should be displayed
 		 * @param {int} options.pageSize 		number of elements per page
 		 */
 		initialize: function (options) {
-			
-			//TODO: read url params to preset filters before fetching collection
 			if(options){
 				if(options.filtered !== undefined){
 					this.filtered = options.filtered;
@@ -74,7 +63,7 @@ define(['backbone',
 			var that = this;
 		    var onDataHandler = function(collection) {
 		        that.render();
-		    }
+		    };
 		    this.collection.on("reset", this.addItems, this);
 		    this.render();
 		},
@@ -86,18 +75,28 @@ define(['backbone',
 		 */
 		render: function() {
 			var compiledTemplate = _.template(this.template, _.extend(this.context, {items: this.collection}));
-			this.$el.html(compiledTemplate);
+			this.setContent(compiledTemplate);
 			if(this.filtered){
 				this.addFilters();
 			}
 			this.addItems();
-			_.bindAll(this, "loadNextPage", "loadPrevPage", "applyFilters");
-			$('#nextPage').click(this.loadNextPage);
-			$('#prevPage').click(this.loadPrevPage);
+			_.bindAll(this, "loadNextPage", "loadPrevPage", "applyFilters", "resetFilters");
 			$('#applyFilters').click(this.applyFilters);
+			$('#resetFilters').click(this.resetFilters);
 		},
 		
 		addItems: function(items, response){
+			//also need to update the paging stuff
+			var pageInfo = {
+					total: this.collection.getTotalPages(),
+					current: this.collection.currentPageNumber()
+			};
+			this.filterView.updatePages(pageInfo);
+			_.bindAll(this, "loadPage", "loadNextPage", "loadPrevPage");
+			$('.pageLink').click(this.loadPage);
+			$('.nextPage').click(this.loadNextPage);
+			$('.prevPage').click(this.loadPrevPage);
+			
 			console.log("adding items");
 			var itemEl;
 			var itemContainer = $('#items');
@@ -111,15 +110,6 @@ define(['backbone',
 				itemContainer.append(itemEl);
 			}, this);
 			itemContainer.fadeIn();
-			
-			//also need to update the paging stuff
-			var pageInfo = {
-					total: this.collection.getTotalPages(),
-					current: this.collection.currentPageNumber()
-			};
-			this.filterView.updatePages(pageInfo);
-			_.bindAll(this, "loadPage");
-			$('.pageLink').click(this.loadPage);
 		},
 
 		addFilters: function() {
@@ -145,21 +135,30 @@ define(['backbone',
 			.getFirstPage();
 		},
 		
+		/**
+		 * @description
+		 * Re-renders the filter view to reset all elements
+		 * and removes the current settings from the collection.
+		 */
+		resetFilters: function(e){
+			e.preventDefault();
+			this.addFilters()
+			this.collection.clearSettings();
+			this.collection.getFirstPage();
+		},
+		
 		loadNextPage: function(e){
 			e.preventDefault();
-			console.log("getting next page");
 			this.collection.getNextPage();
 		},
 		
 		loadPrevPage: function(e){
 			e.preventDefault();
-			console.log("getting prev page");
 			this.collection.getPreviousPage();
 		},
 		
 		loadPage: function(e){
 			e.preventDefault();
-			console.log("going to page");
 			var page = parseInt($(e.target).attr("href").substring(1));
 			this.collection.getPage(page);
 		}

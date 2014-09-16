@@ -29,11 +29,12 @@ define(['backbone',
 		filters: null,
 		sorting: null,
 		pageSize: null,
+		searchMode: "__icontains",
 		page: 1,
 		totalPages: null,
 		filterEl: "#filterFields",
 		searchEl: "#searchFields",
-		pagesEl: "#pageList",
+		pagesEl: ".pageList",
 		sortingEl: "#sortFields",
 		
 		initialize: function (options) {
@@ -123,6 +124,24 @@ define(['backbone',
 		},
 		
 		/**
+		 * Reads the searchstring and key.
+		 */
+		getSearch: function() {
+			var searchKey = $("#filterSearchKey option:selected").val();
+			console.log("searchKey" + searchKey);
+			var searchVal = $("#filterSearchString").val();
+			if(_.isEmpty(searchKey) || _.isEmpty(searchVal)){
+				return {};
+			} else {
+				var ret = {};
+				var k = String(searchKey + this.searchMode);
+				ret[k] = searchVal;
+				return ret;
+			}
+			
+		},
+		
+		/**
 		 * Returns a list of objects. Each object represents one filter and has the
 		 * attributes name and value.
 		 */
@@ -139,6 +158,9 @@ define(['backbone',
 					filters[option.parent().attr('name')] = option.val();
 				}
 			});
+			var search = this.getSearch();
+			console.log(search);
+			_.extend(filters, search);
 			return filters;
 		},
 		

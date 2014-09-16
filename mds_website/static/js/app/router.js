@@ -1,6 +1,5 @@
 define(['backbone',
         'views/TrailListView',
-        'views/TrailListView2',
         'views/TrailDetailView',
         'views/_TrailRatingView',
         'views/TrailUploadView',
@@ -13,7 +12,7 @@ define(['backbone',
         'jquery',
         'jquery_cookie',
         'backbone_routefilter'
-        ], function(Backbone, TrailListView, TrailListView2, TrailDetailView, 
+        ], function(Backbone, TrailListView, TrailDetailView, 
         		TrailRatingView, TrailUploadView, MessageMixin, AuthView, RedirectView, UserModel, HomeView, FilterView, $){
 	// Navigation via router events
 	var WorkspaceRouter = Backbone.Router.extend({
@@ -34,8 +33,6 @@ define(['backbone',
 			"trails/create":	{func:"trail_create", authRequired:true},
 			"trails/:id/":		"trail_detail",
 			"contact": 			"contact",
-			"test":				"test",
-			"trails2":			"testTrails"
 		},
 
 		routes: function(){
@@ -61,12 +58,6 @@ define(['backbone',
 			new FilterView(options);
 		},
 		
-		testTrails: function(){
-			console.log("test trails view");
-			new TrailListView2();
-
-		},
-
 
 		/**
 		 * Called before the routing takes place.
@@ -97,7 +88,6 @@ define(['backbone',
 		},
 
 		trails: function() {
-			console.log("trails");
 			var trailView = new TrailListView;
 		},
 
@@ -106,12 +96,10 @@ define(['backbone',
 		},
 
 		trail_upload: function() {
-			console.log("trail upload");
 			var trailUpView = new TrailUploadView();
 		},
 
 		trail_create: function() {
-			console.log("trail create");
 			//var trailCreateView = new TrailCreateView();
 		},
 

@@ -1,7 +1,7 @@
-<select>
-<option value="">search by...</option>
+<h6>Search</h6>
+<input style="width:70%" type="text" placeholder="search" id="filterSearchString"></input><select id="filterSearchKey" style="width:30%;">
+<option value="">by...</option>
 <% _.each(fields, function(field, key, list){  %>
    <option value="<%= field.field %>"><%= field.label || field.field  %></option>
 <% }); %>
 </select>
-<input type="text" placeholder="search"></input>
