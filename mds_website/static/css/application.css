@@ -331,10 +331,16 @@ div.trailbox p {
 #filterContainer select {
 	padding: 2px;
 	border-width: 1px;
+	margin-bottom: 5px;
 	width: auto;
 }
 
 #filterContainer input {
 	padding: 5px;
 	width: auto;
+}
+
+#filterContainer h6 {
+	margin-bottom: 5px;
+	font-size: 110%;
 }

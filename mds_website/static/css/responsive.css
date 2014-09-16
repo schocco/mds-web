@@ -14,7 +14,8 @@ nav#primary ul {
 .one-third,
 .two-third,
 .one-quarter,
-.one-fifth {
+.one-fifth,
+.two-fifth {
     width: 260px;
 }
 
@@ -35,7 +36,8 @@ nav#primary ul {
     .one-third,
     .two-third,
     .one-quarter,
-    .one-fifth {
+    .one-fifth,
+    .two-fifth {
         width: 100%;
     }
 }
@@ -71,6 +73,10 @@ nav#primary ul {
     .one-fifth {
         width: 20%;
     }
+    
+    .two-fifth {
+    	width: 40%;
+    }
 }
 
 /**
@@ -104,6 +110,10 @@ nav#primary ul {
     .one-fifth {
         width: 20%;
     }
+    
+    .two-fifth {
+        width: 40%;
+    }
 }
 
 /**
@@ -136,6 +146,10 @@ nav#primary ul {
 
     .one-fifth {
         width: 20%;
+    }
+    
+    .two-fifth {
+        width: 40%;
     }
 }
 /* Fix icons in IE */

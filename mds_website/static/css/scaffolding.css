@@ -17,7 +17,8 @@
 .one-third,
 .two-third,
 .one-quarter,
-.one-fifth {
+.one-fifth,
+.two-fifth {
 	margin: 0;
     padding-right: 25px;
 	float: left;
@@ -45,4 +46,8 @@
 
 .one-fifth {
     width: 20%;
+}
+
+.two-fifth {
+    width: 40%;
 }
