@@ -98,7 +98,15 @@ define(['backbone',
 		},
 		
 		addPages: function() {
+			
 			$(this.pagesEl).html('<p>Page 1 of 2 | <a href="" class="label icon-arrow-left"></a> <a href="" class="label">1</a> <a href="#" class="label">2</a> <a href="" class="label icon-arrow-right"></a></p>');
+		},
+		
+		updatePages: function(pageInfo){
+			var tpl = '<p>Page <%= current %> of <%= total %> | <% _.each(pages, function(page){ %> <a href="" class="label"><%= page %></a><% }) %>';
+			var pages = _.range(1, pageInfo.total+1);
+			var compiled = _.template(tpl, {pages: pages, current: pageInfo.current || 1, total: pageInfo.total})
+			$(this.pagesEl).html(compiled);
 		},
 		
 		addSorting: function() {

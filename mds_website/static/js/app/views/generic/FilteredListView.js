@@ -104,11 +104,20 @@ define(['backbone',
 			itemContainer.html("");
 			itemContainer.hide();
 			
+			console.log("pages:");
+			
 			this.collection.each(function(item){
 				itemEl = _.template(this.itemTemplate, {item: item});
 				itemContainer.append(itemEl);
 			}, this);
 			itemContainer.fadeIn();
+			
+			//also need to update the paging stuff
+			var pageInfo = {
+					total: this.collection.getTotalPages(),
+					current: this.collection.currentPageNumber()
+			};
+			this.filterView.updatePages(pageInfo);
 		},
 
 		addFilters: function() {
