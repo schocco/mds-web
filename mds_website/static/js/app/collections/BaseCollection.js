@@ -138,7 +138,7 @@ define(['backbone', 'models/TrailModel'],
 		},
 		
 		currentPageNumber: function(){
-			return Math.floor(this.recentMeta.offset / this.getLimit) + 1;
+			return Math.floor(this.recentMeta.offset / this.getPageSize()) + 1;
 		},
 		
 		/**

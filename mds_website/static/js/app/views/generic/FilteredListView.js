@@ -118,6 +118,8 @@ define(['backbone',
 					current: this.collection.currentPageNumber()
 			};
 			this.filterView.updatePages(pageInfo);
+			_.bindAll(this, "loadPage");
+			$('.pageLink').click(this.loadPage);
 		},
 
 		addFilters: function() {
@@ -154,6 +156,13 @@ define(['backbone',
 			console.log("getting prev page");
 			this.collection.getPreviousPage();
 		},
+		
+		loadPage: function(e){
+			e.preventDefault();
+			console.log("going to page");
+			var page = parseInt($(e.target).attr("href").substring(1));
+			this.collection.getPage(page);
+		}
 
 	});
 

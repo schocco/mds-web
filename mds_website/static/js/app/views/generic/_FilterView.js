@@ -17,10 +17,11 @@ define(['backbone',
         'text!templates/generic/_filterSelect.html',
         'text!templates/generic/_filterCheckbox.html',
         'text!templates/generic/_filterSort.html',
+        'text!templates/generic/_filterPaging.html',
         'jquery',
         'views/BaseView'
         ],
-		function(Backbone, _, tpl, searchTpl, selectTpl, checkboxTpl, sortTpl, $, BaseView){
+		function(Backbone, _, tpl, searchTpl, selectTpl, checkboxTpl, sortTpl, pageTpl, $, BaseView){
 	
 	var FilterView = Backbone.View.extend({
 		
@@ -62,7 +63,6 @@ define(['backbone',
 			this.$el.html(compiledTemplate);
 			this.addFilters();
 			this.addSearchFields();
-			this.addPages();
 			this.addSorting();
 		},
 		
@@ -97,15 +97,14 @@ define(['backbone',
 			return this;
 		},
 		
-		addPages: function() {
-			
-			$(this.pagesEl).html('<p>Page 1 of 2 | <a href="" class="label icon-arrow-left"></a> <a href="" class="label">1</a> <a href="#" class="label">2</a> <a href="" class="label icon-arrow-right"></a></p>');
-		},
-		
 		updatePages: function(pageInfo){
-			var tpl = '<p>Page <%= current %> of <%= total %> | <% _.each(pages, function(page){ %> <a href="" class="label"><%= page %></a><% }) %>';
 			var pages = _.range(1, pageInfo.total+1);
-			var compiled = _.template(tpl, {pages: pages, current: pageInfo.current || 1, total: pageInfo.total})
+			var context = {
+					pages: pages,
+					current: pageInfo.current || 1, 
+					total: pageInfo.total
+					};
+			var compiled = _.template(pageTpl, context);
 			$(this.pagesEl).html(compiled);
 		},
 		

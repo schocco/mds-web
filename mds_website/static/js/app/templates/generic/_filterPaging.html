@@ -1,0 +1,9 @@
+<p>
+Page <%= current %> of <%= total %>
+<% if(pages.length > 1){ %>
+ | 
+<% _.each(pages, function(page){ %> 
+<a href="#<%= page %>" class="label pageLink"><%= page %></a>
+<% }); %>
+<% } %>
+</p>

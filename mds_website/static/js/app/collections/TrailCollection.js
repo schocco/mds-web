@@ -9,7 +9,7 @@ define(['backbone', 'models/TrailModel', 'collections/BaseCollection'],
 		          {field: "type", choices: [["downhill","downhill"],["xc","cross country"]], label: "type"},
 		          {field: "owner__username", choices: ["rocco"], label: "uploaded by me"}
 		          ],
-		sorting: [["name", "name"], ["length","length"]]
+		sortFields: [["name", "name"], ["length","length"]]
 		//url : "/api/v1/trails/"
 	});
 	

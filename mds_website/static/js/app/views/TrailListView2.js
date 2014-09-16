@@ -18,7 +18,6 @@ define(['backbone',
 			BaseView.prototype.initialize.apply(this);
 			var that = this;
 		    var onDataHandler = function(collection) {
-		    	console.log("fetched data.");
 		        that.render();
 		    }
 		    this.collection = cache.get('TrailsCollection', TrailsCollection, { success : onDataHandler });
