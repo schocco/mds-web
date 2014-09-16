@@ -34,7 +34,8 @@ class HomeView(TemplateView):
         '''
         Return the request user as json string
         '''
-        ur = UserResource()
-        ur_bundle = ur.build_bundle(obj=self.request.user, request=self.request)
-        json = ur.serialize(None, ur.full_dehydrate(ur_bundle), 'application/json')
-        return json
+        if(self.request.user.id):
+            ur = UserResource()
+            ur_bundle = ur.build_bundle(obj=self.request.user, request=self.request)
+            json = ur.serialize(None, ur.full_dehydrate(ur_bundle), 'application/json')
+            return json
