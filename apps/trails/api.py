@@ -102,10 +102,11 @@ class TrailResource(ModelResource):
 
     def load_gpx(self, request, **kwargs):
         if request.method == 'POST':
-            gpx_file = request.FILES['gpx']
+            gpx_file = request.FILES.get('gpx', False)
+            print(gpx_file)
             ls = None
-            if(gpx_file.name.lower().endswith(".gpx") or gpx_file.name.lower().endswith(".xml")
-               and gpx_file.size < 10000):        
+            if(gpx_file and (gpx_file.name.lower().endswith(".gpx") or gpx_file.name.lower().endswith(".xml")
+               and gpx_file.size < 10000)):        
                 filehandle, tmpath = tempfile.mkstemp(suffix=".gpx")
                 with open(tmpath, 'wb+') as destination:
                     for chunk in gpx_file.chunks():
