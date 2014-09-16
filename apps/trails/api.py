@@ -59,7 +59,7 @@ class TrailResource(ModelResource):
     
     The length attribute is added through the query interface with a call to length().
     '''
-    #owner = fields.ToOneField(UserResource, 'owner', null=True, blank=True)
+    owner = fields.ToOneField(UserResource, 'owner', null=True, blank=True)
     altitude_difference = fields.CharField(attribute='get_altitude_difference', readonly=True)
     length = DistanceField(attribute='length', readonly=True, units=("m", "km", "ft", "mi", "yd"), null=True, blank=True)
     max_slope = fields.CharField(attribute='get_max_slope', readonly=True, use_in="detail")

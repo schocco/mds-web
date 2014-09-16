@@ -128,7 +128,9 @@ define(['backbone',
 			});
 			$(this.filterEl + " select option:selected").each(function(idx){
 				var option = $(this);
-				filters[option.parent().attr('name')] = option.val();
+				if(option.val()){
+					filters[option.parent().attr('name')] = option.val();
+				}
 			});
 			return filters;
 		},

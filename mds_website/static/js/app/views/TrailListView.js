@@ -4,6 +4,7 @@ define(['backbone',
         'underscore',
         'views/BaseView',
         'views/generic/_FilterView',
+        'views/generic/FilteredListView',
         'text!templates/trail_list.html',
         'jquery',
         ],
@@ -64,12 +65,21 @@ define(['backbone',
 			var compiledTemplate = _.template( tpl, {'trails': this.collection });
 			this.setContent(compiledTemplate);
 			this.filterView = new FilterView(this.filterOptions, {el:"#filters"});
+			
+			this.listView = new FilteredListView({collection: this.collection});
+			
 			_.bindAll(this, "loadNextPage", "loadPrevPage", "applyFilters");
 			$('#nextPage').click(this.loadNextPage);
 			$('#prevPage').click(this.loadPrevPage);
 			$('#applyFilters').click(this.applyFilters);
-			
 		},
+		
+		renderList: function(){
+			if(this.listView){
+				this.listView.render();
+			}
+			//var compiledTemplate = _.template( tpl, {'trails': this.collection });
+		}
 			
 	});
 	

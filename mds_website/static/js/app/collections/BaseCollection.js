@@ -18,6 +18,7 @@ define(['backbone', 'models/TrailModel'],
 			"offset": 0,
 			"limit": 20
 		},
+		
 
 		/**
 		 * Set the META returned by the API and return the resources.
@@ -33,13 +34,11 @@ define(['backbone', 'models/TrailModel'],
 					limit : this.getPageSize()
 			};
 			urlparams = $.extend(urlparams, this.settings.filterOptions);
-			console.log(urlparams);
 			if (this.settings.sortBy) {
 				urlparams = $.extend(urlparams, {
 					sort_by : this.settings.sortingOrder + this.settings.sortBy
 				});
 			}
-			console.log("url");
 			return this.baseUrl + '?' + $.param(urlparams);
 		},
 
@@ -92,9 +91,11 @@ define(['backbone', 'models/TrailModel'],
 		},
 		
 		/**
-		 * Provide filter options.
+		 * Provide filter options as a dictionary.
+		 * {"name" : "abc"} becomes &name=abc
 		 */
 		setFilterOptions: function(filter) {
+			// TODO: allow other comparators than =
 			this.settings.filterOptions = filter;
 			return this;
 		},
@@ -112,8 +113,9 @@ define(['backbone', 'models/TrailModel'],
 		 * Can be either "+" (ascendind) or "-" (descending)
 		 */
 		setSortOrder: function(order){
-			if(order == "+" || order == "-"){
-				this.settings.sortingOrder = order;
+			if(order == "+" || order == "-" || order ==""){
+				//+ is the default ordering, represented by empty str
+				this.settings.sortingOrder = order.replace("+", "");
 				return this;
 			} else {
 				throw "illegalArgument: must be '+' or '-'";
