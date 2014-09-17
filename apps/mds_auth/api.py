@@ -78,7 +78,7 @@ class UserResource(ModelResource):
         Code source: taken from https://stackoverflow.com/questions/11770501/how-can-i-login-to-django-using-tastypie
         '''
         self.method_check(request, allowed=['post'])
-        data = self.deserialize(request, request.raw_post_data, format=request.META.get('CONTENT_TYPE', 'application/json'))
+        data = self.deserialize(request, request.body, format=request.META.get('CONTENT_TYPE', 'application/json'))
         username = data.get('username', '')
         password = data.get('password', '')
 
