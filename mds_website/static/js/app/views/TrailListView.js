@@ -39,7 +39,7 @@ define(['backbone',
 			
 			//patch collection to allow filtering by user
 			if(UserModel.currentUser.isAuthenticated()){
-				console.log(UserModel.currentUser);
+				//FIXME: only add filter once
 				var filter = {field: "owner", choices: [UserModel.currentUser.get("id")], label: "my uploads"};
 				this.collection.filters.push(filter);
 			}

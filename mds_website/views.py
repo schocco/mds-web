@@ -1,7 +1,7 @@
 from django.views.generic.base import TemplateView
 
 from apps.muni_scales.api import MscaleResource
-from apps.auth.api import UserResource
+from apps.mds_auth.api import UserResource
 
 
 class HomeView(TemplateView):

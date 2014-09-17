@@ -17,8 +17,8 @@ from tastypie.exceptions import BadRequest
 from tastypie.utils.urls import trailing_slash
 from tastypie.validation import CleanedDataFormValidation
 
-from apps.auth.api import UserResource
-from apps.auth.authorization import ReadAllDjangoAuthorization, \
+from apps.mds_auth.api import UserResource
+from apps.mds_auth.authorization import ReadAllDjangoAuthorization, \
     ReadAllSessionAuthentication
 from apps.muni_scales.api import UXCResource, UDHResource
 from apps.trails.forms import TrailForm

@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from tastypie.api import Api
 
-from apps.auth.api import SocialSignUpResource, BackendResource, UserResource
+from apps.mds_auth.api import SocialSignUpResource, BackendResource, UserResource
 from apps.muni_scales.api import MscaleResource, UDHResource, UXCResource
 from apps.trails.api import TrailResource
 from mds_website.views import HomeView

@@ -11,7 +11,7 @@ from tastypie.resources import Resource, ModelResource
 from tastypie.utils.mime import build_content_type
 from tastypie.validation import CleanedDataFormValidation
 
-from apps.auth.authorization import ReadAllSessionAuthentication, \
+from apps.mds_auth.authorization import ReadAllSessionAuthentication, \
     ReadAllDjangoAuthorization
 from apps.muni_scales.fields import MscaleFieldMixin
 from apps.muni_scales.forms import UDHscaleForm, UXCscaleForm
