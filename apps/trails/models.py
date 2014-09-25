@@ -31,7 +31,7 @@ class Trail(models.Model):
     created = models.DateTimeField(_('created'), auto_now_add=True, blank=True)
     edited = models.DateTimeField(_('last change'), auto_now=True, blank=True)
     description = models.CharField(_('description'), max_length=500, blank=True)
-    waypoints = MultiLineStringField(_('waypoints'), dim=3, null=True, blank=True) #include altitude as Z
+    waypoints = MultiLineStringField(_('waypoints'), dim=3) #include altitude as Z
     trail_length = models.IntegerField(_('length'), help_text=_("in meters"), blank=True, null=True)
     objects = GeoManager()
     # user

@@ -1,0 +1,15 @@
+[ {
+	"model" : "auth.User",
+	"pk" : 1,
+	"fields" : {
+		"username" : "Pacman",
+		"email" : "pac@man.com"
+	}
+}, {
+	"model" : "auth.User",
+	"pk" : 2,
+	"fields" : {
+		"username" : "Shadow",
+		"email" : "shadow@light.org"
+	}
+} ]
