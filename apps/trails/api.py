@@ -22,7 +22,7 @@ from apps.mds_auth.authorization import ReadAllDjangoAuthorization, \
     ReadAllSessionAuthentication
 from apps.muni_scales.api import UXCResource, UDHResource
 from apps.trails.forms import TrailForm
-from apps.trails.load import GPXReader
+from apps.trails.load import GPXReader, GPXImportError
 from apps.trails.models import Trail
 
 
@@ -112,7 +112,10 @@ class TrailResource(ModelResource):
                     for chunk in gpx_file.chunks():
                         destination.write(chunk)
                 #get linestring
-                ls = GPXReader(tmpath)
+                try:
+                    ls = GPXReader(tmpath)
+                except GPXImportError:
+                    raise BadRequest("File could not be loaded. ")
                 os.remove(tmpath)
                 response = MultiLineString(ls.to_linestring().simplify(tolerance=0.00002)).geojson
                 # do not use create_response here, the linestring is already serialized to geojson
