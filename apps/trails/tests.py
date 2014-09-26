@@ -2,6 +2,7 @@ import os
 
 from django.contrib.auth.models import User
 from django.contrib.gis.geos import MultiLineString, LineString
+from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
 
@@ -56,13 +57,28 @@ class ImportGPXTest(TestCase):
         self.assertIsNotNone(t1.created, 'timestamp has not been added automatically')
         self.assertIsNotNone(t1.edited, 'timestamp has not been added automatically')
         
-    def test_file_upload(self):
+    def test_gpx_upload(self):
+        '''Uploading GPX files should succeed'''
+        response = self._upload_file('data/BadWildbad.gpx')
+        self.assertEqual(response.status_code, 200)
+        
+    def test_invalid_upload(self):
+        'Uploading other files should fail'
+        response = self._upload_file('api.py')
+        self.assertEqual(response.status_code, 400)
+        response = self._upload_file('data/empty.gpx')
+        self.assertEqual(response.status_code, 400)
+        
+    def _upload_file(self, file_path):
+        'Uploads a file and returns the response object.'
         c = Client()
         path = os.path.dirname( __file__ )
-        gpx_file = os.path.join(path, 'data/BadWildbad.gpx')
+        gpx_file = os.path.join(path, file_path)
         self.assertTrue(os.path.exists(gpx_file))
         with open(gpx_file) as fp:
-            c.post('/load-gpx/', {'gpx': fp})
+            response = c.post(reverse('api_load_gpx', kwargs={'resource_name':'trails', 'api_name':'v1'}), {'gpx': fp})
+        return response
+        
             
             
 class TrailFunctionTest(TestCase):
