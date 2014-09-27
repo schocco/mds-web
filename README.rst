@@ -30,6 +30,7 @@ Requirements
 - Python packages as listed in requirements.txt (created via PIP)
 - PostGIS instance (see geodjango documentation for setup instructions)
 - GDAL
+- a message broker for celery (e.g. RabbitMQ)
 - yui-compressor for minification of static files
 
 Deployment
