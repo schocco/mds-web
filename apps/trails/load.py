@@ -1,11 +1,18 @@
 '''
 module for gpx conversion tasks
+:deprecated: in favour of load2.py
 '''
+import os
+
 from django.contrib.gis.geos import MultiLineString
+from django.contrib.gis.geos.error import GEOSException
 from django.contrib.gis.geos.geometry import GEOSGeometry
 from django.contrib.gis.geos.linestring import LineString
+from django.contrib.gis.gdal import DataSource
 from osgeo import ogr
-import os
+
+import logging
+logger = logging.getLogger(__name__)
 
 class GPXImportError(Exception):
     'Exception to be raised when gpx files cannot be read.'
@@ -86,12 +93,24 @@ class GPXReader(object):
         '''       
         lyr = self._get_layer(layer)
         objs = []
-        #FIXME: causes exception when GPS files from oruxmaps are used
+        print "Number of layers is %d" % lyr.GetFeatureCount() 
         for feature_idx in range(lyr.GetFeatureCount()):
             feature = lyr.GetFeature(feature_idx)
             gdal_obj = feature.GetGeometryRef()
+            print gdal_obj.__class__.__name__
+            print "Geometryname is %s" % str(gdal_obj.geom_name)
+            geos_obj = None
             # TODO: should run some profiling to check which conversion
             # format is fastest / most efficient
-            geos_obj = GEOSGeometry(buffer(gdal_obj.ExportToWkb()))
-            objs.append(geos_obj)
+            try:
+                gdal_obj.IsValid()
+                buf = buffer(gdal_obj.ExportToWkb())
+                geos_obj = GEOSGeometry(buf)
+                objs.append(geos_obj)
+            except RuntimeError, e:
+                # this can happen, when a geometrycollection is invalid,
+                # e.g. when a LineString only has a single point but needs at least 2
+                # try to iterate over all children to fix this problem
+                
+                print e
         return objs

@@ -22,7 +22,7 @@ from apps.mds_auth.authorization import ReadAllDjangoAuthorization, \
     ReadAllSessionAuthentication
 from apps.muni_scales.api import UXCResource, UDHResource
 from apps.trails.forms import TrailForm
-from apps.trails.load import GPXReader, GPXImportError
+from apps.trails.load2 import GPXReader, GPXImportError
 from apps.trails.models import Trail
 
 

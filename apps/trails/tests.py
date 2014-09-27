@@ -1,3 +1,4 @@
+import json
 import os
 
 from django.contrib.auth.models import User
@@ -6,7 +7,8 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
 
-from apps.trails.load import GPXReader
+from apps.trails import loadGPX
+from apps.trails.load2 import GPXReader
 from models import Trail
 
 
@@ -57,10 +59,19 @@ class ImportGPXTest(TestCase):
         self.assertIsNotNone(t1.created, 'timestamp has not been added automatically')
         self.assertIsNotNone(t1.edited, 'timestamp has not been added automatically')
         
+        
+        
     def test_gpx_upload(self):
         '''Uploading GPX files should succeed'''
         response = self._upload_file('data/BadWildbad.gpx')
         self.assertEqual(response.status_code, 200)
+        response = self._upload_file('data/oruxmaps-unicon17-xc.gpx')
+        self.assertEqual(response.status_code, 200)
+        jsonObj = json.loads(response.content)
+        # the resulting json is a multilinestring where each point
+        # has 3 dimensions (lat,lon,ele)
+        point = jsonObj['coordinates'][0][0]
+        self.assertEqual(len(point), 3, "Points must include elevation data")
         
     def test_invalid_upload(self):
         'Uploading other files should fail'
