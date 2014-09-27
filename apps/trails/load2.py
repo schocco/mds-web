@@ -66,4 +66,8 @@ class GPXReader(object):
             layer_idx = self._guess_layer()
         layer = self.ds[layer_idx]
         if layer_idx == 4 or layer_idx == 3:
-            return MultiLineString(LineString(layer.get_geoms(geos=True)))
+            try:
+                mls = MultiLineString(LineString(layer.get_geoms(geos=True)))
+            except TypeError:
+                raise GPXImportError("The track must include elevation data")
+            return mls

@@ -114,12 +114,12 @@ class TrailResource(ModelResource):
                 #get linestring
                 try:
                     ls = GPXReader(tmpath)
-                except GPXImportError:
-                    raise BadRequest("File could not be loaded. ")
+                    response = MultiLineString(ls.to_linestring().simplify(tolerance=0.00002)).geojson
+                    # do not use create_response here, the linestring is already serialized to geojson
+                    return HttpResponse(response)
+                except GPXImportError, e:
+                    raise BadRequest("File could not be loaded: " + e.message)
                 os.remove(tmpath)
-                response = MultiLineString(ls.to_linestring().simplify(tolerance=0.00002)).geojson
-                # do not use create_response here, the linestring is already serialized to geojson
-                return HttpResponse(response)
         # raise http error
         raise BadRequest("only gpx/xml files smaller than 10,000 bytes are allowed.")
         
