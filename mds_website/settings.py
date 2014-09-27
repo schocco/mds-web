@@ -224,6 +224,13 @@ TEMPLATE_DIRS = (
     os.path.join(PROJECT_DIR, 'templates'),
 )
 
+
+############# CELERY SETTINGS
+## Using the database to store task state and results.
+CELERY_RESULT_BACKEND = 'amqp'
+BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+CELERY_TIMEZONE = TIME_ZONE
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',

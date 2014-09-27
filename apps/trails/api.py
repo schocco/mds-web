@@ -24,6 +24,8 @@ from apps.muni_scales.api import UXCResource, UDHResource
 from apps.trails.forms import TrailForm
 from apps.trails.load2 import GPXReader, GPXImportError
 from apps.trails.models import Trail
+from apps.trails.tasks import get_linestring
+import tasks
 
 
 class DistanceField(fields.DictField):
@@ -103,7 +105,6 @@ class TrailResource(ModelResource):
     def load_gpx(self, request, **kwargs):
         if request.method == 'POST':
             gpx_file = request.FILES.get('gpx', False)
-            print(gpx_file)
             ls = None
             if(gpx_file and (gpx_file.name.lower().endswith(".gpx") or gpx_file.name.lower().endswith(".xml")
                and gpx_file.size < 10000)):        
@@ -112,9 +113,10 @@ class TrailResource(ModelResource):
                     for chunk in gpx_file.chunks():
                         destination.write(chunk)
                 #get linestring
+                
                 try:
-                    ls = GPXReader(tmpath)
-                    response = MultiLineString(ls.to_linestring().simplify(tolerance=0.00002)).geojson
+                    r = get_linestring.delay(tmpath)
+                    response = r.get(propagate=True) #TODO: dont block.
                     # do not use create_response here, the linestring is already serialized to geojson
                     return HttpResponse(response)
                 except GPXImportError, e:

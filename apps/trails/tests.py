@@ -7,7 +7,6 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
 
-from apps.trails import loadGPX
 from apps.trails.load2 import GPXReader
 from models import Trail
 
