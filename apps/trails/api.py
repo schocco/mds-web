@@ -136,7 +136,7 @@ class TrailResource(ModelResource):
             except GPXImportError, e:
                 raise BadRequest("File could not be loaded: " + e.message)
         else:
-            return self.create_response(request, {}, HttpNoContent())
+            return self.create_response(request, {}, HttpNoContent)
         
         
     

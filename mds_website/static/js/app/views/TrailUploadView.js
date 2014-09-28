@@ -74,12 +74,13 @@ define(['backbone',
 			        percent.html(percentVal);
 			    },
 				complete: function(xhr) {
-					console.log(xhr);
 					if(xhr.status != 200){
 						that.showMessage({msg:xhr.responseText, type:that.ERROR});
 					} else {
-						that.trail.set({waypoints: JSON.parse(xhr.responseText)});
-						// get filename and prefill name field in info form
+						// poll for result and update trail if successful
+						task_id = JSON.parse(xhr.responseText).task_id
+						//that.pollForResult(task_id);
+						that.pollForResult(task_id);
 						var path = $("#gpx").val();
 						var fileName = String(path.match(/[^\/\\]+$/));
 						fileName = fileName.slice(0, -4); //strip .gpx
@@ -87,12 +88,12 @@ define(['backbone',
 						// toggle visibility
 						$('#import_div').addClass("hidden");
 						$('#info_div').removeClass('hidden');
+						$('#map_div').removeClass('hidden');
 						// errors will be displayed in other div (other form)
 						that.msg = '#info_form_errors';
-						that.show_map();
 					}
 				}
-			}); 
+			});
 
 			//trigger submit when upload link is clicked
 			$('#submit').click(function(e) {
@@ -117,7 +118,27 @@ define(['backbone',
 			});
 		},
 		
+		pollForResult: function(task_id){
+			var url = this.trail.urlRoot + "load-gpx/result/" + task_id + "/";
+			var that = this;
+			var xhr = $.getJSON(url)
+				.done(function(data, textStatus, xhr){
+					if(xhr.status == 204){
+						console.log("try again");
+						setTimeout(function() {
+							that.pollForResult(task_id);
+						}, 400);
+					} else if(xhr.status == 200){
+						that.trail.set({waypoints: data});
+						that.show_map();
+					}
+				})
+				.fail(function(xhr){
+					that.showMessage({msg:xhr.responseJSON.error, type:that.ERROR});
+				});
+		},
 		
+
 		/** save details in trail object and save it on the server. */
 		save_trail: function(){
 			//TODO: validate first
@@ -136,7 +157,6 @@ define(['backbone',
 		
 		/** update map */
 		show_map: function(){
-			$('#map_div').removeClass('hidden');
 			this.mapview = new MapView({parent:"#mapdiv", geojson:this.trail.get("waypoints"), editable: true});
 		},
 		
