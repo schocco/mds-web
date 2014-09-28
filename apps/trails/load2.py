@@ -68,6 +68,6 @@ class GPXReader(object):
         if layer_idx == 4 or layer_idx == 3:
             try:
                 mls = MultiLineString(LineString(layer.get_geoms(geos=True)))
-            except TypeError:
-                raise GPXImportError("The track must include elevation data")
+            except TypeError, e:
+                raise GPXImportError("Elevation data for this track is incomplete - " + e.message)
             return mls

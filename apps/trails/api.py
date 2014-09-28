@@ -14,6 +14,7 @@ from tastypie.authorization import DjangoAuthorization
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.contrib.gis.resources import ModelResource
 from tastypie.exceptions import BadRequest
+from tastypie.http import HttpNoContent
 from tastypie.utils.urls import trailing_slash
 from tastypie.validation import CleanedDataFormValidation
 
@@ -97,9 +98,14 @@ class TrailResource(ModelResource):
 
     def prepend_urls(self):
         return [
+            # loading GPX files
             url(r"^(?P<resource_name>%s)/load-gpx%s$" %
                 (self._meta.resource_name, trailing_slash()),
                 self.wrap_view('load_gpx'), name="api_load_gpx"),
+            # querying for the geojson result
+            url(r"^(?P<resource_name>%s)/load-gpx/result/(?P<task_id>[\w\d-]+)%s$" %
+                (self._meta.resource_name, trailing_slash()),
+                self.wrap_view('get_gpx_result'), name="api_get_geojson")
         ]
 
     def load_gpx(self, request, **kwargs):
@@ -112,17 +118,25 @@ class TrailResource(ModelResource):
                 with open(tmpath, 'wb+') as destination:
                     for chunk in gpx_file.chunks():
                         destination.write(chunk)
-                #get linestring
-                
-                try:
-                    r = get_linestring.delay(tmpath)
-                    response = r.get(propagate=True) #TODO: dont block.
-                    # do not use create_response here, the linestring is already serialized to geojson
-                    return HttpResponse(response)
-                except GPXImportError, e:
-                    raise BadRequest("File could not be loaded: " + e.message)
-                os.remove(tmpath)
-        # raise http error
+                #get linestring                
+                r = get_linestring.delay(tmpath)
+                return self.create_response(request, {"task_id": r.id})
         raise BadRequest("only gpx/xml files smaller than 10,000 bytes are allowed.")
+    
+    def get_gpx_result(self, request, **kwargs):
+        # get task id
+        task_id = kwargs.pop("task_id")
+        result = get_linestring.AsyncResult(task_id)
+        if result.ready():
+            try:
+                response = result.get(propagate=True)
+                # do not use create_response here, the linestring
+                # is already serialized to geojson
+                return HttpResponse(response)
+            except GPXImportError, e:
+                raise BadRequest("File could not be loaded: " + e.message)
+        else:
+            return self.create_response(request, {}, HttpNoContent())
+        
         
     
