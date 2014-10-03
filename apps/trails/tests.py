@@ -1,5 +1,6 @@
 import json
 import os
+import time
 
 from django.contrib.auth.models import User
 from django.contrib.gis.geos import MultiLineString, LineString
@@ -10,6 +11,8 @@ from django.test.client import Client
 from apps.trails.load2 import GPXReader
 from models import Trail
 
+# time to wait between retrying api calls
+WAIT_INTERVAL = 0.05
 
 class ManualTrailConstructionTest(TestCase):
     '''
@@ -66,6 +69,8 @@ class ImportGPXTest(TestCase):
         self.assertEqual(response.status_code, 200)
         response = self._upload_file('data/oruxmaps-unicon17-xc.gpx')
         self.assertEqual(response.status_code, 200)
+        task_id = json.loads(response.content).get("task_id")
+        response = self._get_geojson(task_id, 0.5)
         jsonObj = json.loads(response.content)
         # the resulting json is a multilinestring where each point
         # has 3 dimensions (lat,lon,ele)
@@ -74,11 +79,17 @@ class ImportGPXTest(TestCase):
         
     def test_invalid_upload(self):
         'Uploading other files should fail'
-        response = self._upload_file('api.py')
-        self.assertEqual(response.status_code, 400)
-        response = self._upload_file('data/empty.gpx')
-        self.assertEqual(response.status_code, 400)
-        
+        response1 = self._upload_file('api.py')
+        self.assertEqual(response1.status_code, 400, 'wrong file types should be detected immediately')
+        response2 = self._upload_file('data/empty.gpx')
+        self.assertEqual(response2.status_code, 200)
+
+        c = Client()
+        tid2 = json.loads(response2.content).get("task_id")
+        response2b = self._get_geojson(tid2, 0.2)
+        self.assertEqual(response2b.status_code, 400)
+   
+   
     def _upload_file(self, file_path):
         'Uploads a file and returns the response object.'
         c = Client()
@@ -88,7 +99,25 @@ class ImportGPXTest(TestCase):
         with open(gpx_file) as fp:
             response = c.post(reverse('api_load_gpx', kwargs={'resource_name':'trails', 'api_name':'v1'}), {'gpx': fp})
         return response
-        
+    
+    def _get_geojson(self, task_id, max_wait=1):
+        '''
+        Calls the api method to get the result for the executed gpx load task.
+        Retry on empty results until max_wait time is exceeded.
+        '''
+        total_wait = 0
+        c = Client()
+        while True:
+            resp = c.get(reverse('api_get_geojson',
+                                 kwargs={'resource_name':'trails', 'api_name':'v1', 'task_id':task_id}))
+            if(total_wait > max_wait):
+                self.fail("Maximum wait time exceeded for api call.")                                      
+            if(resp.status_code == 204):
+                time.sleep(WAIT_INTERVAL)
+                total_wait += WAIT_INTERVAL
+            else:
+                break
+        return resp
             
             
 class TrailFunctionTest(TestCase):
