@@ -5,9 +5,8 @@ define(['backbone', 'models/TrailModel', 'collections/BaseCollection', 'models/a
 		model: Trail,
 		baseUrl: "/api/v1/trails/",
 		searchFields: [{field: "name"}],
-		filters: [
-		          {field: "type", choices: [["downhill","downhill"],["xc","cross country"]], label: "type"},
-		          ],
+		filters: {"type": {choices: [["downhill","downhill"],["xc","cross country"]], label: "type"},
+					},
 		sortFields: [["name", "name"], ["length","length"]]
 		//url : "/api/v1/trails/"
 	});

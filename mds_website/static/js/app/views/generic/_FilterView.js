@@ -80,10 +80,10 @@ define(['backbone',
 				var rendered = "";
 				if(filter.choices.length == 1){
 					//render checkbox element
-					rendered = _.template(checkboxTpl, {filter: filter});
+					rendered = _.template(checkboxTpl, {filter: filter, key: key});
 				} else if(filter.choices.length > 1){
 					// render select element with all choices
-					rendered = _.template(selectTpl, {filter: filter});
+					rendered = _.template(selectTpl, {filter: filter, key: key});
 				}
 				$filterEl.append(rendered);
 			});

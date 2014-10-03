@@ -39,9 +39,8 @@ define(['backbone',
 			
 			//patch collection to allow filtering by user
 			if(UserModel.currentUser.isAuthenticated()){
-				//FIXME: only add filter once
-				var filter = {field: "owner", choices: [UserModel.currentUser.get("id")], label: "my uploads"};
-				this.collection.filters.push(filter);
+				var filter = {choices: [UserModel.currentUser.get("id")], label: "my uploads"};
+				this.collection.filters["owner"] = {choices: [UserModel.currentUser.get("id")], label: "my uploads"};
 			}
 			this.listView = new FilteredListView(options);	
 			
