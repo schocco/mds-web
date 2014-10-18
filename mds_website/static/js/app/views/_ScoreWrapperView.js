@@ -26,34 +26,57 @@ define(['backbone',
 		 */
 		initialize: function (options) {
 			this.scale = null;
+			this.trail = options.trail; //optional
 			this.editable = options.editable;
 			this.el = options.parent;
 			this.ratingDiv = "#ratingDiv"; //div for the scoreView
 			this.mscales = cache.get('MscaleCollection');
 			this.type = options.type;
+			
 			this.createScaleObj();
+			this.saveable = this.trail != null && this.editable;
 		},
 		
 		/** create appropriate scale object and listen for scale changes */
 		createScaleObj: function(){
-			if(this.type == "udh"){
-				// creates a new object or converts object to UDH model type
-				this.scale = new UDH();
-			}
-			else if(this.type == "uxc"){
-				// creates a new object or converts object to UDH model type
-				this.scale = new UXC();
+			if(this.trail != null){
+				if(this.trail.get("type") == "downhill"){
+					this.type = "udh";
+					// creates a new object or converts object to UDH model type
+					this.scale = new UDH(this.trail.get("udh_rating"));
+				}
+				else if(this.trail.get("type") == "xc"){
+					this.type = "uxc";
+					// creates a new object or converts object to UXC model type
+					this.scale = new UXC(this.trail.get("uxc_rating"));
+				} 
+			} else if(this.type != null){
+				if(this.type == "udh"){
+					this.scale = new UDH();
+				}
+				else if(this.type == "uxc"){
+					this.scale = new UXC();
+				}
 			} else {
 				throw "Unknown scale type!";
 			}
 			// listen for changes of the scale object, and update score when it has changed
 			// do not register in init method to ensure scale objects exist before listener registration
 			this.listenTo(this.scale, "score_update", this.displayScore);
+			if(this.scale.get("id")){
+				//scale already persisted, so not editable
+				this.editable = false;
+			}
 		},
+
 		
 		/** renders the whole view. Adds either the udh or uxc form to the view. */
 		render: function(){
-			var compiledTemplate = _.template(tpl, {scale: this.scale, editable: this.editable});
+			var compiledTemplate = _.template(tpl, {
+				scale: this.scale, 
+				editable: this.editable,
+				saveable: this.saveable
+				});
 			$(this.el).html(compiledTemplate);
 			var options = {	
 					parent: this.ratingDiv,
@@ -69,12 +92,22 @@ define(['backbone',
 			}
 		},
 		
-		/**
-		 * Makes the table editable. Editable status will remain after re-rendering.
-		 */
-		setEditable: function(flag){
-			this.editable = flag;
+		
+		getValues: function(){
+			//FIXME: naming is inconsistent. The scale has different names than the trail. This should be unified, alternatively
+			// constants should be used.
+			var values = { // use scale values and fallback to trail values
+					max_difficulty: this.scale.get('maximum_difficulty'),
+					length: this.scale.get('total_length') || this.trail && this.trail.get('length').m,
+					total_ascent: this.scale.get('total_ascent') || this.trail && this.trail.get('total_ascent'),
+					max_slope: this.scale.get('maximum_slope_uh') || this.trail && this.trail.get('max_slope_uh'),
+					avg_slope: this.scale.get('average_slope') || this.trail && this.trail.get('avg_slope'),
+					avg_difficulty: this.scale.get('average_difficulty')
+				};
+			return values;
 		},
+
+		
 		
 		/** replaces table cells with form fields to allow editing the rating. */
 		makeEditable: function(){
@@ -82,16 +115,7 @@ define(['backbone',
 				console.log("Do not make table editable, its already got a scale object");
 				return;
 			}
-			//FIXME: naming is inconsistent. The scale has different names than the trail. This should be unified, alternatively
-			// constants should be used.
-			var values = { // use scale values and fallback to trail values
-					max_difficulty: this.scale.get('maximum_difficulty'),
-					length: this.scale.get('total_length'),
-					total_ascent: this.scale.get('total_ascent'),
-					max_slope: this.scale.get('maximum_slope_uh'),
-					avg_slope: this.scale.get('average_slope'),
-					avg_difficulty: this.scale.get('average_difficulty')
-				};
+			var values = this.getValues();
 			var context = {trail: this.trail, mscales: this.mscales.models, scale: this.scale, values: values};
 			var replacements = {
 					max_difficulty: _.template('<select name="maximum_difficulty"><% _.each(mscales, function(mscale) { %> \
@@ -216,7 +240,21 @@ define(['backbone',
 			$.each(fields, function(i, field){
 				scale.set(field.name, field.value);
 			});
-			
+		},
+		
+		/**
+		* Makes the table editable. Editable status will remain after re-rendering.
+		*/
+		setEditable: function(flag){
+			this.editable = flag;
+		},
+		
+		setScale: function(scale){
+			this.scale = scale;
+		},
+		
+		setTrail: function(trail){
+			this.trail = trail;
 		}
 		
 			

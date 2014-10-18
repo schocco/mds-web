@@ -8,12 +8,9 @@
     <h6>Trail Data</h6>
 	<p>Data which has been extracted from the GPS track. The rating data may differ.</p>
     <table class="table-striped nb">
-    <thead>
-    </thead>
-    <tbody>
         <tr>
-            <th>Type</th>
-            <th><%= trail.get('type') %></th>
+            <td>Type</td>
+            <td><%= trail.get('type') %></td>
         </tr>
         <tr>
             <td>Altitude Difference from start to finish</td>
@@ -43,15 +40,13 @@
             <td>Total Descent</td>
             <td><%= Math.round(trail.get('total_descent')) %> m</td>
         </tr>
-        
-    </tbody>
     </table>
 </div>
 
 <div class="one-half">
 <h6>Description</h6>
     <p>
-    <%= trail.get('description') %>
+    <%= _.escape(trail.get('description')) %>
     </p>
     <p>Created on: <%= trail.get('created') %></p>
 </div>

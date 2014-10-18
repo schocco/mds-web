@@ -42,11 +42,26 @@ define(['backbone',
 			});
 		},
 		
+		/**
+		 * Sets the values of the calculation example in the calculator table. 
+		 */
 		showExample: function(){
-			//TODO
-			console.log("TODO: update calculator and scrollto top");
+			//get form fields by name and set values
+			var avgSlope = $("input[name=average_slope]");
+			var avgDif = $("select[name=average_difficulty]");
+			var maxDif = $("select[name=maximum_difficulty]");
+			var length = $("input[name=total_length]");
+
+			avgSlope.val(16);
+			avgDif.val(1.5);
+			maxDif.val(3.5);
+			length.val(6000);
 			
-		}
+			this.scoreWrapperView.updateScore();
+			
+			//FIXME: scrolls to wrong position.
+			$('html,body').animate({scrollTop: $("#calculator").offset().top},'slow');
+	}
 		
 			
 	});

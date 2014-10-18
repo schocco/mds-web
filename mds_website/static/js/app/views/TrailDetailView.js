@@ -1,14 +1,14 @@
 define(['backbone',
         'models/TrailModel',
         'views/_MapView',
-        'views/_TrailRatingView',
+        'views/_ScoreWrapperView',
         'views/BaseView',
         'underscore',
         'text!templates/trail_detail.html',
         'jquery',
         'openlayers',
         'chart'],
-		function(Backbone, Trail, MapView, TrailRatingView, BaseView, _, tpl, $, OpenLayers, chart){
+		function(Backbone, Trail, MapView, ScoreWrapperView, BaseView, _, tpl, $, OpenLayers, chart){
 	
 	var TrailDetailView = BaseView.extend({
 		el: '#content',
@@ -98,12 +98,16 @@ define(['backbone',
 		},
 		
 		render_score: function(){
-			this.scoreview = new TrailRatingView({parent: "#score_div", trail: this.trail});
+			this.scoreview = new ScoreWrapperView({
+				parent: "#score_div",
+				trail: this.trail,
+				editable: true
+			});
+			this.scoreview.render();
 		},
 		
 		/** renders the whole view. */
 		render: function(){
-			console.log("render template");
 			var compiledTemplate = _.template( tpl, {'trail': this.trail });
 			this.setContent(compiledTemplate);
 			console.log("create hight profile");
