@@ -1,7 +1,6 @@
 define(['backbone',
         'views/TrailListView',
         'views/TrailDetailView',
-        'views/_TrailRatingView',
         'views/TrailUploadView',
         'views/util/MessageMixin',
         'views/auth/AuthView',
@@ -15,7 +14,7 @@ define(['backbone',
         'jquery_cookie',
         'backbone_routefilter'
         ], function(Backbone, TrailListView, TrailDetailView, 
-        		TrailRatingView, TrailUploadView, MessageMixin, 
+        		TrailUploadView, MessageMixin, 
         		AuthView, RedirectView, UserModel, HomeView,
 				UdhView, UxcView, FilterView, $){
 	// Navigation via router events

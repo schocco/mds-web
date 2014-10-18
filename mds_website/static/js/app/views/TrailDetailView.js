@@ -118,13 +118,6 @@ define(['backbone',
 			
 			console.log("create score/rating view");
 			this.render_score();
-			
-			// add handler to link
-			var that = this;
-			$('#rate').click(function(event){
-				event.preventDefault();
-				var rateview = new TrailRatingView({trail: that.trail});
-			});
 		}
 			
 	});
