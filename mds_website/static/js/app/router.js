@@ -9,6 +9,7 @@ define(['backbone',
         'models/auth/UserModel',
         'views/HomeView',
         'views/UdhView',
+        'views/UxcView',
         'views/generic/_FilterView',
         'jquery',
         'jquery_cookie',
@@ -16,7 +17,7 @@ define(['backbone',
         ], function(Backbone, TrailListView, TrailDetailView, 
         		TrailRatingView, TrailUploadView, MessageMixin, 
         		AuthView, RedirectView, UserModel, HomeView,
-				UdhView, FilterView, $){
+				UdhView, UxcView, FilterView, $){
 	// Navigation via router events
 	var WorkspaceRouter = Backbone.Router.extend({
 
@@ -47,19 +48,6 @@ define(['backbone',
 			return routes;
 		},
 
-		test: function(){
-			console.log("ztesz");
-			var options = {
-					el: "#content",
-					searchFields: [{field: "name"},
-					               {field: "length"}
-					],
-					filters: [{field: "type", choices: [["dh", "downhill"],["uh", "uphill"]], label: "Type"},
-					          {field: "owner", choices: ["rocco"], label: "my uploads"}],
-					          pageSize: 10
-			};
-			new FilterView(options);
-		},
 		
 
 		/**
@@ -83,7 +71,7 @@ define(['backbone',
 		},
 
 		uxc: function() {
-			console.log("uxc");
+			var uxcView = new UxcView();
 		},
 
 		mts: function() {
