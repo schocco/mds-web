@@ -64,7 +64,7 @@ define(['backbone',
 		 * Performs auth checks using the routesPlus hash.
 		 */
 		before: function(route, params) {
-			var authRequired = this.routesPlus[route].authRequired
+			var authRequired = this.routesPlus[route].authRequired;
 			if(authRequired && !UserModel.currentUser.isAuthenticated()){
 				new RedirectView();
 				return false;

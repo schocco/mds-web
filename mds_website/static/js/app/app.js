@@ -77,7 +77,7 @@ define(['backbone',
 	 * Sets the bootstrapped mscale collection in the cache.
 	 */
 	var bootstrapMscales = function(){
-		var mscaleJson = module.config().mscaleCollection
+		var mscaleJson = module.config().mscaleCollection;
 		var mscales = new MscaleCollection;
 		mscales.reset(JSON.parse(mscaleJson));
 		console.log(mscales);
@@ -92,14 +92,14 @@ define(['backbone',
 	 * Listens for login events to set the user when a login occurs.
 	 */
 	var setCurrentUser = function(){
-		var userJson = module.config().current_user
+		var userJson = module.config().current_user;
 		var user = new UserModel(JSON.parse(userJson));
 		console.log(user);
 		UserModel.currentUser = user;
 		//start monitoring the user session
 		UserSessionMonitor.start();
 		console.log("set user.");
-	}
+	};
 	
 	return {
 		initialize : initialize
