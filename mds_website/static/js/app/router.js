@@ -8,12 +8,15 @@ define(['backbone',
         'views/auth/RedirectView',
         'models/auth/UserModel',
         'views/HomeView',
+        'views/UdhView',
         'views/generic/_FilterView',
         'jquery',
         'jquery_cookie',
         'backbone_routefilter'
         ], function(Backbone, TrailListView, TrailDetailView, 
-        		TrailRatingView, TrailUploadView, MessageMixin, AuthView, RedirectView, UserModel, HomeView, FilterView, $){
+        		TrailRatingView, TrailUploadView, MessageMixin, 
+        		AuthView, RedirectView, UserModel, HomeView,
+				UdhView, FilterView, $){
 	// Navigation via router events
 	var WorkspaceRouter = Backbone.Router.extend({
 
@@ -76,7 +79,7 @@ define(['backbone',
 		},
 
 		udh: function() {
-			console.log("udh");
+			var udhView = new UdhView();
 		},
 
 		uxc: function() {

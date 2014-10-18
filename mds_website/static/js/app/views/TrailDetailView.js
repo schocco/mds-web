@@ -20,7 +20,7 @@ define(['backbone',
 		    var onDataHandler = function(model) {
 		    	console.log("fetched trail");
 		        that.render();
-		    }
+		    };
 		    if(options.id){
 		    	//XXX: cannot use trail from cached collection as some fields are only available in the detail view
 			    that.id = options.id;
@@ -30,7 +30,7 @@ define(['backbone',
 		    	that.trail = new Trail(options.trail);
 		    	that.render();
 		    } else{
-		    	throw "missing argument, need either id or trail"
+		    	throw "missing argument, need either id or trail";
 		    }
 		},
 
@@ -58,7 +58,7 @@ define(['backbone',
 							data : profile.values
 						}
 					]
-				}
+			};
 			return data;
 		},
 		

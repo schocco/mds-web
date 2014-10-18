@@ -1,6 +1,7 @@
 /**
- * A wrapper view around the MtsScoreView which adds additional functionality for updating values.
- * Turns the data table into a form.
+ * A wrapper view around the MtsScoreView which adds additional functionality.
+ * Lays out the score table and the chart side by side.
+ * The data table can be turned into a form.
  */
 
 define(['backbone',
@@ -11,78 +12,72 @@ define(['backbone',
         'views/MtsScoreView',
         'collections/MscaleCollection',
         'underscore',
-        'text!templates/_trail_rating.html',
+        'text!templates/_score_wrapper.html',
         'jquery',
         'jquery_form'],
 		function(Backbone, cache, Trail, UDH, UXC, ScoreView, MscaleCollection, _, tpl, $){
 	
-	var _TrailRatingView = Backbone.View.extend({
-		el: '#content',
-		msg: '#form_errors',
+	var _ScoreWrapperView = Backbone.View.extend({
 		
 		/**
-		 * @param trail: trail obj
-		 * @param id: trail id must be given if no trail object is provided
 		 * @param parent: container in which view should be rendered
+		 * @param type: either "UDH" or "UXC"
+		 * @param editable (boolean)
 		 */
 		initialize: function (options) {
-			var that = this;
 			this.scale = null;
-			this.ctr = 0;
+			this.editable = options.editable;
 			this.el = options.parent;
-			
+			this.ratingDiv = "#ratingDiv"; //div for the scoreView
 			this.mscales = cache.get('MscaleCollection');
-			
-		    var onDataHandler = function(model) {
-		    	that.read_trail_info();
-		        that.render();
-		    };
-			if(options.trail == undefined){
-				that.trail = new Trail({id: that.id});
-			    that.trail.fetch({success: onDataHandler});
-			} else{
-				that.trail = options.trail;
-				that.read_trail_info();
-				that.render();
-			}			
+			this.type = options.type;
+			this.createScaleObj();
 		},
 		
 		/** create appropriate scale object and listen for scale changes */
-		read_trail_info: function(){
-			if(this.trail.get("type") == "downhill"){
-				this.type = "udh";
+		createScaleObj: function(){
+			if(this.type == "udh"){
 				// creates a new object or converts object to UDH model type
-				this.scale = new UDH(this.trail.get("udh_rating"));
+				this.scale = new UDH();
 			}
-			else if(this.trail.get("type") == "xc"){
-				this.type = "uxc";
+			else if(this.type == "uxc"){
 				// creates a new object or converts object to UDH model type
-				this.scale = new UXC(this.trail.get("uxc_rating"));
+				this.scale = new UXC();
 			} else {
-				console.log("Unknown type");
-				this.scale = {};
+				throw "Unknown scale type!";
 			}
 			// listen for changes of the scale object, and update score when it has changed
-			// do not register in init method to ensure scale objects exists before listener registration
-			this.listenTo(this.scale, "score_update", this.display_score);
+			// do not register in init method to ensure scale objects exist before listener registration
+			this.listenTo(this.scale, "score_update", this.displayScore);
 		},
 		
 		/** renders the whole view. Adds either the udh or uxc form to the view. */
 		render: function(){
-			console.debug("render ratingview template");
-			var compiledTemplate = _.template(tpl, {scale: this.scale, trail: this.trail});
+			var compiledTemplate = _.template(tpl, {scale: this.scale, editable: this.editable});
 			$(this.el).html(compiledTemplate);
-			var options = {	parent: "#rating_div",
+			var options = {	
+					parent: this.ratingDiv,
 					type: this.type,
-					scale: this.scale
-				 };
+					scale: this.scale,
+					tableDiv: "ratingDiv",
+					chartDiv: "radarChartDiv",
+					canvasId: "chartCanvas"
+			};
 			this.scoreView = new ScoreView(options);
-			this.make_editable();
-			this.set_up_form();	
+			if(this.editable){
+				this.makeEditable();
+			}
+		},
+		
+		/**
+		 * Makes the table editable. Editable status will remain after re-rendering.
+		 */
+		setEditable: function(flag){
+			this.editable = flag;
 		},
 		
 		/** replaces table cells with form fields to allow editing the rating. */
-		make_editable: function(){
+		makeEditable: function(){
 			if(this.scale.get("id")){
 				console.log("Do not make table editable, its already got a scale object");
 				return;
@@ -91,10 +86,10 @@ define(['backbone',
 			// constants should be used.
 			var values = { // use scale values and fallback to trail values
 					max_difficulty: this.scale.get('maximum_difficulty'),
-					length: this.scale.get('total_length') || this.trail.get('length').m,
-					total_ascent: this.scale.get('total_ascent') || this.trail.get('total_ascent'),
-					max_slope: this.scale.get('maximum_slope_uh') || this.trail.get('max_slope_uh'),
-					avg_slope: this.scale.get('average_slope') || this.trail.get('avg_slope'),
+					length: this.scale.get('total_length'),
+					total_ascent: this.scale.get('total_ascent'),
+					max_slope: this.scale.get('maximum_slope_uh'),
+					avg_slope: this.scale.get('average_slope'),
 					avg_difficulty: this.scale.get('average_difficulty')
 				};
 			var context = {trail: this.trail, mscales: this.mscales.models, scale: this.scale, values: values};
@@ -114,40 +109,41 @@ define(['backbone',
 			for (var key in replacements) {
 				$("#"+key).html(replacements[key]);
 			}
+			this.setUpForm();
 		},
 		
 		/** add appropriate event handlers to the form.
 		 * The form fields are re-rendered when an update of the data occurs, so that the
 		 * input change listener needs to be bound again after a re-rendering. */
-		set_up_form: function(){
+		setUpForm: function(){
 			var csrftoken = $('meta[name=csrf-token]').attr("content");
 			var that = this;
 			//update scale object when form data is changed
-			this.set_up_form_fields();
+			this.setUpFormFields();
 			//submit button
 			$('#submit').click(function(evt){
 				evt.preventDefault();
 				$('#scale_form').submit();
 			});
 			//update button
-			$('#update_score').click(function(evt){
+			$('#updateScore').click(function(evt){
 				evt.preventDefault();
-				that.update_score();
+				that.updateScore();
 			});
 			//form submission
 			$('#scale_form').submit(function(evt){
 				evt.preventDefault();
-				that.save_score();
+				that.saveScore();
 			});
 		},
 		
 		/** update scale object when form data is changed */
-		set_up_form_fields: function(){
+		setUpFormFields: function(){
 			var that = this;
 			//update scale object when form data is changed
 			$('#scale_form').find(':input').change(function(src){
-				that.form_change_handler(src, that.scale);
-				that.update_score();
+				that.formChangeHandler(src, that.scale);
+				that.updateScore();
 				});
 		},
 		
@@ -156,15 +152,13 @@ define(['backbone',
 		 * The scale object triggers an event
 		 * when it is done fetching the score.
 		 **/
-		update_score: function(){
+		updateScore: function(){
 			//make sure form values are stored in scale obj
-			this.form_change_handler(null, this.scale);
+			this.formChangeHandler(null, this.scale);
 			if(this.scale.isValid()){
 				this.scale.get_score(); //triggers an update event
 				this.hideMessage();
 			} else{
-				console.log("cannot get score, while obj isn't valid");
-				console.log("Errors are:" + this.scale.validationError);
 				this.showMessage({type:this.ERROR, msg:this.scale.validationError});
 			}
 
@@ -174,7 +168,7 @@ define(['backbone',
 		 * Persists the current values of the scale in the backend.
 		 * Makes the form non-editable.
 		 */
-		save_score: function(){
+		saveScore: function(){
 			//make sure the object is assigned to the current trail
 			var that = this;
 			this.scale.set({"trail": this.trail.url()});
@@ -190,40 +184,31 @@ define(['backbone',
 			    }});
 		},
 		
-//		show_form_errors: function(errors){
-//			var tpl = "<ul><% _.each(errors, function(err) { %><li><%= err %></li><% }); %></ul>";
-//			var rendered = _.template(tpl, {errors: errors});
-//			$("#form_errors").html(rendered);
-//			$("#form_errors").show({duration:300});
-//		},
-		
-//		reset_form_errors: function(){
-//			$("#form_errors").html("");
-//			$("#form_errors").hide({duration: 0});
-//		},
-		
 		/** Callback function for the score_update event emitted by the scale object.
 		 * Displays the values of the score object */
-		display_score: function(error){
+		displayScore: function(error){
 			if(error){
 				console.error(error);
 				//TODO display meaningful errors to user
 			} else {
-				var options = {	parent: "#rating_div",
+				var options = {	parent: this.ratingDiv,
 								type: this.type,
 								scale: this.scale
 							 };
 				this.scoreView.update(options);//this.scale);
-				this.make_editable();
-				// need to bind change events after re-rendering:
-				this.set_up_form_fields();
+				if(this.editable){
+					this.makeEditable();
+					// need to bind change events after re-rendering:
+					this.setUpFormFields();
+				}
+
 			}
 		},
 		
 		
 		/** handler that updates the values of the scale
 		 * object when values are changed in the form. */
-		form_change_handler: function(field, scale){
+		formChangeHandler: function(field, scale){
 			var fields = $('#scale_form').serializeArray();
 			var that = this;
 
@@ -237,7 +222,7 @@ define(['backbone',
 			
 	});
 	
-	return _TrailRatingView;
+	return _ScoreWrapperView;
 	
 });
 

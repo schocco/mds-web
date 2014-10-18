@@ -27,16 +27,18 @@ define(['backbone',
 		 * @param editable: true when data should be editable (default: false)
 		 */
 		initialize: function(options) {
-			console.log(options);
 			this.type = options.type;
-			this.el = $(options.parent);
+			this.el = options.parent;
+			this.tableDiv = options.tableDiv;
+			this.chartDiv = options.chartDiv;
+			this.canvasId = options.canvasId;
 			this.scale = options.scale;
 			this.tpl = tpl;
 
 			if(this.type.toLowerCase() == "udh"){
 				this.labeldict = $.extend({avg_slope: "Average slope (%)"}, this.labels);
 			} else if(this.type.toLowerCase() == "uxc"){
-				this.labeldict = $.extend({max_slope: "Maximum slope uphill (%)", total_ascent: "Total ascent (m)"}, this.labels)
+				this.labeldict = $.extend({max_slope: "Maximum slope uphill (%)", total_ascent: "Total ascent (m)"}, this.labels);
 			} else {
 				throw new Error("type option must be 'udh' or 'uxc', but got " + type);
 			}
@@ -51,7 +53,8 @@ define(['backbone',
 				this.scale.set("score", this.labeldict);
 			}
 			
-			var compiledTemplate = _.template( this.tpl, {'scale': this.scale, 'labels': this.labeldict });
+			var compiledTemplate = _.template( this.tpl, 
+				{'scale': this.scale, 'labels': this.labeldict });
 			$(this.el).html(compiledTemplate);
 			this.draw_score_chart();
 		},
@@ -85,11 +88,12 @@ define(['backbone',
 			var score = this.scale.get("score");
 			
 			//set size
-		    var div = document.getElementById("radarChartDiv");
-			var canvas = document.getElementById("score_chart");
-			console.log("canvas will be set to:");
+			console.log("chartdiv is " + this.chartDiv);
+		    var div = document.getElementById(this.chartDiv);
+			var canvas = document.getElementById(this.canvasId);
+			console.log("canvasDiv size:");
 			console.log("h:" + div.offsetHeight + " w:" + div.offsetWidth);
-			canvas.height = 450;
+			canvas.height = div.offsetWidth - 10;
 			canvas.width  = div.offsetWidth;
 			
 			if(this.type == "udh"){
@@ -109,8 +113,8 @@ define(['backbone',
 								data : scoreData
 							}
 						]
-					}
-				var ctx = document.getElementById("score_chart").getContext("2d");
+				};
+				var ctx = document.getElementById(this.canvasId).getContext("2d");
 				new Chart(ctx).Radar(data,options);
 			} else {
 				// UXC 
@@ -130,8 +134,8 @@ define(['backbone',
 								data : scoreData
 							}
 						]
-					}
-				var ctx = document.getElementById("score_chart").getContext("2d");
+				};
+				var ctx = document.getElementById(this.canvasId).getContext("2d");
 				new Chart(ctx).Radar(data,options);
 			}
 			
