@@ -32,6 +32,7 @@ define(['backbone',
 			$('#logoCaption').fadeOut(function(){
 				$(this).html(that.title || that.getTitle()).fadeIn(600);
 			});
+			document.title = (that.title || that.getTitle()) + " - Muni Difficulty Scale | A Tool to Measure Trail Difficulty";
 			function getPos(el) {
 			    for (var lx=0, ly=0;
 			         el != null;
