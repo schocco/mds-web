@@ -11,7 +11,7 @@ define(['backbone',
         'models/UDHModel',
         'mathjax'
         ],
-		function(Backbone, _, tpl, $, cache, BaseView, ScoreWrapperView, UDH){
+		function(Backbone, _, tpl, $, cache, BaseView, ScoreWrapperView, UDH, MathJax){
 	
 	var UdhView = BaseView.extend({
 		el: '#content',
@@ -27,6 +27,9 @@ define(['backbone',
 		render: function(){
 			var compiledTemplate = _.template( tpl, {'meta': {} });
 			this.setContent(compiledTemplate);
+			
+			//setup math/formulas
+			MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 			
 			var options = {	
 				parent: "#calculator",

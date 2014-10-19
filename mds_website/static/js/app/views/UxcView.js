@@ -11,7 +11,7 @@ define(['backbone',
         'models/UXCModel',
         'mathjax'
         ],
-		function(Backbone, _, tpl, $, cache, BaseView, ScoreWrapperView, UXC){
+		function(Backbone, _, tpl, $, cache, BaseView, ScoreWrapperView, UXC, MathJax){
 	
 	var UxcView = BaseView.extend({
 		el: '#content',
@@ -27,6 +27,8 @@ define(['backbone',
 		render: function(){
 			var compiledTemplate = _.template( tpl, {'meta': {} });
 			this.setContent(compiledTemplate);
+			//reparse page with mathjax 
+			MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 			
 			var options = {	
 				parent: "#calculator",
