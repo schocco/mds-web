@@ -11,7 +11,7 @@ define(['backbone',
 	
 	var MscalesView = BaseView.extend({
 		
-		title: "Trails",
+		title: "M-Scale",
 		
 		initialize: function () {
 			BaseView.prototype.initialize.apply(this);
