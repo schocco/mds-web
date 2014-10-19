@@ -36,7 +36,7 @@ define(['backbone',
 		 * 										Elements with the class "pageList" will be filled with links for
 		 * 										navigation between pages.
 		 * @param {String} options.itemTemplate	Template for a single list item.
-		 * @param (object} options.context		Context object for template rendering (available in both templates)
+		 * @param {object} options.context		Context object for template rendering (available in both templates)
 		 * @param {boolean} options.filtered 	Whether or not the filter-box should be displayed
 		 * @param {int} options.pageSize 		number of elements per page
 		 */

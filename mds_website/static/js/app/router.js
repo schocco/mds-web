@@ -9,6 +9,7 @@ define(['backbone',
         'views/HomeView',
         'views/UdhView',
         'views/UxcView',
+        'views/MscaleListView',
         'views/generic/_FilterView',
         'jquery',
         'jquery_cookie',
@@ -16,7 +17,7 @@ define(['backbone',
         ], function(Backbone, TrailListView, TrailDetailView, 
         		TrailUploadView, MessageMixin, 
         		AuthView, RedirectView, UserModel, HomeView,
-				UdhView, UxcView, FilterView, $){
+				UdhView, UxcView, MscalesView, FilterView, $){
 	// Navigation via router events
 	var WorkspaceRouter = Backbone.Router.extend({
 
@@ -74,7 +75,7 @@ define(['backbone',
 		},
 
 		mts: function() {
-			console.log("mts");
+			var mtsView = new MscalesView();
 		},
 
 		trails: function() {
