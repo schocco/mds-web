@@ -19,12 +19,18 @@ require.config({
 		jquery_cookie: '../jquery/jquery.cookie.1.4.1',
 		prettify: '../prettify',
 		openlayers: '../openlayers/OpenLayers',
-		scrollreveal: '../scrollreveal/scrollReveal'
+		scrollreveal: '../scrollreveal/scrollReveal',
+		mathjax: "../MathJax-2.4/MathJax.js?config=MML_HTMLorMML"
 	},
+
+	
 	    shim: {
 	    	'chart': {
 	    		exports: 'chart'
 	    	},
+	    	mathjax: {
+		      exports: "MathJax"
+		    },
 	        'backbone': {
 	            deps: ['underscore', 'jquery'],
 	            //Once loaded, use the global 'Backbone' as the

@@ -9,6 +9,7 @@ define(['backbone',
         'views/BaseView',
 		'views/_ScoreWrapperView',
         'models/UXCModel',
+        'mathjax'
         ],
 		function(Backbone, _, tpl, $, cache, BaseView, ScoreWrapperView, UXC){
 	
