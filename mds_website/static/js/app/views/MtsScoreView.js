@@ -14,8 +14,8 @@ define(['backbone',
 		tpl: null,
 		score: null,
 		labeldict: null, //dictionary to use for the template rendering
-		labels: {avg_difficulty: "Average difficulty (MTS)",
-				max_difficulty: "Maximum difficulty (MTS)",
+		labels: {avg_difficulty: "Average difficulty (M-Scale)",
+				max_difficulty: "Maximum difficulty (M-Scale)",
 				total_length: "Total length (m)",
 				total_score: "Total score"
 				},

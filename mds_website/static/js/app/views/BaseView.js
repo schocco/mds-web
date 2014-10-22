@@ -30,9 +30,9 @@ define(['backbone',
 			$('#startButton').hide();
 			var that = this;
 			$('#logoCaption').fadeOut(function(){
-				$(this).html(that.title || that.getTitle()).fadeIn(600);
+				$(this).html(that.getTitle()).fadeIn(600);
 			});
-			document.title = (that.title || that.getTitle()) + " - Muni Difficulty Scale | A Tool to Measure Trail Difficulty";
+			document.title = (that.getTitle()) + " - Muni Difficulty Scale | A Tool to Measure Trail Difficulty";
 			function getPos(el) {
 			    for (var lx=0, ly=0;
 			         el != null;
@@ -57,6 +57,17 @@ define(['backbone',
 		setContent: function(content, call){
 			this.$el.hide();
 			this.$el.html(content).fadeIn(600, call);
+		},
+		
+		/**
+		 * @return the page title or an empty string if none is set
+		 */
+		getTitle: function(){
+			if(this.title){
+				return this.title;
+			}
+			console.warn("No title set.");
+			return "";
 		}
 		
 			

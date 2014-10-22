@@ -14,6 +14,7 @@ define(['backbone',
 	 */
 	var RedirectView = BaseView.extend({
 		msg: "#redirectMsg",
+		title: 'not authorized',
 		
 		initialize: function (options) {
 			BaseView.prototype.initialize.apply(this);
