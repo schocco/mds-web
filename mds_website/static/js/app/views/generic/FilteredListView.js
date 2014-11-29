@@ -74,7 +74,8 @@ define(['backbone',
 		 * clears this.$el and appends all items to this.$el
 		 */
 		render: function() {
-			var compiledTemplate = _.template(this.template)(_.extend(this.context, {items: this.collection}));
+			var template = _.template(this.template);
+			var compiledTemplate = template(_.extend(this.context, {items: this.collection}));
 			this.setContent(compiledTemplate);
 			if(this.filtered){
 				this.addFilters();
@@ -105,9 +106,9 @@ define(['backbone',
 			
 			console.log("pages:");
 			
-			var item = _.template(this.itemTemplate);
+			var itemTemplate = _.template(this.itemTemplate);
 			this.collection.each(function(item){
-				itemEl = item({item: item});
+				itemEl = itemTemplate({item: item});
 				itemContainer.append(itemEl);
 			}, this);
 			itemContainer.fadeIn();

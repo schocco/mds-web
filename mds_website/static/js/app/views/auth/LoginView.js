@@ -30,9 +30,6 @@ define(['backbone',
 		    //var users = new UserCollection().fetch({async:false, reset: true, success: userHandler});
 		    this.collection = cache.get('SocialAuthBackendCollection', SocialAuthBackendCollection, { success : onDataHandler });
 		    this.collection.on("reset", this.render, this);
-		    if(this.collection.length){
-				this.render(); //needed when collection loaded from cache
-		    }
 
 		},
 		

@@ -25,17 +25,11 @@ define(['backbone',
 			BaseView.prototype.initialize.apply(this);
 			var that = this;
 		    var onDataHandler = function(collection) {
-		    	console.log("fetched data.");
 		        that.render();
 		    };
 			that.trail = new Trail();
 			//the datahandler is only called when the collection is fetched the first time.
-			that.collection = cache.get('TrailsCollection', TrailCollection, { success : onDataHandler });
-			if(that.collection.length >= 0){
-				that.render();
-			}
-			
-   
+			that.collection = cache.get('TrailsCollection', TrailCollection, { success : onDataHandler });  
 		    
 		},
 		
