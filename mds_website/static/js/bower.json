@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "main": "app/app.js",
     "dependencies": {
-        "chartjs": null,
+        "chartjs": "v1.0.1-beta.4",
         "MathJax": null,
         "modernizr": null,
         "openlayers": null,

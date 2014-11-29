@@ -93,6 +93,7 @@ define(['backbone',
 					scaleLineColor : "rgba(0,0,0,.3)",
 					scaleGridLineColor : "rgba(0,0,0,.15)",
 					bezierCurve : false,
+					responsive: true
 				};
 			var heightProfileChart = new Chart(ctx).Line(data, options);
 		},

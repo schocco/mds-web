@@ -83,7 +83,8 @@ define(['backbone',
 					scaleLineColor : "rgba(0,0,0,.15)",
 					scaleOverride : true,
 					scaleStepWidth : 1,
-					scaleSteps : 10
+					scaleSteps : 10,
+					responsive: true
 					};
 			var score = this.scale.get("score");
 			
