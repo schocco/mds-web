@@ -12,8 +12,8 @@ define(['backbone',
         'views/MscaleListView',
         'views/generic/_FilterView',
         'jquery',
-        'jquery_cookie',
-        'backbone_routefilter'
+        'jquery-cookie',
+        'backbone-routefilter'
         ], function(Backbone, TrailListView, TrailDetailView, 
         		TrailUploadView, MessageMixin, 
         		AuthView, RedirectView, UserModel, HomeView,

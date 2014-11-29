@@ -9,7 +9,8 @@ define(['backbone',
         'views/BaseView',
         'jquery',
         'openlayers',
-        'jquery_form'],
+        //'jquery_form'
+        ],
 		function(Backbone, Trail, TrailCollection, cache, MapView, TrailDetailView, _, tpl, BaseView, $, OpenLayers){
 	
 	var TrailUploadView = BaseView.extend({

@@ -14,7 +14,8 @@ define(['backbone',
         'underscore',
         'text!templates/_score_wrapper.html',
         'jquery',
-        'jquery_form'],
+        //'jquery_form'
+        ],
 		function(Backbone, cache, Trail, UDH, UXC, ScoreView, MscaleCollection, _, tpl, $){
 	
 	var _ScoreWrapperView = Backbone.View.extend({
