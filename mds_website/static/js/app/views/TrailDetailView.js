@@ -6,7 +6,7 @@ define(['backbone',
         'underscore',
         'text!templates/trail_detail.html',
         'jquery',
-        'openlayers',
+        'OpenLayers',
         'chart'],
 		function(Backbone, Trail, MapView, ScoreWrapperView, BaseView, _, tpl, $, OpenLayers, chart){
 	

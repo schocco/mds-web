@@ -8,7 +8,7 @@ define(['backbone',
         'text!templates/trail_upload.html',
         'views/BaseView',
         'jquery',
-        'openlayers',
+        'OpenLayers',
         'jquery-form'
         ],
 		function(Backbone, Trail, TrailCollection, cache, MapView, TrailDetailView, _, tpl, BaseView, $, OpenLayers){
@@ -31,7 +31,7 @@ define(['backbone',
 			that.trail = new Trail();
 			//the datahandler is only called when the collection is fetched the first time.
 			that.collection = cache.get('TrailsCollection', TrailCollection, { success : onDataHandler });
-			if(that.collection.length){
+			if(that.collection.length >= 0){
 				that.render();
 			}
 			

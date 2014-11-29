@@ -5,6 +5,7 @@ require.config({
     "jquery-tipsy": ['jquery'],
     "slicknav": ['jquery'],
     MathJax: {exports: "MathJax"},
+    OpenLayers: {exports: "OpenLayers"}
   },
   paths: {
     "slicknav": "../libs/slicknav/jquery.slicknav.min",
@@ -25,7 +26,7 @@ require.config({
     text: "../libs/text/text",
     underscore: "../libs/underscore/underscore",
     "scrollReveal": "../libs/scrollReveal/dist/scrollReveal.min",
-    openlayers:  "../libs/openlayers/lib/OpenLayers"
+    OpenLayers:  "../libs/openlayers/OpenLayers"
   },
   packages: [
 
