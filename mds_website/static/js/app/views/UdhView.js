@@ -9,7 +9,7 @@ define(['backbone',
         'views/BaseView',
 		'views/_ScoreWrapperView',
         'models/UDHModel',
-        'mathjax'
+        'MathJax'
         ],
 		function(Backbone, _, tpl, $, cache, BaseView, ScoreWrapperView, UDH, MathJax){
 	
@@ -25,7 +25,7 @@ define(['backbone',
 		    
 		},
 		render: function(){
-			var compiledTemplate = _.template( tpl, {'meta': {} });
+			var compiledTemplate = _.template(tpl)({'meta': {} });
 			this.setContent(compiledTemplate);
 			
 			//setup math/formulas

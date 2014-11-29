@@ -9,7 +9,8 @@ define(['backbone',
         'views/BaseView',
 		'views/_ScoreWrapperView',
         'models/UXCModel',
-        'mathjax'
+        'MathJax',
+        'jquery-form'
         ],
 		function(Backbone, _, tpl, $, cache, BaseView, ScoreWrapperView, UXC, MathJax){
 	
@@ -25,7 +26,7 @@ define(['backbone',
 		    
 		},
 		render: function(){
-			var compiledTemplate = _.template( tpl, {'meta': {} });
+			var compiledTemplate = _.template(tpl)({'meta': {} });
 			this.setContent(compiledTemplate);
 			//reparse page with mathjax 
 			MathJax.Hub.Queue(["Typeset",MathJax.Hub]);

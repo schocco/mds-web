@@ -34,7 +34,7 @@ define(['backbone',
 		},
 		render: function(){
 			console.log("rendering home view");
-			var compiledTemplate = _.template( tpl, {'meta': {} });
+			var compiledTemplate = _.template(tpl)({'meta': {} });
 			this.setContent(compiledTemplate);
 		},
 		

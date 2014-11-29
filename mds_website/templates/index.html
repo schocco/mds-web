@@ -1,6 +1,7 @@
 {% load compressed %}
 {% load url from future %}
 {% load static from staticfiles %}
+{% load require %}
 <!doctype html>
 <!--[if lt IE 7]> 
 	<html class="nojs ms lt_ie7" lang="en"> 
@@ -115,7 +116,7 @@
 			    	            	maxRetries: 3
 			    	            }
 			    	        }
-			    	    }
+			    	   };
 			</script>
         </div>
 
@@ -156,7 +157,9 @@
 <!-- JavaScript at the bottom for fast page loading -->
 
 <!-- scripts  -->
-{% compressed_js 'require' %}
+{#% compressed_js 'require' %#}
+<!-- require module tag -->
+ {% require_module 'config' %}
 <!-- /scripts -->
 
 </body>

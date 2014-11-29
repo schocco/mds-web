@@ -60,7 +60,7 @@ define(['backbone',
 		 */
 		render: function() {
 			var context = {};
-			var compiledTemplate = _.template(tpl, context);
+			var compiledTemplate = _.template(tpl)(context);
 			this.$el.html(compiledTemplate);
 			this.addFilters();
 			this.addSearchFields();
@@ -76,14 +76,16 @@ define(['backbone',
 			var $filterEl = $(this.filterEl);
 			$filterEl.html("");
 			//templates
+			var checkbox = _.template(checkboxTpl);
+			var select = _.template(selectTpl);
 			_.each(this.filters, function(filter, key, list){
 				var rendered = "";
 				if(filter.choices.length == 1){
 					//render checkbox element
-					rendered = _.template(checkboxTpl, {filter: filter, key: key});
+					rendered = checkbox({filter: filter, key: key});
 				} else if(filter.choices.length > 1){
 					// render select element with all choices
-					rendered = _.template(selectTpl, {filter: filter, key: key});
+					rendered = select({filter: filter, key: key});
 				}
 				$filterEl.append(rendered);
 			});
@@ -92,7 +94,7 @@ define(['backbone',
 		
 		addSearchFields: function() {
 			if(this.searchFields && this.searchFields.length >= 1){
-				var rendered = _.template(searchTpl, {fields: this.searchFields});
+				var rendered = _.template(searchTpl)({fields: this.searchFields});
 				$(this.searchEl).html(rendered);
 			}
 			return this;
@@ -105,12 +107,12 @@ define(['backbone',
 					current: pageInfo.current || 1, 
 					total: pageInfo.total
 					};
-			var compiled = _.template(pageTpl, context);
+			var compiled = _.template(pageTpl)(context);
 			$(this.pagesEl).html(compiled);
 		},
 		
 		addSorting: function() {
-			var sort = _.template(sortTpl, {fields: this.sortFields});
+			var sort = _.template(sortTpl)({fields: this.sortFields});
 			$(this.sortingEl).append(sort);
 		},
 		

@@ -21,13 +21,14 @@ define(['backbone',
 		},
 		
 		render: function(){
-			var compiled = _.template(tpl, {mscales: this.mscales});
+			var compiled = _.template(tpl)({mscales: this.mscales});
 			this.setContent(compiled);
 			//add items
 			var items = $("#items");
+			var itemTemplate = _.template(itemTpl);
 			this.mscales.each(function(item){
 				if(!item.isPseudo()){
-					var itemDiv = _.template(itemTpl, {item: item});
+					var itemDiv = itemTemplate({item: item});
 					items.append(itemDiv);
 					console.log(item);
 				}

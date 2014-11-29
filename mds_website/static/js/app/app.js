@@ -6,11 +6,9 @@ define(['backbone',
         'models/auth/UserSessionMonitor',
         'module',
         'cache',
-        'jquery_tipsy', 
-        'jquery_localscroll', 
-        'jquery_uniform',
-        'jquery_pageslide',
-        'scrollreveal',
+        'jquery-tipsy', 
+        'slicknav',
+        'scrollReveal',
 ], function(Backbone, Router, TrailCollection, MscaleCollection, UserModel,UserSessionMonitor, module, cache) {
 	var initialize = function() {
 		
@@ -29,7 +27,7 @@ define(['backbone',
 	    window.scrollReveal = new scrollReveal( config );
 
 		// Responsive menu
-	  	$(".open").pageslide();
+	  	$("#menu-primary").slicknav();
 
 		// Prettyprint
 		$('pre').addClass('prettyprint');
@@ -59,12 +57,6 @@ define(['backbone',
 			html: true
 		});
 
-		// Scroll
-		//jQuery.localScroll();
-
-		// Uniform
-		//$("select, input:checkbox, input:radio, input:file").uniform();
-
 		bootstrapMscales();
 		setCurrentUser();
 		
@@ -93,12 +85,12 @@ define(['backbone',
 	 */
 	var setCurrentUser = function(){
 		var userJson = module.config().current_user;
-		var user = new UserModel(JSON.parse(userJson));
-		console.log(user);
+	    var user = new UserModel(JSON.parse(userJson));
+		
 		UserModel.currentUser = user;
 		//start monitoring the user session
 		UserSessionMonitor.start();
-		console.log("set user.");
+		console.log("set user. ");
 	};
 	
 	return {

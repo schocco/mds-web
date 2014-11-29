@@ -30,9 +30,6 @@ define(['backbone',
 		    //var users = new UserCollection().fetch({async:false, reset: true, success: userHandler});
 		    this.collection = cache.get('SocialAuthBackendCollection', SocialAuthBackendCollection, { success : onDataHandler });
 		    this.collection.on("reset", this.render, this);
-		    if(this.collection.length){
-				this.render(); //needed when collection loaded from cache
-		    }
 
 		},
 		
@@ -49,7 +46,7 @@ define(['backbone',
 			console.log("render login view");
 			var that = this;
 			
-			var compiledTemplate = _.template( tpl, {'backends': this.collection.models });
+			var compiledTemplate = _.template(tpl)({'backends': this.collection.models });
 			$(this.el).html(compiledTemplate);
 			$('#loginSubmit').click(function(e){
 				e.preventDefault();

@@ -28,7 +28,7 @@ define(['backbone',
 		    this.user = UserModel.currentUser;
 		    this.loggedIn = UserModel.currentUser.isAuthenticated();
 		    
-			var compiledTemplate = _.template( tpl, {'user': this.user, 'loggedIn': this.loggedIn });
+			var compiledTemplate = _.template(tpl)({'user': this.user, 'loggedIn': this.loggedIn });
 			$(this.el).html(compiledTemplate);
 			var that = this;
 			// connect links
