@@ -74,7 +74,7 @@ define(['backbone',
 		 * clears this.$el and appends all items to this.$el
 		 */
 		render: function() {
-			var compiledTemplate = _.template(this.template, _.extend(this.context, {items: this.collection}));
+			var compiledTemplate = _.template(this.template)(_.extend(this.context, {items: this.collection}));
 			this.setContent(compiledTemplate);
 			if(this.filtered){
 				this.addFilters();
@@ -105,8 +105,9 @@ define(['backbone',
 			
 			console.log("pages:");
 			
+			var item = _.template(this.itemTemplate);
 			this.collection.each(function(item){
-				itemEl = _.template(this.itemTemplate, {item: item});
+				itemEl = item({item: item});
 				itemContainer.append(itemEl);
 			}, this);
 			itemContainer.fadeIn();
@@ -142,7 +143,7 @@ define(['backbone',
 		 */
 		resetFilters: function(e){
 			e.preventDefault();
-			this.addFilters()
+			this.addFilters();
 			this.collection.clearSettings();
 			this.collection.getFirstPage();
 		},

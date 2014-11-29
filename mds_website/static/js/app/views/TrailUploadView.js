@@ -9,7 +9,7 @@ define(['backbone',
         'views/BaseView',
         'jquery',
         'openlayers',
-        //'jquery_form'
+        'jquery-form'
         ],
 		function(Backbone, Trail, TrailCollection, cache, MapView, TrailDetailView, _, tpl, BaseView, $, OpenLayers){
 	
@@ -27,7 +27,7 @@ define(['backbone',
 		    var onDataHandler = function(collection) {
 		    	console.log("fetched data.");
 		        that.render();
-		    }
+		    };
 			that.trail = new Trail();
 			//the datahandler is only called when the collection is fetched the first time.
 			that.collection = cache.get('TrailsCollection', TrailCollection, { success : onDataHandler });
@@ -43,9 +43,9 @@ define(['backbone',
 		render: function(){
 			console.log("render template");
 			var that = this;
-			var compiledTemplate = _.template(tpl, {type_choices: this.trail.type_choices});
+			var compiledTemplate = _.template(tpl)({type_choices: this.trail.type_choices});
 			this.setContent(compiledTemplate);
-			this.set_up_form()
+			this.set_up_form();
 		},
 		
 		/** add appropriate event handlers to the form */
@@ -59,19 +59,19 @@ define(['backbone',
 			    beforeSend: function(xhr, settings) {
 			        status.empty();
 			        var percentVal = '0%';
-			        bar.width(percentVal)
+			        bar.width(percentVal);
 			        percent.html(percentVal);
 			    },
 			    url: that.trail.urlRoot + "load-gpx/",
 			    dataType: "json",
 			    uploadProgress: function(event, position, total, percentComplete) {
 			        var percentVal = percentComplete + '%';
-			        bar.width(percentVal)
+			        bar.width(percentVal);
 			        percent.html(percentVal);
 			    },
 			    success: function() {
 			        var percentVal = '100%';
-			        bar.width(percentVal)
+			        bar.width(percentVal);
 			        percent.html(percentVal);
 			    },
 				complete: function(xhr) {
@@ -79,7 +79,7 @@ define(['backbone',
 						that.showMessage({msg:xhr.responseText, type:that.ERROR});
 					} else {
 						// poll for result and update trail if successful
-						task_id = JSON.parse(xhr.responseText).task_id
+						task_id = JSON.parse(xhr.responseText).task_id;
 						//that.pollForResult(task_id);
 						that.pollForResult(task_id);
 						var path = $("#gpx").val();
@@ -163,7 +163,7 @@ define(['backbone',
 		
 		/** proceed to next view to allow creating UXC or UDH object and link it to this track. */
 		rate_track: function(){
-			this.goTo(this.trail.get_url())
+			this.goTo(this.trail.get_url());
 		}
 			
 	});

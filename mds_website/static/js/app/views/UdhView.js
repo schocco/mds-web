@@ -25,7 +25,7 @@ define(['backbone',
 		    
 		},
 		render: function(){
-			var compiledTemplate = _.template( tpl, {'meta': {} });
+			var compiledTemplate = _.template(tpl)({'meta': {} });
 			this.setContent(compiledTemplate);
 			
 			//setup math/formulas

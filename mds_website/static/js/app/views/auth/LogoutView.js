@@ -94,7 +94,7 @@ define(['backbone',
 		/** renders the whole view. */
 		render: function(){
 			console.log("render template");
-			var compiledTemplate = _.template( tpl, {'trail': this.trail });
+			var compiledTemplate = _.template(tpl)({'trail': this.trail });
 			$(this.el).html(compiledTemplate);
 			
 			console.log("create hight profile");

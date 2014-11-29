@@ -108,7 +108,7 @@ define(['backbone',
 		
 		/** renders the whole view. */
 		render: function(){
-			var compiledTemplate = _.template( tpl, {'trail': this.trail });
+			var compiledTemplate = _.template(tpl)({'trail': this.trail });
 			this.setContent(compiledTemplate);
 			console.log("create hight profile");
 			this.render_height_profile();

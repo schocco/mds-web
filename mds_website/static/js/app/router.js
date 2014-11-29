@@ -79,7 +79,7 @@ define(['backbone',
 		},
 
 		trails: function() {
-			var trailView = new TrailListView;
+			var trailView = new TrailListView();
 		},
 
 		trail_detail: function(id) {
@@ -120,8 +120,9 @@ define(['backbone',
 				}
 			}
 		});
-
-		new AuthView;
+		
+		//show login button and check auth status
+		new AuthView();
 
 		//start routing
 		var appRouter = new WorkspaceRouter;

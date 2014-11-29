@@ -49,7 +49,7 @@ define(['backbone',
 			console.log("render login view");
 			var that = this;
 			
-			var compiledTemplate = _.template( tpl, {'backends': this.collection.models });
+			var compiledTemplate = _.template(tpl)({'backends': this.collection.models });
 			$(this.el).html(compiledTemplate);
 			$('#loginSubmit').click(function(e){
 				e.preventDefault();

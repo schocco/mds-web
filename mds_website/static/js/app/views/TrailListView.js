@@ -20,9 +20,9 @@ define(['backbone',
 			var that = this;
 		    var onDataHandler = function(collection) {
 		        that.render();
-		    }
+		    };
 		    this.collection = cache.get('TrailsCollection', TrailsCollection, { success : onDataHandler });
-		    if(this.collection.length){
+		    if(this.collection.length >= 0){
 		    	this.render();
 		    }
 		    

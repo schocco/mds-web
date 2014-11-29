@@ -29,7 +29,7 @@ define(['backbone',
 		
 		/** renders the whole view. */
 		render: function(){
-			var compiledTemplate = _.template( tpl, {'user': this.user });
+			var compiledTemplate = _.template(tpl)({'user': this.user });
 			this.setContent(compiledTemplate);
 			this.showMessage({
 				msg: "You are not authorized. Please log in below to proceed.",

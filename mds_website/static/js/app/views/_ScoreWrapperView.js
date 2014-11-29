@@ -73,7 +73,7 @@ define(['backbone',
 		
 		/** renders the whole view. Adds either the udh or uxc form to the view. */
 		render: function(){
-			var compiledTemplate = _.template(tpl, {
+			var compiledTemplate = _.template(tpl)({
 				scale: this.scale, 
 				editable: this.editable,
 				saveable: this.saveable
@@ -121,14 +121,14 @@ define(['backbone',
 			var replacements = {
 					max_difficulty: _.template('<select name="maximum_difficulty"><% _.each(mscales, function(mscale) { %> \
 				          <option value="<%= mscale.get(\'id\') %>" <% if (values["max_difficulty"] ==  mscale.get(\'id\')) print("selected"); %>>M<%= mscale.get(\'id\') %></option><% }); %>\
-				        </select>', context),
-					total_length: _.template('<input type="number" name="total_length" value="<%= Math.round(values["length"]) %>"/>', context),
-					total_ascent: _.template('<input type="number" name="total_ascent" value="<%= Math.round(values["total_ascent"]) %>"/>', context),
-					max_slope: _.template('<input type="number" name="maximum_slope_uh" value="<%= Math.round(values["max_slope"]) %>"/>', context),
+				        </select>')(context),
+					total_length: _.template('<input type="number" name="total_length" value="<%= Math.round(values["length"]) %>"/>')(context),
+					total_ascent: _.template('<input type="number" name="total_ascent" value="<%= Math.round(values["total_ascent"]) %>"/>')(context),
+					max_slope: _.template('<input type="number" name="maximum_slope_uh" value="<%= Math.round(values["max_slope"]) %>"/>')(context),
 					avg_difficulty: _.template('<select name="average_difficulty"><% _.each(mscales, function(mscale) { %> \
 					          <option value="<%= mscale.get(\'id\') %>" <% if (values["avg_difficulty"] ==  mscale.get(\'id\')) print("selected"); %>>M<%= mscale.get(\'id\') %></option><% }); %>\
-					        </select>', context),
-					avg_slope: _.template('<input type="number" name="average_slope" value="<%= Math.abs(Math.round(values["avg_slope"])) %>"/>', context),
+					        </select>')(context),
+					avg_slope: _.template('<input type="number" name="average_slope" value="<%= Math.abs(Math.round(values["avg_slope"])) %>"/>')(context),
 			}; //contains udh and uxc fields
 			
 			for (var key in replacements) {

@@ -16,6 +16,7 @@
         "jquery.localScroll": null,
         "jquery.scrollTo": null,
         "scrollReveal": "julianlloyd/scrollReveal.js#v2.1.0",
+        "jquery-form": "malsup/form#3.51",
         "slicknav": null,
         "backbone": null,
         "backbone-validation": null,

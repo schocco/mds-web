@@ -3,11 +3,12 @@ require.config({
     "jquery-serializeForm": ["jquery"],
     "jquery-md5": ["jquery"],
     "jquery-tipsy": ['jquery'],
-    "slicknav": ['jquery']
+    "slicknav": ['jquery'],
+    MathJax: {exports: "MathJax"},
   },
   paths: {
     "slicknav": "../libs/slicknav/jquery.slicknav.min",
-    MathJax: "../libs/MathJax/MathJax",
+    MathJax: "../libs/MathJax/MathJax.js?config=MML_HTMLorMML",
     backbone: "../libs/backbone/backbone",
     "backbone-validation": "../libs/backbone-validation/dist/backbone-validation",
     chart: "../libs/chartjs/Chart.min",
@@ -16,6 +17,7 @@ require.config({
     "jquery-tipsy": "../libs/tipsy/src/javascripts/jquery.tipsy",
     "jquery_scrollto": "../libs/jquery.scrollTo/jquery.scrollTo.min",
     "jquery_localscroll": "../libs/jquery.localScroll/jquery.localScroll.min",
+    "jquery-form": "../libs/jquery-form/jquery.form",
     modernizr: "../libs/modernizr/modernizr",
     requirejs: "../libs/requirejs/require",
     "backbone-routefilter": "../libs/routefilter/dist/backbone.routefilter.min",

@@ -53,7 +53,7 @@ define(['backbone',
 				this.scale.set("score", this.labeldict);
 			}
 			
-			var compiledTemplate = _.template( this.tpl, 
+			var compiledTemplate = _.template( this.tpl)(
 				{'scale': this.scale, 'labels': this.labeldict });
 			$(this.el).html(compiledTemplate);
 			this.draw_score_chart();
@@ -69,7 +69,7 @@ define(['backbone',
 			if(!this.scale.get("score")){
 				throw "Update Error: Need a scale object with score data";
 			}
-			var compiledTemplate = _.template( this.tpl, {'scale': this.scale, 'labels': this.labeldict });
+			var compiledTemplate = _.template( this.tpl)({'scale': this.scale, 'labels': this.labeldict });
 			$(this.el).html(compiledTemplate);
 			this.draw_score_chart();
 		},	
