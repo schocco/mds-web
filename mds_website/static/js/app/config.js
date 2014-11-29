@@ -3,12 +3,12 @@ require.config({
     "jquery-serializeForm": ["jquery"],
     "jquery-md5": ["jquery"],
     "jquery-tipsy": ['jquery'],
-    "slicknav": ['jquery'],
+    "sidr": ['jquery'],
     MathJax: {exports: "MathJax"},
     OpenLayers: {exports: "OpenLayers"}
   },
   paths: {
-    "slicknav": "../libs/slicknav/jquery.slicknav.min",
+    sidr: "../libs/sidr/jquery.sidr.min",
     MathJax: "../libs/MathJax/MathJax.js?config=MML_HTMLorMML",
     backbone: "../libs/backbone/backbone",
     "backbone-validation": "../libs/backbone-validation/dist/backbone-validation",
@@ -19,6 +19,7 @@ require.config({
     "jquery_scrollto": "../libs/jquery.scrollTo/jquery.scrollTo.min",
     "jquery_localscroll": "../libs/jquery.localScroll/jquery.localScroll.min",
     "jquery-form": "../libs/jquery-form/jquery.form",
+    "jquery-touchswipe": "../libs/jquery-touchswipe/jquery.touchSwipe.min",
     modernizr: "../libs/modernizr/modernizr",
     requirejs: "../libs/requirejs/require",
     "backbone-routefilter": "../libs/routefilter/dist/backbone.routefilter.min",

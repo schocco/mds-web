@@ -7,8 +7,9 @@ define(['backbone',
         'module',
         'cache',
         'jquery-tipsy', 
-        'slicknav',
+        'sidr',
         'scrollReveal',
+        'jquery-touchswipe'
 ], function(Backbone, Router, TrailCollection, MscaleCollection, UserModel,UserSessionMonitor, module, cache) {
 	var initialize = function() {
 		
@@ -27,7 +28,17 @@ define(['backbone',
 	    window.scrollReveal = new scrollReveal( config );
 
 		// Responsive menu
-	  	$("#menu-primary").slicknav();
+	  	$("#mobile-nav-open").sidr({source:"#menu-source", displace: false});
+	  	$(window).swipe( {
+        //Generic swipe handler for all directions
+        swipeLeft:function(event, direction, distance, duration, fingerCount) {
+          $.sidr("close");
+        },
+        swipeRight:function(event, direction, distance, duration, fingerCount) {
+          $.sidr("open");  
+        },
+      });
+
 
 		// Prettyprint
 		$('pre').addClass('prettyprint');
