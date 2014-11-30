@@ -13,7 +13,6 @@
     modules : [{
         name : "config",
         exclude : ["MathJax", "OpenLayers"]
-    }, {
-        name : "infrastructure"
-    }]
+    }
+	]
 })
