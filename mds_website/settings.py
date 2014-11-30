@@ -125,7 +125,6 @@ PIPELINE_CSS = {
             'css/application.css',
             'css/tooltip.css',
             'css/responsive.css',
-            'js/libs/jquery-pageslide/jquery.pageslide.css'
         ),
         'output_filename': 'css/main.css',
     },
@@ -141,25 +140,27 @@ PIPELINE_JS = {
 }
 
 # require.js setup
-REQUIRE_BASE_URL = "js/app"
+REQUIRE_BASE_URL = "js/app/"
 # The name of a build profile to use for your project, relative to REQUIRE_BASE_URL.
 # A sensible value would be 'app.build.js'. Leave blank to use the built-in default build profile.
 # Set to False to disable running the default profile (e.g. if only using it to build Standalone
 # Modules)
-REQUIRE_BUILD_PROFILE = "../app.build.js"
+REQUIRE_BUILD_PROFILE = "../../build.js"
 # The name of the require.js script used by your project, relative to REQUIRE_BASE_URL.
 REQUIRE_JS = "require.js"
-# A dictionary of standalone modules to build with almond.js.
-# See the section on Standalone Modules, below.
-REQUIRE_STANDALONE_MODULES = {}
 # Whether to run django-require in debug mode.
-REQUIRE_DEBUG = False
-# A tuple of files to exclude from the compilation result of r.js.
-REQUIRE_EXCLUDE = ("build.txt",)
+REQUIRE_DEBUG = DEBUG
 # The execution environment in which to run r.js: auto, node or rhino.
 # auto will autodetect the environment and make use of node if available and rhino if not.
 # It can also be a path to a custom class that subclasses require.environments.Environment and defines some "args" function that returns a list with the command arguments to execute.
 REQUIRE_ENVIRONMENT = "auto"
+# A dictionary of standalone modules to build
+REQUIRE_STANDALONE_MODULES = {
+#    "main": {
+#        # Where to output the built module, relative to REQUIRE_BASE_URL.
+#        "out": "../dist/main.js",
+#    }
+}
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'use your own secret key.'

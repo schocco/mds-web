@@ -5,7 +5,6 @@ define(['backbone',
         'jquery',
         'views/BaseView',
         'jquery_localscroll',
-        'jquery_scrollto'
         ],
 		function(Backbone, cache, _, tpl, $, BaseView){
 	

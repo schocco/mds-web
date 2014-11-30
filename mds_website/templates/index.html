@@ -33,7 +33,7 @@
 
 	
 	<!-- All JavaScript at the bottom, except modernizr -->
-	  {% compressed_js 'modernizer' %}
+	  {#% compressed_js 'modernizer' %#}
 
   	<!--[if lt IE 8]>    
         {% compressed_js 'ie_font' %}
@@ -160,6 +160,8 @@
 {#% compressed_js 'require' %#}
 <!-- require module tag -->
  {% require_module 'config' %}
+ <!--script src="/static/js/app/main-built.js"></script-->
+ <!--script src="/static/js/app/require.js" data-main="/static/js/dist/config.js"></script-->
 <!-- /scripts -->
 
 </body>

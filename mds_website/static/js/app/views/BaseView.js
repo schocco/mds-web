@@ -3,7 +3,6 @@ define(['backbone',
         'underscore',
         'text!templates/home.html',
         'jquery',
-        'jquery_scrollto'
         ],
 		function(Backbone, cache, _, tpl, $){
 	
