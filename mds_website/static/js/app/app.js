@@ -27,17 +27,23 @@ define(['backbone',
 	    };
 	    window.scrollReveal = new scrollReveal( config );
 
-		// Responsive menu
-	  	$("#mobile-nav-open").sidr({source:"#menu-source", displace: false});
-	  	$(window).swipe( {
-        //Generic swipe handler for all directions
-        swipeLeft:function(event, direction, distance, duration, fingerCount) {
-          $.sidr("close");
-        },
-        swipeRight:function(event, direction, distance, duration, fingerCount) {
-          $.sidr("open");  
-        },
-      });
+
+        // Responsive menu
+        $("#mobile-nav-open").sidr({
+            source : "#menu-source",
+            displace : false
+        });
+        $(window).swipe({
+            fallbackToMouseEvents : false,
+            //Generic swipe handler for all directions
+            swipeLeft : function(event, direction, distance, duration, fingerCount) {
+                $.sidr("close");
+            },
+            swipeRight : function(event, direction, distance, duration, fingerCount) {
+                $.sidr("open");
+            },
+        }); 
+
 
 
 		// Prettyprint
