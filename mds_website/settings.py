@@ -228,7 +228,8 @@ TEMPLATE_DIRS = (
 ############# CELERY SETTINGS
 ## Using the database to store task state and results.
 CELERY_RESULT_BACKEND = 'amqp'
-BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+BROKER_HOST = "localhost"
+#BROKER_URL = 'amqp://guest:guest@localhost:5672/celeryvhost'
 CELERY_TIMEZONE = TIME_ZONE
 
 INSTALLED_APPS = (
