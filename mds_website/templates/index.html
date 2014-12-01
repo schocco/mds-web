@@ -1,6 +1,7 @@
 {% load compressed %}
 {% load url from future %}
 {% load static from staticfiles %}
+{% load require %}
 <!doctype html>
 <!--[if lt IE 7]> 
 	<html class="nojs ms lt_ie7" lang="en"> 
@@ -24,7 +25,8 @@
 	<link rel="shortcut icon" href="{% static "img/favicon.png" %}">
 	<meta name="csrf-token" content="{{csrf_token}}">
 	<!--  CSS styles -->
-	{% compressed_css 'main' %}
+	{#% compressed_css 'main' %#}
+	<link href="{% static "css/styles.css" %}" rel="stylesheet" type="text/css" />
 	<!-- Mobile Viewport -->
     <meta name="viewport" content="width=device-width">
 
@@ -32,7 +34,7 @@
 
 	
 	<!-- All JavaScript at the bottom, except modernizr -->
-	  {% compressed_js 'modernizer' %}
+	  {#% compressed_js 'modernizer' %#}
 
   	<!--[if lt IE 8]>    
         {% compressed_js 'ie_font' %}
@@ -49,12 +51,12 @@
 <!-- wrapper -->
 <!-- section class="boxed" -->
 
-
 	<!-- main -->
 	<section id="main">
+		<div id="sidr" name="sidr"></div>
 		<!-- nav -->
         <nav id="primary">
-            <div class="boxed">
+            <div id="menu-source" class="boxed">
 	            <ul id="menu-primary">
 	                <li class="workless"><a href="#/home"><img src="{% static 'img/mds.png' %}"/></a></li>
 	                <li><a href="#/udh-scale">UDH Scale</a></li>
@@ -64,7 +66,7 @@
 	            </ul>
             </div>
             <!-- responsive nav -->
-            <a class="open" href="#menu-primary">Menu</a>
+            <a id="mobile-nav-open" class="open" href="#menu-primary">Menu</a>
             <!-- /responsive nav -->
         </nav>
         <!-- /nav -->
@@ -115,7 +117,7 @@
 			    	            	maxRetries: 3
 			    	            }
 			    	        }
-			    	    }
+			    	   };
 			</script>
         </div>
 
@@ -156,7 +158,11 @@
 <!-- JavaScript at the bottom for fast page loading -->
 
 <!-- scripts  -->
-{% compressed_js 'require' %}
+{#% compressed_js 'require' %#}
+<!-- require module tag -->
+ {% require_module 'config' %}
+ <!--script src="/static/js/app/main-built.js"></script-->
+ <!--script src="/static/js/app/require.js" data-main="/static/js/dist/config.js"></script-->
 <!-- /scripts -->
 
 </body>

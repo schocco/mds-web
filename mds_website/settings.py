@@ -96,7 +96,7 @@ STATICFILES_FINDERS = (
 # Pipeline specific settings for JS and CSS compression
 # yui-compressor is required, for a list of alternative compressors
 # see https://django-pipeline.readthedocs.org/en/latest/compressors.html
-STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+STATICFILES_STORAGE = 'require.storage.OptimizedStaticFilesStorage' #pipeline.storage.PipelineCachedStorage'
 PIPELINE_YUI_BINARY = "/usr/bin/yui-compressor"
 PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
@@ -124,44 +124,12 @@ PIPELINE_CSS = {
             'css/animations.css',
             'css/application.css',
             'css/tooltip.css',
-            'css/responsive.css',            
+            'css/responsive.css',
         ),
         'output_filename': 'css/main.css',
     },
 }
 PIPELINE_JS = {
-    'modernizer': {
-        'source_filenames': (
-          'js/modernizer/modernizer.js',
-        ),
-        'output_filename': 'js/modernizer.js',
-    },
-    'ie_font': {
-        'source_filenames': (
-          'js/ie_font.js',
-        ),
-        'output_filename': 'js/ie_font.js',
-    },
-    'jquery': {
-        'source_filenames': (
-          'js/jquery/jquery-1.10.2.min.js',
-        ),
-        'output_filename': 'js/jquery.js',
-    },
-    'main': {
-        'source_filenames': (
-          'js/jquery/plugins.js',
-          'js/require/*.js',
-          'js/underscore/*.js',
-          'js/*.js',
-          'js/app/main.js',
-          'js/app/models/*.js',
-          'js/app/collections/*.js',
-          'js/app/views/*.js',
-          'js/app/*.js',
-        ),
-        'output_filename': 'js/main.js',
-    },
     'require': {
           'source_filenames': (
           'js/require/require.js',
@@ -169,6 +137,29 @@ PIPELINE_JS = {
     ),
     'output_filename': 'js/app/required.js',
     }
+}
+
+# require.js setup
+REQUIRE_BASE_URL = "js/app/"
+# The name of a build profile to use for your project, relative to REQUIRE_BASE_URL.
+# A sensible value would be 'app.build.js'. Leave blank to use the built-in default build profile.
+# Set to False to disable running the default profile (e.g. if only using it to build Standalone
+# Modules)
+REQUIRE_BUILD_PROFILE = "../../build.js"
+# The name of the require.js script used by your project, relative to REQUIRE_BASE_URL.
+REQUIRE_JS = "require.js"
+# Whether to run django-require in debug mode.
+REQUIRE_DEBUG = DEBUG
+# The execution environment in which to run r.js: auto, node or rhino.
+# auto will autodetect the environment and make use of node if available and rhino if not.
+# It can also be a path to a custom class that subclasses require.environments.Environment and defines some "args" function that returns a list with the command arguments to execute.
+REQUIRE_ENVIRONMENT = "auto"
+# A dictionary of standalone modules to build
+REQUIRE_STANDALONE_MODULES = {
+#    "main": {
+#        # Where to output the built module, relative to REQUIRE_BASE_URL.
+#        "out": "../dist/main.js",
+#    }
 }
 
 # Make this unique, and don't share it with anybody.
@@ -245,6 +236,7 @@ INSTALLED_APPS = (
     'social.apps.django_app.default',
     'south',
     'tastypie',
+    'require',
     'pipeline', #minify css and js
     'apps.muni_scales',
     'apps.trails',

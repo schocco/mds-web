@@ -1,7 +1,7 @@
 define(['backbone',
         'underscore',
         'jquery',
-        'openlayers'],
+        'OpenLayers'],
 		function(Backbone, _, $, OpenLayers){
 	
 	var _MapView = Backbone.View.extend({
@@ -50,14 +50,14 @@ define(['backbone',
 			
 			// get all linestrings from multilinestring
 			for (var k = 0; k < coordinates.length; k++) {
-				ls = coordinates[k]
+				ls = coordinates[k];
 				for (var i = 0; i < ls.length; i++) {
 					points[i] = new OpenLayers.Geometry.Point(ls[i][0], ls[i][1]);
 				}
 				var linestring = new OpenLayers.Geometry.LineString(points).transform(WGS84, MERCATOR);
-				linestrings[k] = linestring
+				linestrings[k] = linestring;
 			}
-			var multi_ls = new OpenLayers.Geometry.MultiLineString(linestrings)//.transform(WGS84, MERCATOR);
+			var multi_ls = new OpenLayers.Geometry.MultiLineString(linestrings);//.transform(WGS84, MERCATOR);
 			
 			var lsFeature = new OpenLayers.Feature.Vector(multi_ls);
 			trail.addFeatures(lsFeature);
@@ -67,7 +67,7 @@ define(['backbone',
 			// set extend / zoom level
 			var bounds = new OpenLayers.Bounds();
 			var first_pt = coordinates[0][0];
-			var last_pt = coordinates[coordinates.length-1][coordinates[coordinates.length-1].length-1]
+			var last_pt = coordinates[coordinates.length-1][coordinates[coordinates.length-1].length-1];
 			bounds.extend(new OpenLayers.LonLat(first_pt[0], first_pt[1]).transform(WGS84, MERCATOR));
 			bounds.extend(new OpenLayers.LonLat(last_pt[0], last_pt[1]).transform(WGS84, MERCATOR));
 			map.zoomToExtent(bounds);

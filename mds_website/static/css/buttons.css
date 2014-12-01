@@ -53,6 +53,13 @@
 }
 
 /**
+ * DarkBlue
+ */
+.darkBlue.button {
+	background-color: #0000FF!important;
+}
+
+/**
  * Red
  */
 .red.button {
@@ -86,4 +93,25 @@
 
 .button:active {
 	top: 1px;
+}
+
+
+/**
+ * 	SOCIAL buttons
+ */
+
+.facebook.button, .google.button, .twitter.button {
+	margin-bottom: 1em;
+}
+
+.facebook.button:hover {
+	background-color: #0000FF!important;
+}
+
+.google.button:hover {
+	background-color: #ff0000!important;
+}
+
+.twitter.button:hover {
+	background-color: #2daebf!important;
 }

@@ -38,7 +38,7 @@ define(['backbone',
 				content = message;
 			} else if(_.isArray(message)){
 				var tpl = "<ul><% _.each(errors, function(err) { %><li><%= err %></li><% }); %></ul>";
-				content = _.template(tpl, {errors: errors});
+				content = _.template(tpl)({errors: errors});
 			} else {
 				throw "Unexpected input: need string or array to display message. Got " + Object.prototype.toString.call(message) + " instead";
 			}

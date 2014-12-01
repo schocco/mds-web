@@ -8,6 +8,8 @@ define([], function () {
 		  if(!collections[key]){
 			  collections[key] = new col();
 			  collections[key].fetch(options);
+		  } else if(options !== undefined && options.success){
+		      options.success(collections[key]);
 		  }
 		  return collections[key];
 	  },
@@ -16,5 +18,5 @@ define([], function () {
 		  collections[key] = col;
 	  }
 	  
-  }
+  };
 });

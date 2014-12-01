@@ -6,7 +6,7 @@ define(['backbone',
         'underscore',
         'text!templates/trail_detail.html',
         'jquery',
-        'openlayers',
+        'OpenLayers',
         'chart'],
 		function(Backbone, Trail, MapView, ScoreWrapperView, BaseView, _, tpl, $, OpenLayers, chart){
 	
@@ -93,6 +93,7 @@ define(['backbone',
 					scaleLineColor : "rgba(0,0,0,.3)",
 					scaleGridLineColor : "rgba(0,0,0,.15)",
 					bezierCurve : false,
+					responsive: true
 				};
 			var heightProfileChart = new Chart(ctx).Line(data, options);
 		},
@@ -108,7 +109,7 @@ define(['backbone',
 		
 		/** renders the whole view. */
 		render: function(){
-			var compiledTemplate = _.template( tpl, {'trail': this.trail });
+			var compiledTemplate = _.template(tpl)({'trail': this.trail });
 			this.setContent(compiledTemplate);
 			console.log("create hight profile");
 			this.render_height_profile();
