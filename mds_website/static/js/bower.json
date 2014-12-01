@@ -6,7 +6,6 @@
         "chartjs": "v1.0.1-beta.4",
         "MathJax": null,
         "modernizr": null,
-        "openlayers": null,
         "jquery": "2.1.1",
         "jquery-cookie": null,
         "jquery-serializeForm": null,
