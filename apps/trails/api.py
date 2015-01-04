@@ -1,32 +1,25 @@
 # -*- coding: utf-8 -*-
-
-import os
 import tempfile
 
 from django.conf.urls import url
-from django.contrib.auth.models import User
-from django.contrib.gis.geos.collections import MultiLineString
 from django.contrib.gis.measure import Distance
 from django.http.response import HttpResponse
 from tastypie import fields
-from tastypie.authentication import Authentication, SessionAuthentication
-from tastypie.authorization import DjangoAuthorization
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.contrib.gis.resources import ModelResource
 from tastypie.exceptions import BadRequest
 from tastypie.http import HttpNoContent
 from tastypie.utils.urls import trailing_slash
 from tastypie.validation import CleanedDataFormValidation
-
+from tastypie.contrib.gis.resources import GeometryApiField
 from apps.mds_auth.api import UserResource
 from apps.mds_auth.authorization import ReadAllDjangoAuthorization, \
     ReadAllSessionAuthentication
 from apps.muni_scales.api import UXCResource, UDHResource
 from apps.trails.forms import TrailForm
-from apps.trails.load2 import GPXReader, GPXImportError
+from apps.trails.load2 import GPXImportError
 from apps.trails.models import Trail
 from apps.trails.tasks import get_linestring
-import tasks
 
 
 class DistanceField(fields.DictField):
@@ -72,6 +65,7 @@ class TrailResource(ModelResource):
     total_ascent = fields.CharField(attribute='get_total_ascent', readonly=True, use_in="detail")
     total_descent = fields.CharField(attribute='get_total_descent', readonly=True, use_in="detail")
     height_profile = fields.DictField(attribute='get_height_profile', readonly=True, use_in="detail")
+    waypoints = GeometryApiField(attribute="waypoints", use_in="detail")
     uxc_rating = fields.ToOneField(UXCResource, 'uxcscale', related_name="trail", null=True, blank=True, full=True)
     udh_rating = fields.ToOneField(UDHResource, 'udhscale', related_name="trail", null=True, blank=True, full=True)
 
