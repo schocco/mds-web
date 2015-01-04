@@ -91,6 +91,18 @@ define(['backbone',
 			if(this.editable){
 				this.makeEditable();
 			}
+			
+			var that = this;
+			// bind save button and form submission (only required once, form is not re-rendered.)
+			$('#submit').click(function(evt){
+				evt.preventDefault();
+				$('#scale_form').submit();
+			});
+			//form submission
+			$('#scale_form').submit(function(evt){
+				evt.preventDefault();
+				that.saveScore();
+			});
 		},
 		
 		
@@ -137,7 +149,7 @@ define(['backbone',
 			this.setUpForm();
 		},
 		
-		/** add appropriate event handlers to the form.
+		/** Add appropriate event handlers to the form.
 		 * The form fields are re-rendered when an update of the data occurs, so that the
 		 * input change listener needs to be bound again after a re-rendering. */
 		setUpForm: function(){
@@ -145,21 +157,6 @@ define(['backbone',
 			var that = this;
 			//update scale object when form data is changed
 			this.setUpFormFields();
-			//submit button
-			$('#submit').click(function(evt){
-				evt.preventDefault();
-				$('#scale_form').submit();
-			});
-			//update button
-			$('#updateScore').click(function(evt){
-				evt.preventDefault();
-				that.updateScore();
-			});
-			//form submission
-			$('#scale_form').submit(function(evt){
-				evt.preventDefault();
-				that.saveScore();
-			});
 		},
 		
 		/** update scale object when form data is changed */
@@ -202,7 +199,8 @@ define(['backbone',
 			        // update the score view, no longer editable
 			    	that.scale = model;
 			    	that.showMessage({type:that.INFO, msg:"The score has been saved."});
-			    	that.display_score();
+			    	that.displayScore();
+			    	$("#submit").hide();
 			    },
 			    error: function (model, response) {
 			        that.showMessage({type:that.ERROR, msg:response.responseText});
@@ -220,7 +218,7 @@ define(['backbone',
 								type: this.type,
 								scale: this.scale
 							 };
-				this.scoreView.update(options);//this.scale);
+				this.scoreView.update(options);
 				if(this.editable){
 					this.makeEditable();
 					// need to bind change events after re-rendering:
