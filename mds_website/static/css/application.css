@@ -301,7 +301,7 @@ footer#footer a:hover {
 
 div.trail-box {
 	overflow:hidden;
-	height: 155px;
+	max-height: 10em;
 	margin-bottom: 15px;
 }
 
