@@ -15,7 +15,6 @@ define(['backbone',
 		msg: '#login_msg',
 		
 		initialize: function (options) {
-			//TODO: try to force HTTPS
 			//get collection with available auth backends
 			var that = this;
 		    var onDataHandler = function(collection) {
@@ -41,16 +40,15 @@ define(['backbone',
 		
 
 		
-		/** renders the whole view. */
+		/** Renders the login template which contains the login form and links for social auth services. */
 		render: function(){
-			console.log("render login view");
 			var that = this;
-			
-			var compiledTemplate = _.template(tpl)({'backends': this.collection.models });
+			var next = location.pathname + location.hash;
+			console.log("next after login will be " + next);
+			var compiledTemplate = _.template(tpl)({'backends': this.collection.models, 'next': next });
 			$(this.el).html(compiledTemplate);
 			$('#loginSubmit').click(function(e){
 				e.preventDefault();
-				console.log("login clicked.");
 				var username = $('#id_username').val();
 				var password = $('#id_password').val();
 				

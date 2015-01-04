@@ -20,7 +20,7 @@
 	<h4>Login with another account:</h3>
 	<ul style="list-style-type: none; padding: 0; margin-left: 0;">
 	<% _.each(backends, function(backend) { %> 
-	    <li><a class="button <%= backend.getColorClass() %>" style="width: 80%; border: solid 1px #555;" href="<%= backend.get_url() %>"><i class="<%= backend.getIconClass() %>"></i> <%= backend.getDisplayName() %></a></li>
+	    <li><a class="button <%= backend.getColorClass() %>" style="width: 80%; border: solid 1px #555;" href="<%= backend.get_url() %>?next=<%= next %>"><i class="<%= backend.getIconClass() %>"></i> <%= backend.getDisplayName() %></a></li>
 	<% }); %>
 	</ul>
 </div>
