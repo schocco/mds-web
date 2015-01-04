@@ -56,6 +56,7 @@ class UserResource(ModelResource):
         fields = ['id', 'username', 'email', 'last_login', 'first_name', 'last_name']
     
     def get_object_list(self, request): 
+        'only return user that is already logged in'
         return super(UserResource, self).get_object_list(request).filter(pk=request.user.pk)
     
     def prepend_urls(self):

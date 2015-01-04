@@ -2,13 +2,10 @@
 
 from django.conf.urls import url
 from tastypie import fields
-from tastypie.authentication import Authentication, SessionAuthentication
-from tastypie.authorization import Authorization, DjangoAuthorization
+from tastypie.authorization import Authorization
 from tastypie.bundle import Bundle
-from tastypie.exceptions import ImmediateHttpResponse, NotFound
-from tastypie.http import HttpBadRequest
+from tastypie.exceptions import NotFound
 from tastypie.resources import Resource, ModelResource
-from tastypie.utils.mime import build_content_type
 from tastypie.validation import CleanedDataFormValidation
 
 from apps.mds_auth.authorization import ReadAllSessionAuthentication, \
@@ -104,7 +101,33 @@ class MscaleResource(Resource):
         except ValueError:
             raise NotFound()
 
-class UDHResource(ModelResource):
+
+
+class ScaleCalcMixin(object):
+    '''
+    Adds endpoint for score calculation.
+    '''
+    def prepend_urls(self):
+        return [
+            url(r"^(?P<resource_name>%s)/calculate/$" % 
+                self._meta.resource_name, self.wrap_view('get_score'), name="calc_udh_score"),
+        ]
+        
+    def get_score(self, request, **kwargs):
+        '''
+        Return the score for the calculation
+        '''
+        scale = self.__class__()
+        bundle = scale.build_bundle(data=request.POST, request=request)
+        scale_obj = scale.full_hydrate(bundle).obj
+        errors = scale_obj.full_clean()
+        if errors:
+            return self.create_response(request, errors)
+        score = scale_obj.get_score()
+        return self.create_response(request, score)
+
+
+class UDHResource(ScaleCalcMixin, ModelResource):
     '''
     UDH rating
     
@@ -131,27 +154,10 @@ scale.full_dehydrate(bundle)
         #TODO: proper permission checks
         authentication = ReadAllSessionAuthentication()
         authorization = ReadAllDjangoAuthorization()
-        
-    def prepend_urls(self):
-        return [
-            url(r"^(?P<resource_name>%s)/calculate/$" % 
-                self._meta.resource_name, self.wrap_view('get_score'), name="calc_udh_score"),
-        ]
-        
-    def get_score(self, request, **kwargs):
-        '''
-        Return the score for the calculation
-        '''
-        scale = UDHResource()
-        bundle = scale.build_bundle(data=request.POST, request=request)
-        udh = scale.full_hydrate(bundle).obj
-        errors = udh.full_clean()
-        if errors:
-            return self.create_response(request, errors)
-        score = udh.get_score()
-        return self.create_response(request, score)
-    
-class UXCResource(ModelResource):
+
+
+
+class UXCResource(ScaleCalcMixin, ModelResource):
     '''
     UXC Rating
     '''
@@ -167,31 +173,3 @@ class UXCResource(ModelResource):
         validation = CleanedDataFormValidation(form_class = UXCscaleForm)
         authentication = ReadAllSessionAuthentication()
         authorization = ReadAllDjangoAuthorization()
-    
-    #FIXME: duplicate code, refactor!
-    def prepend_urls(self):
-        return [
-            url(r"^(?P<resource_name>%s)/calculate/$" % 
-                self._meta.resource_name, self.wrap_view('get_score'), name="calc_uxc_score"),
-        ]
-    
-    def get_score(self, request, **kwargs):
-        '''
-        Return the score for the calculation
-        '''
-        scale = UXCResource()
-        bundle = scale.build_bundle(data=request.POST, request=request)
-        form = UXCscaleForm(request.POST)
-        if form.is_valid():
-            uxc = scale.full_hydrate(bundle).obj
-            score = uxc.get_score()
-            return self.create_response(request, score)
-        else:
-            if request:
-                desired_format = self.determine_format(request)
-            else:
-                desired_format = self._meta.default_format
-            errors = form.errors
-            serialized = self.serialize(request, errors, desired_format)
-            response = HttpBadRequest(content=serialized, content_type=build_content_type(desired_format))
-            raise ImmediateHttpResponse(response=response)
