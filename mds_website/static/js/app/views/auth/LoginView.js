@@ -43,7 +43,7 @@ define(['backbone',
 		/** Renders the login template which contains the login form and links for social auth services. */
 		render: function(){
 			var that = this;
-			var next = location.pathname + location.hash;
+			var next = encodeURIComponent(location.pathname + location.hash);
 			console.log("next after login will be " + next);
 			var compiledTemplate = _.template(tpl)({'backends': this.collection.models, 'next': next });
 			$(this.el).html(compiledTemplate);
