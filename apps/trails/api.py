@@ -6,16 +6,18 @@ from django.contrib.gis.measure import Distance
 from django.http.response import HttpResponse
 from tastypie import fields
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
+from tastypie.contrib.gis.resources import GeometryApiField
 from tastypie.contrib.gis.resources import ModelResource
 from tastypie.exceptions import BadRequest
 from tastypie.http import HttpNoContent
 from tastypie.utils.urls import trailing_slash
 from tastypie.validation import CleanedDataFormValidation
-from tastypie.contrib.gis.resources import GeometryApiField
+
 from apps.mds_auth.api import UserResource
 from apps.mds_auth.authorization import ReadAllDjangoAuthorization, \
     ReadAllSessionAuthentication
 from apps.muni_scales.api import UXCResource, UDHResource
+from apps.trails.api_authorization import TrailAuthorization
 from apps.trails.forms import TrailForm
 from apps.trails.load2 import GPXImportError
 from apps.trails.models import Trail
@@ -74,7 +76,7 @@ class TrailResource(ModelResource):
         resource_name = 'trails'
         always_return_data = True
         authentication = ReadAllSessionAuthentication()
-        authorization = ReadAllDjangoAuthorization()
+        authorization = TrailAuthorization()
         validation = CleanedDataFormValidation(form_class = TrailForm)
         filtering = {
                      'type': ALL,

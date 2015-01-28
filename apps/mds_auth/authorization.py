@@ -15,7 +15,7 @@ class ReadAllSessionAuthentication(SessionAuthentication):
 class ReadAllDjangoAuthorization(DjangoAuthorization):
     '''
     Django Authorization which allows read access to all 
-    resources but limits other requests to the granted#
+    resources but limits other requests to the granted
     permissions of the user model.
     '''
     def read_list(self, object_list, bundle):
