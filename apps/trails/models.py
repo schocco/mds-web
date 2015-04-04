@@ -34,8 +34,6 @@ class Trail(models.Model):
     waypoints = MultiLineStringField(_('waypoints'), dim=3) #include altitude as Z
     trail_length = models.IntegerField(_('length'), help_text=_("in meters"), blank=True, null=True)
     objects = GeoManager()
-    # user
-    # comments[]
     # country
     # unitours link
     # pictures[]
