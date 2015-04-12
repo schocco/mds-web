@@ -1,7 +1,6 @@
-from django.utils.encoding import force_unicode
-from django.utils.functional import Promise
-from django.utils import simplejson
-from django.core.serializers import json
+import json
+
+from django.core.serializers.json import DjangoJSONEncoder
 from tastypie.serializers import Serializer
 
 
@@ -10,8 +9,8 @@ class CustomJSONSerializer(Serializer):
         options = options or {}
 
         data = self.to_simple(data, options)
-        return simplejson.dumps(data, cls=json.DjangoJSONEncoder)
+        return json.dumps(data, cls=DjangoJSONEncoder)
 
     def from_json(self, content):
-        data = simplejson.loads(content)
+        data = json.loads(content)
         return data

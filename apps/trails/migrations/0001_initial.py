@@ -1,53 +1,30 @@
 # -*- coding: utf-8 -*-
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import models, migrations
+from django.conf import settings
+import django.contrib.gis.db.models.fields
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'Trail'
-        db.create_table(u'trails_trail', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')()),
-            ('edited', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('description', self.gf('django.db.models.fields.CharField')(max_length=500)),
-        ))
-        db.send_create_signal(u'trails', ['Trail'])
+    dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+    ]
 
-        # Adding model 'WayPoint'
-        db.create_table(u'trails_waypoint', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('geometry', self.gf('django.contrib.gis.db.models.fields.PointField')()),
-            ('trail', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['trails.Trail'])),
-        ))
-        db.send_create_signal(u'trails', ['WayPoint'])
-
-
-    def backwards(self, orm):
-        # Deleting model 'Trail'
-        db.delete_table(u'trails_trail')
-
-        # Deleting model 'WayPoint'
-        db.delete_table(u'trails_waypoint')
-
-
-    models = {
-        u'trails.trail': {
-            'Meta': {'object_name': 'Trail'},
-            'created': ('django.db.models.fields.DateTimeField', [], {}),
-            'description': ('django.db.models.fields.CharField', [], {'max_length': '500'}),
-            'edited': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
-        },
-        u'trails.waypoint': {
-            'Meta': {'object_name': 'WayPoint'},
-            'geometry': ('django.contrib.gis.db.models.fields.PointField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'trail': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['trails.Trail']"})
-        }
-    }
-
-    complete_apps = ['trails']
+    operations = [
+        migrations.CreateModel(
+            name='Trail',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=100, verbose_name='name')),
+                ('type', models.CharField(max_length=100, verbose_name='trail type', choices=[(b'unknown', 'unknown'), (b'uphill', 'uphill'), (b'downhill', 'downhill'), (b'xc', 'cross country')])),
+                ('created', models.DateTimeField(auto_now_add=True, verbose_name='created')),
+                ('edited', models.DateTimeField(auto_now=True, verbose_name='last change')),
+                ('description', models.CharField(max_length=500, verbose_name='description', blank=True)),
+                ('waypoints', django.contrib.gis.db.models.fields.MultiLineStringField(srid=4326, dim=3, verbose_name='waypoints')),
+                ('trail_length', models.IntegerField(help_text='in meters', null=True, verbose_name='length', blank=True)),
+                ('owner', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+            ],
+        ),
+    ]

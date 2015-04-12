@@ -2,6 +2,7 @@
 from django.utils.encoding import force_unicode
 from django.utils.translation import ugettext_lazy as _
 
+
 class Mscale(object):
     '''
     M scale, describing the difficultiy of a single muni trail section.
@@ -23,7 +24,7 @@ class Mscale(object):
                                 that describe the trail section
         :type characteristics: list
         '''
-        self.number = kwargs.pop("number", 0)
+        self.number = float(kwargs.pop("number", 0))
         self.underground = kwargs.pop("underground", "")
         self.slope = kwargs.pop("slope", "")
         self.obstacles = kwargs.pop("obstacles", [])

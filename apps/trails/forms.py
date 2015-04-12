@@ -7,8 +7,7 @@ from django.contrib.gis.geos.geometry import GEOSGeometry
 from django.core.exceptions import ValidationError
 
 from apps.trails.models import Trail
-from django.utils import simplejson
-from django.forms.fields import CharField
+import json
 
 # method accept the core arguments mentioned above (required, label, initial, widget, help_text).
 class GeoJsonFormField(forms.Field):
@@ -21,7 +20,7 @@ class GeoJsonFormField(forms.Field):
         '''
         Converts dict to geos object.
         '''
-        geos = GEOSGeometry(simplejson.dumps(value))
+        geos = GEOSGeometry(json.dumps(value))
         return geos
     
     def clean(self, value):
