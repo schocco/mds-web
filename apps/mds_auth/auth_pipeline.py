@@ -20,7 +20,8 @@ def save_profile(backend, user, response, *args, **kwargs):
     '''
     if backend.name == 'facebook':
         profile, created = Profile.objects.get_or_create(user=user)
-        profile.gender = response.get('gender')[0]
+        if 'gender' in response:
+            profile.gender = response.get('gender')[0]
         profile.facebook = response.get('link')
         profile.save()
         #TODO: use token to asynchronously request more information and update profile
