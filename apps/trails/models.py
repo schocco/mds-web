@@ -1,11 +1,11 @@
 import logging
 
 from django.contrib.auth.models import User
-from django.contrib.gis.db.models.fields import LineStringField, \
-    MultiLineStringField
+from django.contrib.gis.db.models.fields import MultiLineStringField
 from django.contrib.gis.db.models.manager import GeoManager
+from django.contrib.gis.geos import Point
 from django.db import models
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
 from django.utils.translation import ugettext_lazy as _
 
@@ -45,15 +45,15 @@ class Trail(models.Model):
         '''
         @deprecated: no longer needed
         Yields 1 once, and then 0 for all subsequent calls.
-        
+
         This can be used for loops where the first element in the first linestring
-        needs to be treated differently than all other linestring elements in the 
+        needs to be treated differently than all other linestring elements in the
         multilinestring.
         '''
         yield 1
         while(True):
             yield 0
-    
+
     def has_waypoints(self):
         return self.waypoints is not None
     
@@ -74,7 +74,7 @@ class Trail(models.Model):
         '''
         :return: a list of altitude differences with
         one element for each pair of consequent waypoints.
-        
+
         A positive number means, that the end point is higher than the start point.
         Unit: meters
         '''
@@ -90,7 +90,7 @@ class Trail(models.Model):
                 dest = altitude
                 altitudes.append(dest-start)
         return altitudes
-    
+
     def _get_length_sections(self):
         '''
         @deprecated: should no longer be used.
@@ -110,7 +110,7 @@ class Trail(models.Model):
                 destination = point
                 length_sections.append(haversine(origin[:2], destination[:2])) # ignore z
         return length_sections
-    
+
     def _flat_z(self):
         zs = []
         if not self.has_waypoints() or self.waypoints[0].z is None:
@@ -124,7 +124,7 @@ class Trail(models.Model):
         @deprecated: shoul dno longer be used
         returns a list of slopes with
         one element for each pair of consequent waypoints.
-        
+
         A positive number indicates uphill, a negative one downhill.
         '''
         if not self.has_waypoints():
@@ -141,32 +141,21 @@ class Trail(models.Model):
                     logger.error(e)
                     slopes.append(0)
         return slopes
-    
-    def get_max_slope(self, dh=None, uh=None):
-        '''
-        @deprecated: should no longer be used
-        Calculates the slope in % for each pair of waypoints and returns
-        the highest slope found.
-        By default returns the maximum slope, be it uphill (positive number) or downhill (negative number).
-        
-        :param bool dh: set to True to get the maximum downhill slope
-        :param bool uh: set to True to get the maximum uphill slope
-        '''
-        logger.debug("get max slope")
-        
-        sections = self._get_slope_sections()
-        if(not self.has_waypoints() or len(sections) == 0):
-            return 0
-        if(dh is uh):
-            if abs(min(sections)) > max(sections):
-                return min(sections)
-            else:
-                return max(sections)
-        elif(dh):
-            return min(sections)
-        elif(uh):
-            return max(sections)
-        
+
+    def get_start(self):
+        """
+        :return: the first waypoint in the list of waypoints
+        """
+        if self.has_waypoints():
+            return Point(self.waypoints[0][0])
+
+    def get_finish(self):
+        """
+        :return: the last waypoint in the list of waypoints
+        """
+        if self.has_waypoints():
+            return Point(self.waypoints[-1][-1])
+
     def get_max_slope_uh(self):
         #return self.get_max_slope(uh=True)
         rm = RasterMap(self)
@@ -179,7 +168,7 @@ class Trail(models.Model):
         slopes = [row.slope for row in rm.rasterRows]
         return -100 * min(slopes)
         
-        
+
     def get_avg_slope(self):
         '''
         Calculates the average slope by dividing total altitude difference

@@ -60,7 +60,6 @@ class TrailResource(ModelResource):
     owner = fields.ToOneField(UserResource, 'owner', null=True, blank=True)
     altitude_difference = fields.CharField(attribute='get_altitude_difference', readonly=True)
     length = DistanceField(attribute='length', readonly=True, units=("m", "km", "ft", "mi", "yd"), null=True, blank=True)
-    max_slope = fields.CharField(attribute='get_max_slope', readonly=True, use_in="detail")
     max_slope_uh = fields.CharField(attribute='get_max_slope_uh', readonly=True, use_in="detail")
     max_slope_dh = fields.CharField(attribute='get_max_slope_dh', readonly=True, use_in="detail")
     avg_slope = fields.CharField(attribute='get_avg_slope', readonly=True, use_in="detail")
@@ -68,6 +67,8 @@ class TrailResource(ModelResource):
     total_descent = fields.CharField(attribute='get_total_descent', readonly=True, use_in="detail")
     height_profile = fields.DictField(attribute='get_height_profile', readonly=True, use_in="detail")
     waypoints = GeometryApiField(attribute="waypoints", use_in="detail")
+    start = GeometryApiField(attribute="get_start", use_in="detail")
+    finish = GeometryApiField(attribute="get_finish", use_in="detail")
     uxc_rating = fields.ToOneField(UXCResource, 'uxcscale', related_name="trail", null=True, blank=True, full=True)
     udh_rating = fields.ToOneField(UDHResource, 'udhscale', related_name="trail", null=True, blank=True, full=True)
 

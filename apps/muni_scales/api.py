@@ -140,8 +140,8 @@ udh = UDHscale(**data)
 bundle = scale.build_bundle(udh)
 scale.full_dehydrate(bundle)
     '''
-    maximum_difficulty = MscaleField(attribute="maximum_difficulty")#fields.ToOneField(MscaleResource, attribute="maximum_difficulty")
-    average_difficulty = MscaleField(attribute="average_difficulty")#fields.ToOneField(MscaleResource, attribute="average_difficulty")
+    max_difficulty = MscaleField(attribute="max_difficulty")#fields.ToOneField(MscaleResource, attribute="maximum_difficulty")
+    avg_difficulty = MscaleField(attribute="avg_difficulty")#fields.ToOneField(MscaleResource, attribute="average_difficulty")
     score = fields.DictField(attribute='get_score', readonly=True, use_in="detail")
     trail = fields.ToOneField("apps.trails.api.TrailResource", "trail", related_name="udhscale", null=True);
 
@@ -161,8 +161,8 @@ class UXCResource(ScaleCalcMixin, ModelResource):
     '''
     UXC Rating
     '''
-    maximum_difficulty = MscaleField(attribute="maximum_difficulty")
-    average_difficulty = MscaleField(attribute="average_difficulty")
+    max_difficulty = MscaleField(attribute="max_difficulty")
+    avg_difficulty = MscaleField(attribute="avg_difficulty")
     score = fields.DictField(attribute='get_score', readonly=True, use_in="detail")
     trail = fields.ToOneField("apps.trails.api.TrailResource", "trail", related_name="uxcscale", null=True);
      

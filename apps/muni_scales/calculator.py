@@ -76,9 +76,9 @@ class UDH(CalcBase):
         '''
         self.obj = obj
         self.__total_length = obj.total_length
-        self.__avg_slope = obj.average_slope
-        self.__max_difficulty = obj.maximum_difficulty
-        self.__avg_difficulty = obj.average_difficulty
+        self.__avg_slope = obj.avg_slope
+        self.__max_difficulty = obj.max_difficulty
+        self.__avg_difficulty = obj.avg_difficulty
 
 
     def get_total_length(self):
@@ -153,9 +153,9 @@ class UXC(CalcBase):
         self.obj = obj
         self.__total_length = float(obj.total_length)
         self.__total_ascent = float(obj.total_ascent)
-        self.__max_slope = float(obj.maximum_slope_uh)
-        self.__max_difficulty = obj.maximum_difficulty
-        self.__avg_difficulty = obj.average_difficulty
+        self.__max_slope_uh = float(obj.max_slope_uh)
+        self.__max_difficulty = obj.max_difficulty
+        self.__avg_difficulty = obj.avg_difficulty
         
     
     def get_total_length(self):
@@ -173,9 +173,9 @@ class UXC(CalcBase):
         return calc
 
     def get_max_slope(self):
-        slope = self.__max_slope
+        slope = self.__max_slope_uh
         max_pts = UXC._max_slope_max_pts
-        calc = {'value': self.__max_slope}
+        calc = {'value': self.__max_slope_uh}
         calc['explanation'], calc['result'], calc['max'] = UXC.get_criteria_score(slope, UXC._max_slope, max_pts)
         return calc
 
@@ -197,7 +197,7 @@ class UXC(CalcBase):
     
     def get_total_score(self):
         score = self.total_length['result'] + self.total_ascent['result']
-        score += self.max_slope['result'] + self.max_difficulty['result']
+        score += self.max_slope_uh['result'] + self.max_difficulty['result']
         score += self.avg_difficulty['result']
         return int(round(score))
     
@@ -207,7 +207,7 @@ class UXC(CalcBase):
         '''
         d = {'total_length': self.total_length,
              'total_ascent': self.total_ascent,
-             'max_slope': self.max_slope,
+             'max_slope_uh': self.max_slope_uh,
              'max_difficulty': self.max_difficulty,
              'avg_difficulty': self.avg_difficulty,
              'total_score': self.total_score
@@ -216,7 +216,7 @@ class UXC(CalcBase):
     
     total_length = property(get_total_length, None, None, None)
     total_ascent = property(get_total_ascent, None, None, None)
-    max_slope = property(get_max_slope, None, None, None)
+    max_slope_uh = property(get_max_slope, None, None, None)
     max_difficulty = property(get_max_difficulty, None, None, None)
     avg_difficulty = property(get_avg_difficulty, None, None, None)
     total_score = property(get_total_score, None, None, None)
