@@ -14,9 +14,11 @@ from tastypie.authentication import Authentication, SessionAuthentication
 from tastypie.authorization import Authorization, DjangoAuthorization
 from tastypie.bundle import Bundle
 from tastypie.exceptions import BadRequest
-from tastypie.http import HttpForbidden, HttpUnauthorized
+from tastypie.http import HttpForbidden, HttpUnauthorized, HttpNoContent
 from tastypie.resources import BaseModelResource, ModelResource, Resource
 from tastypie.utils.urls import trailing_slash
+from apps.mds_auth.authorization import ReadAllDjangoAuthorization
+from apps.mds_auth.models import Profile
 
 
 class SocialSignUpResource(BaseModelResource):
@@ -34,7 +36,6 @@ class SocialSignUpResource(BaseModelResource):
     def obj_create(self, bundle, request=None, **kwargs):
         provider = bundle.data['provider']
         access_token = bundle.data['access_token']
-
         strategy = load_strategy(backend=provider)
         user = strategy.backend.do_auth(access_token)
         if user and user.is_active:
@@ -42,22 +43,36 @@ class SocialSignUpResource(BaseModelResource):
             return bundle
         else:
             raise BadRequest("Error authenticating user with this provider")
-        
+
+class ProfileResource(ModelResource):
+    """
+    A user profile.
+    """
+    class Meta:
+        model = Profile
+        queryset = Profile.objects.all()
+        resource_name = 'profiles'
+        list_allowed_methods = ['get']
+        detail_allowed_methods = ['get','put'] # profiles are auto-created -> no post
+        authentication = Authentication()
+        authorization = ReadAllDjangoAuthorization()
+
 class UserResource(ModelResource):
     'User profile and session information.'
+    profile = fields.ToOneField(ProfileResource, 'profile', full=True, null=True)
     
     class Meta:
-        #model = User
+        model = User
         queryset = User.objects.all()
-        resource_name = 'user'
+        resource_name = 'users'
         list_allowed_methods = ['get', 'post']
-        authentication = SessionAuthentication()
-        authorization = DjangoAuthorization()
-        fields = ['id', 'username', 'email', 'last_login', 'first_name', 'last_name']
+        #authentication = SessionAuthentication()
+        #authorization = DjangoAuthorization()
+        fields = ['id', 'username', 'first_name', 'last_name', 'profile']
     
     def get_object_list(self, request): 
         'only return user that is already logged in'
-        return super(UserResource, self).get_object_list(request).filter(pk=request.user.pk)
+        return super(UserResource, self).get_object_list(request)#.filter(pk=request.user.pk)
     
     def prepend_urls(self):
         return [
@@ -70,6 +85,9 @@ class UserResource(ModelResource):
             url(r'^(?P<resource_name>%s)/auth-status%s$' %
                 (self._meta.resource_name, trailing_slash()),
                 self.wrap_view('check_auth_status'), name='api_auth-status'),
+            url(r'^(?P<resource_name>%s)/me%s$' %
+                (self._meta.resource_name, trailing_slash()),
+                self.wrap_view('who_am_i'), name='api_whoami'),
         ]
     
     def login(self, request, **kwargs):
@@ -121,7 +139,24 @@ class UserResource(ModelResource):
             return self.create_response(request, { 'status': 'loggedin' })
         else:
             return self.create_response(request, { 'status': 'loggedout' })
-        
+
+    def who_am_i(self, request, **kwargs):
+        """
+        Returns the user resource corresponding to the current user or an empty response if the user
+        is not logged in.
+
+        :param request: request with a session id in the header
+        :param kwargs:
+        :return: user object with fields that are otherwise excluded in the user resource
+        """
+        self.throttle_check(request)
+        self.method_check(request, allowed=['get'])
+        if request.user and request.user.is_authenticated():
+            bundle = self.build_bundle(obj=request.user, request=request)
+            bundle = self.full_dehydrate(bundle)
+            return self.create_response(request, bundle)
+        else:
+            return self.create_response(request, None, response_class=HttpNoContent)
         
 
         

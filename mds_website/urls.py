@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from tastypie.api import Api
 
-from apps.mds_auth.api import SocialSignUpResource, BackendResource, UserResource
+from apps.mds_auth.api import SocialSignUpResource, BackendResource, UserResource, ProfileResource
 from apps.muni_scales.api import MscaleResource, UDHResource, UXCResource
 from apps.trails.api import TrailResource
 from mds_website.views import HomeView
@@ -18,6 +18,7 @@ v1_api.register(UXCResource())
 v1_api.register(SocialSignUpResource())
 v1_api.register(BackendResource())
 v1_api.register(UserResource())
+v1_api.register(ProfileResource())
 
 urlpatterns = patterns('',
     url(r'^$', HomeView.as_view(), name = 'index'),
