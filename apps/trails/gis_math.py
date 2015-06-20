@@ -49,6 +49,9 @@ def radius_for_lat(lat):
 
 
 class RasterRow:
+    """
+    Representation of one data point of the rastered data.
+    """
     
     def __init__(self):
         self.length_degree = 0
@@ -62,6 +65,7 @@ class RasterRow:
 class RasterMap:
     '''
     Class to calculate approximated information about a trail object.
+    Uses a few data points of the original data to speed up calculation.
     '''
     def __init__(self, trail):
         #flatten multilinestring to linestring

@@ -242,7 +242,7 @@ class Trail(models.Model):
         for row in rows:
             distance = round(float(row.length_meters_cum)/1000,1)
             labels.append('%.1f km' % distance)
-            values.append(row.altitude)
+            values.append(round(row.altitude,2))
         
         
             
