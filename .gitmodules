@@ -1,0 +1,3 @@
+[submodule "mds-web-client"]
+	path = mds-web-client
+	url = https://github.com/schocco/mds-web-client
