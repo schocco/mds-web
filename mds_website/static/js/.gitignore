@@ -1,8 +1,0 @@
-# libs can be downloaded with bower
-/libs/*
-# include a build of openlayers
-!/libs/openlayers
-/libs/openlayers/*
-!/libs/openlayers/OpenLayers.js
-!/libs/openlayers/img
-!/libs/openlayers/theme
