@@ -83,8 +83,11 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    os.path.abspath(os.path.join(PROJECT_DIR, "static")),
+    os.path.abspath(os.path.join(PROJECT_DIR, "../mds-web-client/dist")),
 )
+
+STATICFILES_STORAGE = 'webpack.storage.WebpackHashStorage'
+WEBPACK_ASSETS_FILE = os.path.abspath(os.path.join(PROJECT_DIR, "../mds-web-client/webpack-assets.json"))
 
 # List of finder classes that know how to find static files in
 # various locations.
@@ -94,74 +97,8 @@ STATICFILES_FINDERS = (
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-# Pipeline specific settings for JS and CSS compression
-# yui-compressor is required, for a list of alternative compressors
-# see https://django-pipeline.readthedocs.org/en/latest/compressors.html
-STATICFILES_STORAGE = 'require.storage.OptimizedStaticFilesStorage' #pipeline.storage.PipelineCachedStorage'
-PIPELINE_YUI_BINARY = "/usr/bin/yui-compressor"
-PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
-PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 
-PIPELINE_YUI_JS_ARGUMENTS = "--nomunge"
-PIPELINE_DISABLE_WRAPPER = True
 
-PIPELINE_CSS = {
-    'main': {
-        'source_filenames': ( #the order of the css files matters
-            'css/plugins.css',
-            'css/workless.css',
-            'css/typography.css',
-            'css/forms.css',
-            'css/tables.css',
-            'css/buttons.css',
-            'css/backgrounds.css',
-            'css/alerts.css',
-            'css/pagination.css',
-            'css/breadcrumbs.css',
-            'css/font.css',
-            'css/helpers.css',
-            'css/scaffolding.css',
-            'css/print.css',
-            'css/animations.css',
-            'css/application.css',
-            'css/tooltip.css',
-            'css/responsive.css',
-        ),
-        'output_filename': 'css/main.css',
-    },
-}
-PIPELINE_JS = {
-    'require': {
-          'source_filenames': (
-          'js/require/require.js',
-          'js/app/main.js',
-    ),
-    'output_filename': 'js/app/required.js',
-    }
-}
-
-# require.js setup
-REQUIRE_BASE_URL = "js/app/"
-# The name of a build profile to use for your project, relative to REQUIRE_BASE_URL.
-# A sensible value would be 'app.build.js'. Leave blank to use the built-in default build profile.
-# Set to False to disable running the default profile (e.g. if only using it to build Standalone
-# Modules)
-REQUIRE_BUILD_PROFILE = "../../build.js"
-# The name of the require.js script used by your project, relative to REQUIRE_BASE_URL.
-REQUIRE_JS = "require.js"
-# Whether to run django-require in debug mode.
-REQUIRE_DEBUG = DEBUG
-# The execution environment in which to run r.js: auto, node or rhino.
-# auto will autodetect the environment and make use of node if available and rhino if not.
-# It can also be a path to a custom class that subclasses require.environments.Environment and defines some "args" function that returns a list with the command arguments to execute.
-REQUIRE_ENVIRONMENT = "auto"
-# A dictionary of standalone modules to build
-REQUIRE_STANDALONE_MODULES = {
-#    "main": {
-#        # Where to output the built module, relative to REQUIRE_BASE_URL.
-#        "out": "../dist/main.js",
-#    }
-}
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'use your own secret key.'
@@ -249,8 +186,6 @@ INSTALLED_APPS = (
     'django.contrib.gis',
     'social.apps.django_app.default',
     'tastypie',
-    'require',
-    'pipeline', #minify css and js
     'apps.muni_scales',
     'apps.trails',
     'apps.mds_auth',

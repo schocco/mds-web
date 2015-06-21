@@ -31,7 +31,6 @@ Requirements
 - PostGIS instance (see geodjango documentation for setup instructions)
 - GDAL
 - a message broker for celery (e.g. RabbitMQ)
-- yui-compressor for minification of static files
 
 Deployment
 **********
@@ -40,6 +39,7 @@ Deployment
 - clone the code
 - create a settings_local.py file and run ``python manage.py syncdb``
 - use e.g. mod_wsgi to point to the wsgi file
+- build the submodule (see submodule README)
 - collect the static files via ``python manage.py collectstatic``
 
 

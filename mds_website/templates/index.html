@@ -1,160 +1,88 @@
-{% load compressed %}
-{% load url from future %}
 {% load static from staticfiles %}
-{% load require %}
-<!doctype html>
-<!--[if lt IE 7]> 
-	<html class="nojs ms lt_ie7" lang="en"> 
-<![endif]-->
-<!--[if IE 7]>    
-	<html class="nojs ms ie7" lang="en"> 
-<![endif]-->
-<!--[if IE 8]>    
-	<html class="nojs ms ie8" lang="en"> 
-<![endif]-->
-<!--[if gt IE 8]> 
-	<html class="nojs ms" lang="en"> 
-<![endif]-->
-<html lang="en">
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="author" content="Rocco Schulz">
 	<meta name="description" content="Muni Difficulty Scale - A tool to measure singletrail difficulty">
 	<meta name="keywords" content="muni difficulty scale, mountain unicycling, trails, singletrail, mountain unicycling">
 	<link rel="shortcut icon" href="{% static "img/favicon.png" %}">
-	<meta name="csrf-token" content="{{csrf_token}}">
-	<!--  CSS styles -->
-	{#% compressed_css 'main' %#}
-	<link href="{% static "css/styles.css" %}" rel="stylesheet" type="text/css" />
-	<!-- Mobile Viewport -->
-    <meta name="viewport" content="width=device-width">
+    <title>Muni Difficulty Scale | A tool to measure trail difficulty</title>
 
-	<title>Muni Difficulty Scale | A Tool to Measure Trail Difficulty</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	
-	<!-- All JavaScript at the bottom, except modernizr -->
-	  {#% compressed_js 'modernizer' %#}
+    <link rel="apple-touch-icon" sizes="57x57" href="/img/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/img/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/img/apple-touch-icon-114x114.png">
 
-  	<!--[if lt IE 8]>    
-        {% compressed_js 'ie_font' %}
-    <![endif]-->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
-
-<body id="index">
-
-<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6 -->
-<!--[if lt IE 7]>
-	<p>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p>
-<![endif]-->
-
-<!-- wrapper -->
-<!-- section class="boxed" -->
-
-	<!-- main -->
-	<section id="main">
-		<div id="sidr" name="sidr"></div>
-		<!-- nav -->
-        <nav id="primary">
-            <div id="menu-source" class="boxed">
-	            <ul id="menu-primary">
-	                <li class="workless"><a href="#/home"><img src="{% static 'img/mds.png' %}"/></a></li>
-	                <li><a href="#/udh-scale">UDH Scale</a></li>
-	                <li><a href="#/uxc-scale">UXC Scale</a></li>
-	                <li><a href="#/mts">M Scale</a></li>
-	                <li><a href="#/trails">Trails</a></li>
-	            </ul>
+<body>
+<div class="wrapper">
+    <section>
+        <header>
+            <div class="container">
+                <div class="clear">
+                    <h1 class="logo animate fade-in-down"><a href="#home">Muni Difficulty Scale</a></h1>
+                </div>
             </div>
-            <!-- responsive nav -->
-            <a id="mobile-nav-open" class="open" href="#menu-primary">Menu</a>
-            <!-- /responsive nav -->
-        </nav>
-        <!-- /nav -->
-		
-		<!-- header -->
-        <header id="header">
-            <div class="boxed textcenter">
-
-		        <!-- logo -->
-		        <div id="logo">
-		            <a href="#home" alt="Muni Trail Scale">
-		                <h1 class="textcenter animated bounceInDown">Muni Difficulty Scale</h1>
-		            </a>
-		        </div>
-		        <!-- /logo -->
-
-                <h2 id="logoCaption" class="textcenter animated bounceInUp">a tool to measure trail difficulty</h2>
-
-                <a id="startButton" class="button large animated bounceInUp" href="#/home">
-                    Learn more
-                </a>
-
+            <div data-region="headerExtra" class="header-extra">
+                <div class="container">
+                    <p>A tool to measure trail difficulty</p>
+                </div>
+            </div>
+            <div class="navbar">
+                <nav class="container clear">
+                    <ul>
+                        <li><a href="#udh-scale"><i class="fa fa-th-list fa-2x"></i><span
+                                class="menu-txt">UDH Scale</span></a>
+                        </li>
+                        <li><a href="#uxc-scale"><i class="fa fa-th fa-2x"></i><span
+                                class="menu-txt">UXC Scale</span></a></li>
+                        <li><a href="#mts"><i class="fa fa-list-ol fa-2x"></i><span
+                                class="menu-txt">M Scale</span></a></li>
+                        <li><a href="#trails"><i class="fa fa-globe fa-2x"></i><span
+                                class="menu-txt">Trails</span></a></li>
+                    </ul>
+                </nav>
             </div>
         </header>
-        <!-- /header -->
-        
-        <!-- content div which holds the sections with actual content -->
-        <div id="content">
-	        <script>
-		        /* 
-		         * Bootstrap some data for the first page load. 
-		         * This will be replaced by the first view that is rendered.
-		         * @see: http://requirejs.org/docs/api.html#config-moduleconfig
-		         */
-			     {% if user.is_authenticated %}
-			        var user = "{{ current_user|escapejs }}";
-			     {% else %}
-			        user = null;
-			     {% endif %}
-			     var require = {
-			    		 config: {
-			    	            app : { 
-			    	                current_user : user,
-			    	                mscaleCollection : "{{ mscale_collection|escapejs }}"
-			    	            },
-			    	            "models/auth/UserSessionMonitor": {
-			    	            	interval: 20000,
-			    	            	maxRetries: 3
-			    	            }
-			    	        }
-			    	   };
-			</script>
-        </div>
-
-	 <!--  auth -->
-    <section id="auth" class="section bg-debutdark">
     </section>
 
-        <!-- footer -->
-        <footer id="footer" class="textcenter">
-            <div class="boxed">
-                <p class="small muted">
-                    A project by 
-	                <a href="//is-gr8.com">Rocco Schulz</a> and the 
-	                <a href="//iufinc.org">IUF</a>.
-	                Design based on the
-	                <a href="http://workless.ikreativ.com/">Workless</a> framework
+    <section class="content container">
+        <div class="content-inner" id="appBody" data-region="body">
+            <div class="text-center col-tablet-11 no-float center-element">
+                <h1>The muni difficulty scale</h1>
+
+                <p class="lead">
+                    Some dummy content
                 </p>
             </div>
-        </footer>
-        <!-- /footer -->
+        </div>
+    </section>
 
+</div>
+<footer class="footer push">
+    <div class="container">
+        <div class="footer-inner clear">
+            <div class="col-tablet-6">
+                <p>
+                    A project by <a href="http://is-gr8.com">Rocco Schulz</a> and the <a href="">IUF</a>.
+                </p>
+            </div>
+            <div class="col-tablet-6">
+                <ul class="footer-list">
+                    <li><a href="#">Some footer links</a></li>
+                    <li><a href="#">placeholder</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
 
-	</section>
-	<!-- /main -->
-
-<!-- /section -->
-<!-- /wrapper -->
-
-<!-- JavaScript at the bottom for fast page loading -->
-
-<!-- scripts  -->
-{#% compressed_js 'require' %#}
-<!-- require module tag -->
- {% require_module 'config' %}
- <!--script src="/static/js/app/main-built.js"></script-->
- <!--script src="/static/js/app/require.js" data-main="/static/js/dist/config.js"></script-->
-<!-- /scripts -->
-
+<script src="{%  static 'main.js' %}"></script>
 </body>
 </html>
