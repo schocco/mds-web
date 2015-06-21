@@ -10,13 +10,14 @@ from django.contrib.auth.models import User
 from social.apps.django_app.utils import load_strategy
 from social.backends import utils
 from tastypie import fields
-from tastypie.authentication import Authentication, SessionAuthentication
-from tastypie.authorization import Authorization, DjangoAuthorization
+from tastypie.authentication import Authentication
+from tastypie.authorization import Authorization
 from tastypie.bundle import Bundle
 from tastypie.exceptions import BadRequest
 from tastypie.http import HttpForbidden, HttpUnauthorized, HttpNoContent
 from tastypie.resources import BaseModelResource, ModelResource, Resource
 from tastypie.utils.urls import trailing_slash
+
 from apps.mds_auth.authorization import ReadAllDjangoAuthorization
 from apps.mds_auth.models import Profile
 
@@ -44,36 +45,39 @@ class SocialSignUpResource(BaseModelResource):
         else:
             raise BadRequest("Error authenticating user with this provider")
 
+
 class ProfileResource(ModelResource):
     """
     A user profile.
     """
+
     class Meta:
         model = Profile
         queryset = Profile.objects.all()
         resource_name = 'profiles'
         list_allowed_methods = ['get']
-        detail_allowed_methods = ['get','put'] # profiles are auto-created -> no post
+        detail_allowed_methods = ['get', 'put']  # profiles are auto-created -> no post
         authentication = Authentication()
         authorization = ReadAllDjangoAuthorization()
+
 
 class UserResource(ModelResource):
     'User profile and session information.'
     profile = fields.ToOneField(ProfileResource, 'profile', full=True, null=True)
-    
+
     class Meta:
         model = User
         queryset = User.objects.all()
         resource_name = 'users'
         list_allowed_methods = ['get', 'post']
-        #authentication = SessionAuthentication()
+        # authentication = SessionAuthentication()
         #authorization = DjangoAuthorization()
         fields = ['id', 'username', 'first_name', 'last_name', 'profile']
-    
-    def get_object_list(self, request): 
+
+    def get_object_list(self, request):
         'only return user that is already logged in'
-        return super(UserResource, self).get_object_list(request)#.filter(pk=request.user.pk)
-    
+        return super(UserResource, self).get_object_list(request)  # .filter(pk=request.user.pk)
+
     def prepend_urls(self):
         return [
             url(r"^(?P<resource_name>%s)/login%s$" %
@@ -85,15 +89,13 @@ class UserResource(ModelResource):
             url(r'^(?P<resource_name>%s)/auth-status%s$' %
                 (self._meta.resource_name, trailing_slash()),
                 self.wrap_view('check_auth_status'), name='api_auth-status'),
-            url(r'^(?P<resource_name>%s)/me%s$' %
-                (self._meta.resource_name, trailing_slash()),
-                self.wrap_view('who_am_i'), name='api_whoami'),
         ]
-    
+
     def login(self, request, **kwargs):
         '''
         Uses the django auth module to authenticate a user with the posted credentials.
         
+        :param request:
         Code source: taken from https://stackoverflow.com/questions/11770501/how-can-i-login-to-django-using-tastypie
         '''
         self.method_check(request, allowed=['post'])
@@ -115,52 +117,42 @@ class UserResource(ModelResource):
                 return self.create_response(request, {
                     'success': False,
                     'reason': 'disabled',
-                    }, HttpForbidden )
+                }, HttpForbidden)
         else:
             return self.create_response(request, {
                 'success': False,
                 'reason': 'incorrect',
-                }, HttpUnauthorized )
+            }, HttpUnauthorized)
 
     def logout(self, request, **kwargs):
+        """
+
+        :param request:
+        :param kwargs:
+        :return:
+        """
         self.method_check(request, allowed=['get'])
         if request.user and request.user.is_authenticated():
             logout(request)
-            return self.create_response(request, { 'success': True })
+            return self.create_response(request, {'success': True})
         else:
-            return self.create_response(request, { 'success': False }, HttpUnauthorized)
-        
+            return self.create_response(request, {'success': False}, HttpUnauthorized)
+
     def check_auth_status(self, request, **kwargs):
         '''
+        :param kwargs:
+        :param request:
         :return: 'loggedin' when the user is authenticated, otherwise 'loggedout'
         '''
         self.method_check(request, allowed=['get'])
         if request.user and request.user.is_authenticated():
-            return self.create_response(request, { 'status': 'loggedin' })
-        else:
-            return self.create_response(request, { 'status': 'loggedout' })
-
-    def who_am_i(self, request, **kwargs):
-        """
-        Returns the user resource corresponding to the current user or an empty response if the user
-        is not logged in.
-
-        :param request: request with a session id in the header
-        :param kwargs:
-        :return: user object with fields that are otherwise excluded in the user resource
-        """
-        self.throttle_check(request)
-        self.method_check(request, allowed=['get'])
-        if request.user and request.user.is_authenticated():
             bundle = self.build_bundle(obj=request.user, request=request)
-            bundle = self.full_dehydrate(bundle)
-            return self.create_response(request, bundle)
+            resp_data = {'status': 'loggedin', 'user': self.full_dehydrate(bundle)}
+            return self.create_response(request, resp_data)
         else:
-            return self.create_response(request, None, response_class=HttpNoContent)
-        
+            return self.create_response(request, {'status': 'loggedout'})
 
-        
- 
+
 class BackendResource(Resource):
     '''
     A read-only resource that lists all available social auth backends.
@@ -172,7 +164,7 @@ class BackendResource(Resource):
         authorization = Authorization()
         allowed_methods = ['get']
 
-        
+
     def apply_sorting(self, obj_list, options=None):
         """
         sorts by name (always ascending)
@@ -190,7 +182,7 @@ class BackendResource(Resource):
     def prepend_urls(self):
         return [
             url(r"^(?P<resource_name>%s)/(?P<backend>[\w\d_.-]+)/$" %
-                    self._meta.resource_name,
+                self._meta.resource_name,
                 self.wrap_view('dispatch_detail'),
                 name="api_dispatch_detail"),
         ]
@@ -206,4 +198,3 @@ class BackendResource(Resource):
         return utils.load_backends(settings.AUTHENTICATION_BACKENDS)[backend]
    
 
-    
