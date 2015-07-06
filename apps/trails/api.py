@@ -67,8 +67,8 @@ class TrailResource(ModelResource):
     total_descent = fields.CharField(attribute='get_total_descent', readonly=True, use_in="detail")
     height_profile = fields.DictField(attribute='get_height_profile', readonly=True, use_in="detail")
     waypoints = GeometryApiField(attribute="waypoints", use_in="detail")
-    start = GeometryApiField(attribute="get_start", use_in="detail")
-    finish = GeometryApiField(attribute="get_finish", use_in="detail")
+    start = GeometryApiField(attribute="get_start", use_in="detail", readonly=True)
+    finish = GeometryApiField(attribute="get_finish", use_in="detail", readonly=True)
     uxc_rating = fields.ToOneField(UXCResource, 'uxcscale', related_name="trail", null=True, blank=True, full=True)
     udh_rating = fields.ToOneField(UDHResource, 'udhscale', related_name="trail", null=True, blank=True, full=True)
 
