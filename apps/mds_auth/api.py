@@ -50,6 +50,8 @@ class ProfileResource(ModelResource):
     """
     A user profile.
     """
+    num_uploaded_trails = fields.CharField(attribute='get_num_uploaded', readonly=True)
+    num_rated_trails = fields.CharField(attribute='get_num_rated', readonly=True)
 
     class Meta:
         model = Profile

@@ -21,7 +21,7 @@ class UXXAuthorization(DjangoAuthorization):
     def create_detail(self, object_list, bundle):
         'only allowed if user matches'
         #TODO: check superclass
-        return bundle.obj.owner == bundle.request.user
+        return bundle.obj.trail.owner == bundle.request.user
 
     def update_list(self, object_list, bundle):
         'only allowed for owned objects'

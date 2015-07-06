@@ -14,10 +14,11 @@ from models import Trail
 # time to wait between retrying api calls
 WAIT_INTERVAL = 0.05
 
+
 class ManualTrailConstructionTest(TestCase):
-    '''
+    """
     Creates linestrings manually and assigns them to trails.
-    '''
+    """
     fixtures = ["users.json"]
     
     
@@ -38,15 +39,15 @@ class ManualTrailConstructionTest(TestCase):
         
     
 class ImportGPXTest(TestCase):
-    '''
+    """
     Test layermapping from gpx to linestrings for trail creation.
-    '''
+    """
     fixtures = ["users.json"]
     
     def test_import(self):
-        '''
+        """
         Uses the load module to read gpx data, which contains long, lat and altitude
-        '''
+        """
         path = os.path.dirname( __file__ )
         gpx_file = os.path.join(path, 'data/BadWildbad.gpx')
         self.assertTrue(os.path.exists(gpx_file))
@@ -64,7 +65,7 @@ class ImportGPXTest(TestCase):
         
         
     def test_gpx_upload(self):
-        '''Uploading GPX files should succeed'''
+        """Uploading GPX files should succeed"""
         response = self._upload_file('data/BadWildbad.gpx')
         self.assertEqual(response.status_code, 200)
         response = self._upload_file('data/oruxmaps-unicon17-xc.gpx')
@@ -101,18 +102,18 @@ class ImportGPXTest(TestCase):
         return response
     
     def _get_geojson(self, task_id, max_wait=1):
-        '''
+        """
         Calls the api method to get the result for the executed gpx load task.
         Retry on empty results until max_wait time is exceeded.
-        '''
+        """
         total_wait = 0
         c = Client()
         while True:
             resp = c.get(reverse('api_get_geojson',
-                                 kwargs={'resource_name':'trails', 'api_name':'v1', 'task_id':task_id}))
-            if(total_wait > max_wait):
+                                 kwargs={'resource_name': 'trails', 'api_name': 'v1', 'task_id': task_id}))
+            if total_wait > max_wait:
                 self.fail("Maximum wait time exceeded for api call.")                                      
-            if(resp.status_code == 204):
+            if resp.status_code == 204:
                 time.sleep(WAIT_INTERVAL)
                 total_wait += WAIT_INTERVAL
             else:
@@ -121,9 +122,9 @@ class ImportGPXTest(TestCase):
             
             
 class TrailFunctionTest(TestCase):
-    '''
+    """
     Tests functions / properties of trail objects.
-    '''
+    """
     fixtures = ["users.json"]
     
     def setUp(self):
@@ -140,9 +141,9 @@ class TrailFunctionTest(TestCase):
         Trail.objects.create(name="2d waypoints", waypoints = ls2d, owner=owner)
         
     def test_altitude_functions(self):
-        '''
+        """
         Checks correct altitude calculations.
-        '''
+        """
         d3 = Trail.objects.get(name="3d waypoints")
         d2 = Trail.objects.get(name="2d waypoints")
         # altitude sections
@@ -156,9 +157,9 @@ class TrailFunctionTest(TestCase):
         self.assertEqual(d2.get_total_descent(), 0)
         
     def test_length_functions(self):
-        '''
+        """
         tests length calculations
-        '''
+        """
         d3 = Trail.objects.get(name="3d waypoints")
         d2 = Trail.objects.get(name="2d waypoints")
         
@@ -168,17 +169,17 @@ class TrailFunctionTest(TestCase):
         self.assertGreater(d2.trail_length, 0)
         
     def test_slope_functions(self):
-        '''
+        """
         tests slope calculations
-        '''
+        """
         d3 = Trail.objects.get(name="3d waypoints")
         
         self.assertEqual(len(d3._get_slope_sections()), 3)
         # slope may be higher than 140% in general, but in this case it shouldn't be
-        max_slope = abs(d3.get_max_slope())
+        max_slope = max(abs(d3.get_max_slope_uh()), abs(d3.get_max_slope_dh()))
         self.assertTrue(max_slope > 0 and max_slope <= 140)
-        self.assertLess(d3.get_max_slope(dh=True), 0)
-        self.assertGreater(d3.get_max_slope(uh=True), 0)
+        self.assertGreater(d3.get_max_slope_dh(), 0)
+        self.assertGreater(d3.get_max_slope_uh(), 0)
         # the steepest part is the first uphill section
-        self.assertEqual(d3.get_max_slope(), d3.get_max_slope(uh=True))
-        self.assertTrue(abs(d3.get_avg_slope()) > 0 and d3.get_avg_slope() <= d3.get_max_slope(), 'avg slope must not be higher than maximum slope')
+        self.assertEqual(max_slope, d3.get_max_slope_uh())
+        self.assertTrue(abs(d3.get_avg_slope()) > 0 and d3.get_avg_slope() <= max_slope, 'avg slope must not be higher than maximum slope')
