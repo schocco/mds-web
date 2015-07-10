@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import tempfile
+from django import db
 
 from django.conf.urls import url
 from django.contrib.gis.measure import Distance
@@ -91,8 +92,10 @@ class TrailResource(ModelResource):
     
     def obj_create(self, bundle, **kwargs):
         'automatically adds the current user to the created model.'
-        return super(TrailResource, self).obj_create(bundle, owner=bundle.request.user)
-
+        try:
+            return super(TrailResource, self).obj_create(bundle, owner=bundle.request.user)
+        except db.Error as e:
+            raise BadRequest("Trail could not be saved.  {0}".format(e))
     def prepend_urls(self):
         return [
             # loading GPX files
