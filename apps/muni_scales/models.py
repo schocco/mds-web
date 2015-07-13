@@ -9,7 +9,7 @@ class BaseScale(models.Model):
     """
     Base class for all discipline specific scales.
     """
-    trail = models.OneToOneField(Trail, null=True, blank=True)
+    trail = models.OneToOneField(Trail, null=False, blank=False)
     total_length = models.IntegerField(_('total length'), 
                                        help_text = _("Total trail length in meters"))
     max_difficulty = MscaleField(_('maximum difficulty'),
@@ -27,7 +27,7 @@ class UDHscale(BaseScale):
     avg_slope = models.IntegerField(_("average slope"), help_text = _("average slope in %"))
     
     def __unicode__(self):
-        return u'UDH %sm avg %s' % (self.total_length, self.average_difficulty)
+        return u'UDH %sm avg %s' % (self.total_length, self.avg_difficulty)
     
     def get_score(self, as_dict = True):
         '''
@@ -55,7 +55,7 @@ class UXCscale(BaseScale):
 
     
     def __unicode__(self):
-        return u'UXC %s' % self.average_difficulty
+        return u'UXC %s' % self.avg_difficulty
     
     def get_score(self, as_dict = True):
         '''

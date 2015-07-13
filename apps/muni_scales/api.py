@@ -44,7 +44,7 @@ class MscaleField(fields.ApiField, MscaleFieldMixin):
         '''
         Prepare data for serialization before sending to the client.
         '''
-        return self.convert(1)
+        return self.convert(bundle.obj.__getattribute__(self.instance_name))
 
 class MscaleResource(Resource):
     '''
@@ -131,8 +131,8 @@ class UDHResource(ScaleCalcMixin, ModelResource):
     '''
     UDH rating
     '''
-    max_difficulty = MscaleField(attribute="max_difficulty")#fields.ToOneField(MscaleResource, attribute="maximum_difficulty")
-    avg_difficulty = MscaleField(attribute="avg_difficulty")#fields.ToOneField(MscaleResource, attribute="average_difficulty")
+    max_difficulty = MscaleField(attribute="max_difficulty")#fields.ToOneField(MscaleResource, attribute="max_difficulty")
+    avg_difficulty = MscaleField(attribute="avg_difficulty")#fields.ToOneField(MscaleResource, attribute="avg_difficulty")
     score = fields.DictField(attribute='get_score', readonly=True, use_in="detail")
     trail = fields.ToOneField("apps.trails.api.TrailResource", "trail", related_name="udhscale", null=True);
 
@@ -140,7 +140,7 @@ class UDHResource(ScaleCalcMixin, ModelResource):
     class Meta:
         queryset = UDHscale.objects.all()
         resource_name = 'udh-scale'
-        validation = CleanedDataFormValidation(form_class = UDHscaleForm)
+        #validation = CleanedDataFormValidation(form_class = UDHscaleForm)
         always_return_data = True
         #TODO: proper permission checks
         authentication = ReadAllSessionAuthentication()
@@ -155,7 +155,7 @@ class UXCResource(ScaleCalcMixin, ModelResource):
     max_difficulty = MscaleField(attribute="max_difficulty")
     avg_difficulty = MscaleField(attribute="avg_difficulty")
     score = fields.DictField(attribute='get_score', readonly=True, use_in="detail")
-    trail = fields.ToOneField("apps.trails.api.TrailResource", "trail", related_name="uxcscale", null=True);
+    trail = fields.ToOneField("apps.trails.api.TrailResource", "trail", related_name="uxcscale", null=True)
      
     class Meta:
         queryset = UXCscale.objects.all()

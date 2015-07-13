@@ -1,19 +1,34 @@
 '''
 Forms used for validation in tastypie api
 '''
-from apps.muni_scales.models import UDHscale, UXCscale
+import decimal
+
 from django import forms
 
-class UDHscaleForm(forms.ModelForm):
+from apps.muni_scales.models import UDHscale, UXCscale
+
+
+class ScaleForm(forms.ModelForm):
+    def clean(self):
+        cleaned_data = super(ScaleForm, self).clean()
+        avg_diff = cleaned_data.get("avg_difficulty")
+        max_diff = cleaned_data.get("max_difficulty")
+
+        if max_diff < avg_diff:
+            raise forms.ValidationError(
+                "Maximum difficulty cannot be smaller than average difficulty"
+            )
+
+
+class UDHscaleForm(ScaleForm):
     class Meta:
         model = UDHscale
+        fields = '__all__'
         # FIXME: temporary workaround until a proper validation solution is found
-        # for uri / pk conversion
-        exclude = ['avg_difficulty', 'max_difficulty', 'trail']
-        
-class UXCscaleForm(forms.ModelForm):
+
+
+class UXCscaleForm(ScaleForm):
     class Meta:
         model = UXCscale
+        fields = '__all__'
         # FIXME: temporary workaround until a proper validation solution is found
-        # for uri / pk conversion
-        exclude = ['avg_difficulty', 'max_difficulty', 'trail']

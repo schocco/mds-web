@@ -1,11 +1,11 @@
 import json
 from django.contrib.auth.models import User
 from django.contrib.gis.geos import LineString, MultiLineString
-from django.core import serializers
 from django.core.urlresolvers import reverse
 from tastypie.test import ResourceTestCase
 from apps.mds_auth.tests import SessionAuthMixin
 from apps.muni_scales.fields import MscaleFieldMixin
+from apps.muni_scales.forms import UDHscaleForm, UXCscaleForm
 from apps.trails.models import Trail
 from models import UDHscale, UXCscale
 from django.test import TestCase
@@ -61,8 +61,67 @@ class ApiTestCase(ResourceTestCase, SessionAuthMixin):
         self.logout()
 
 
+class ValidationTest(TestCase):
+    """
+    Make sure scale objects are properly validated
+    """
+    def setUp(self):
+        self.user = User.objects.create_user("username", 'user@example.com', "userpw")
+        # create a DH trail
+        self.t1 = Trail(name = "Testtrail1", owner = self.user, type="dh")
+        self.t1.waypoints = MultiLineString(LineString((48.75118072, 8.539638519, 712),
+                                  (48.75176078, 8.541011810, 696),
+                                  (48.75133635, 8.545153141, 556),
+                                  (48.75067140, 8.545582294, 531)))
+        self.t1.save()
+        # and an XC trail
+        self.t2 = Trail(name = "Testtrail1", owner = self.user, type="xc")
+        self.t2.waypoints = MultiLineString(LineString((48.75118072, 8.539638519, 712),
+                                  (48.75176078, 8.541011810, 696),
+                                  (48.75133635, 8.545153141, 556),
+                                  (48.75067140, 8.545582294, 731)))
+        self.t2.save()
 
-class CaclulationTestCase(TestCase):
+        self.udh_data = {
+            "avg_difficulty": 5,
+            "max_difficulty": 3,
+            "avg_slope": 10,
+            "total_length": 3000,
+            "trail": self.t1.pk
+        }
+        self.uxc_data = {
+            "avg_difficulty": 5,
+            "max_difficulty": 3,
+            "max_slope_uh": 10,
+            "total_length": 3000,
+            "total_ascent": 500,
+            "trail": self.t2.pk
+        }
+
+    def test_avg_max_validation(self):
+        """
+        Makes sure that avg is <= to max difficulty on UDH and UXC scales.
+        """
+        form = UXCscaleForm(self.uxc_data)
+        self.assertFalse(form.is_valid(), "average must not be higher than maximum")
+        form = UDHscaleForm(self.udh_data)
+        self.assertFalse(form.is_valid(), "average must not be higher than maximum")
+        self.udh_data["max_difficulty"] = 5
+        form = UDHscaleForm(self.udh_data)
+        self.assertTrue(form.is_valid(), msg=form.errors)
+
+    def test_missing_field(self):
+        self.udh_data.pop("avg_slope")
+        form = UDHscaleForm(self.udh_data)
+        self.assertFalse(form.is_valid(), "all fields should be mandatory")
+
+
+
+
+class CalculationTestCase(TestCase):
+    """
+    Tests calculation using example from the official PDF release of the scales.
+    """
 
     def setUp(self):
         UDHscale.objects.create(total_length="6000", max_difficulty=3.5,
