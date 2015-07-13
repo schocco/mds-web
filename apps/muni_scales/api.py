@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.conf.urls import url
+from django.core.urlresolvers import reverse
 from tastypie import fields
 from tastypie.authorization import Authorization
 from tastypie.bundle import Bundle
@@ -110,7 +111,7 @@ class ScaleCalcMixin(object):
     def prepend_urls(self):
         return [
             url(r"^(?P<resource_name>%s)/calculate/$" % 
-                self._meta.resource_name, self.wrap_view('get_score'), name="calc_udh_score"),
+                self._meta.resource_name, self.wrap_view('get_score'), name="api_calc_score"),
         ]
         
     def get_score(self, request, **kwargs):
@@ -127,6 +128,7 @@ class ScaleCalcMixin(object):
         return self.create_response(request, score)
 
 
+
 class UDHResource(ScaleCalcMixin, ModelResource):
     '''
     UDH rating
@@ -134,13 +136,13 @@ class UDHResource(ScaleCalcMixin, ModelResource):
     max_difficulty = MscaleField(attribute="max_difficulty")#fields.ToOneField(MscaleResource, attribute="max_difficulty")
     avg_difficulty = MscaleField(attribute="avg_difficulty")#fields.ToOneField(MscaleResource, attribute="avg_difficulty")
     score = fields.DictField(attribute='get_score', readonly=True, use_in="detail")
-    trail = fields.ToOneField("apps.trails.api.TrailResource", "trail", related_name="udhscale", null=True);
+    trail = fields.ToOneField("apps.trails.api.TrailResource", "trail", related_name="udhscale", null=True)
 
     
     class Meta:
         queryset = UDHscale.objects.all()
         resource_name = 'udh-scale'
-        #validation = CleanedDataFormValidation(form_class = UDHscaleForm)
+        validation = CleanedDataFormValidation(form_class = UDHscaleForm)
         always_return_data = True
         #TODO: proper permission checks
         authentication = ReadAllSessionAuthentication()

@@ -23,12 +23,10 @@ class ScaleForm(forms.ModelForm):
 class UDHscaleForm(ScaleForm):
     class Meta:
         model = UDHscale
-        fields = '__all__'
-        # FIXME: temporary workaround until a proper validation solution is found
+        exclude = ['trail'] # TODO: change when https://github.com/django-tastypie/django-tastypie/issues/152 resolved
 
 
 class UXCscaleForm(ScaleForm):
     class Meta:
         model = UXCscale
-        fields = '__all__'
-        # FIXME: temporary workaround until a proper validation solution is found
+        exclude = ['trail'] # https://github.com/django-tastypie/django-tastypie/issues/152

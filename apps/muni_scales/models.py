@@ -9,7 +9,7 @@ class BaseScale(models.Model):
     """
     Base class for all discipline specific scales.
     """
-    trail = models.OneToOneField(Trail, null=False, blank=False)
+    trail = models.OneToOneField(Trail, null=False, blank=True)
     total_length = models.IntegerField(_('total length'), 
                                        help_text = _("Total trail length in meters"))
     max_difficulty = MscaleField(_('maximum difficulty'),

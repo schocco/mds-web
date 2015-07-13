@@ -12,7 +12,7 @@ class SessionAuthMixin(object):
     """
     def login(self, username, password):
         login_url = reverse('api_login', kwargs={'resource_name':'users', 'api_name':'v1'})
-        credentials = {"username": self.username, "password": self.password}
+        credentials = {"username": username, "password": password}
         resp = self.api_client.post(login_url, format="json", data=credentials)
         return resp
 
@@ -45,7 +45,7 @@ class DjangoAuthTest(ResourceTestCase, SessionAuthMixin):
     def test_login_invalid(self):
         resp = self.login("user", "invalid")
         self.assertHttpUnauthorized(resp)
-        self.assertValidJSON(resp.body)
+        self.assertValidJSON(resp.content)
 
     def test_logout(self):
         self.login(self.username, self.password)
