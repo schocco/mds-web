@@ -130,15 +130,6 @@ class ScaleCalcMixin(object):
 class UDHResource(ScaleCalcMixin, ModelResource):
     '''
     UDH rating
-    
-from apps.muni_scales.api import *
-from apps.muni_scales.models import UDHscale
-data={'maximum_difficulty':2,'average_difficulty':1, 'total_length':12, 'average_slope':20}
-
-scale = UDHResource()
-udh = UDHscale(**data)
-bundle = scale.build_bundle(udh)
-scale.full_dehydrate(bundle)
     '''
     max_difficulty = MscaleField(attribute="max_difficulty")#fields.ToOneField(MscaleResource, attribute="maximum_difficulty")
     avg_difficulty = MscaleField(attribute="avg_difficulty")#fields.ToOneField(MscaleResource, attribute="average_difficulty")

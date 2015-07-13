@@ -1,5 +1,65 @@
+import json
+from django.contrib.auth.models import User
+from django.contrib.gis.geos import LineString, MultiLineString
+from django.core import serializers
+from django.core.urlresolvers import reverse
+from tastypie.test import ResourceTestCase
+from apps.mds_auth.tests import SessionAuthMixin
+from apps.muni_scales.fields import MscaleFieldMixin
+from apps.trails.models import Trail
 from models import UDHscale, UXCscale
 from django.test import TestCase
+
+
+class ApiTestCase(ResourceTestCase, SessionAuthMixin):
+    '''
+    Tests creation and removal of scale objects via the API.
+    '''
+    def setUp(self):
+        super(ApiTestCase, self).setUp()
+
+        # Create a user.
+        self.username = 'user'
+        self.password = 'pass'
+        self.user = User.objects.create_user(self.username, 'user@example.com', self.password)
+
+        # create a trail
+        self.t1 = Trail(name = "Testtrail1", owner = self.user)
+        self.t1.waypoints = MultiLineString(LineString((48.75118072, 8.539638519, 712),
+                                  (48.75176078, 8.541011810, 696),
+                                  (48.75133635, 8.545153141, 556),
+                                  (48.75067140, 8.545582294, 531)))
+        self.t1.save()
+        self.t1_url = reverse('api_dispatch_detail', kwargs={'resource_name':'trails', 'api_name':'v1', "pk": self.t1.id})
+        self.list_url = reverse('api_dispatch_list', kwargs={'resource_name':'udh-scale', 'api_name':'v1'})
+        self.post_data = {
+            "avg_difficulty": 2,
+            "avg_slope": 8,
+            "max_difficulty": 3,
+            "total_length": 2000,
+            "trail": self.t1_url
+        }
+
+    def test_unauthenticated_save(self):
+        'Unauthenticated users must not create score objects'
+        self.assertHttpUnauthorized(self.api_client.post(self.list_url, format='json', data=self.post_data))
+
+    def test_authenticated_save(self):
+        """
+        Authenticted users should be able to create ratings for their own trails.
+        Returned data should match posted data.
+        :return:
+        """
+        self.login(self.username, self.password)
+        response = self.api_client.post(self.list_url, format='json', data=self.post_data)
+        self.assertHttpCreated(response)
+        self.assertValidJSON(response.content)
+        scale = json.loads(response.content)
+        to_mscale = MscaleFieldMixin().to_mscale
+        self.assertEqual(to_mscale(scale["avg_difficulty"]).number, to_mscale(self.post_data["avg_difficulty"]).number)
+        self.assertEqual(to_mscale(scale["max_difficulty"]).number, to_mscale(self.post_data["max_difficulty"]).number)
+        self.logout()
+
 
 
 class CaclulationTestCase(TestCase):

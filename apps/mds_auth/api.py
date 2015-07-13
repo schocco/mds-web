@@ -133,7 +133,7 @@ class UserResource(ModelResource):
         :param kwargs:
         :return:
         """
-        self.method_check(request, allowed=['get'])
+        self.method_check(request, allowed=['post'])
         if request.user and request.user.is_authenticated():
             logout(request)
             return self.create_response(request, {'success': True})
