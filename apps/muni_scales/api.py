@@ -15,6 +15,7 @@ from apps.muni_scales.fields import MscaleFieldMixin
 from apps.muni_scales.forms import UDHscaleForm, UXCscaleForm
 from apps.muni_scales.models import UDHscale, UXCscale
 from apps.muni_scales.mscale import Mscale, MSCALES
+from apps.trails.models import Trail
 
 
 class MscaleField(fields.ApiField, MscaleFieldMixin):
@@ -128,7 +129,6 @@ class ScaleCalcMixin(object):
         return self.create_response(request, score)
 
 
-
 class UDHResource(ScaleCalcMixin, ModelResource):
     '''
     UDH rating
@@ -136,7 +136,7 @@ class UDHResource(ScaleCalcMixin, ModelResource):
     max_difficulty = MscaleField(attribute="max_difficulty")#fields.ToOneField(MscaleResource, attribute="max_difficulty")
     avg_difficulty = MscaleField(attribute="avg_difficulty")#fields.ToOneField(MscaleResource, attribute="avg_difficulty")
     score = fields.DictField(attribute='get_score', readonly=True, use_in="detail")
-    trail = fields.ToOneField("apps.trails.api.TrailResource", "trail", related_name="udhscale", null=True)
+    trail = fields.ToOneField("apps.trails.api.TrailResource", "trail", related_name="udhscale", blank=True)
 
     
     class Meta:
@@ -157,7 +157,7 @@ class UXCResource(ScaleCalcMixin, ModelResource):
     max_difficulty = MscaleField(attribute="max_difficulty")
     avg_difficulty = MscaleField(attribute="avg_difficulty")
     score = fields.DictField(attribute='get_score', readonly=True, use_in="detail")
-    trail = fields.ToOneField("apps.trails.api.TrailResource", "trail", related_name="uxcscale", null=True)
+    trail = fields.ToOneField("apps.trails.api.TrailResource", "trail", related_name="uxcscale", blank=True)
      
     class Meta:
         queryset = UXCscale.objects.all()
