@@ -11,17 +11,19 @@ from models import UDHscale, UXCscale
 from django.test import TestCase
 
 
-class ApiTestCase(ResourceTestCase, SessionAuthMixin):
+class AuthTestCase(ResourceTestCase, SessionAuthMixin):
     '''
     Tests creation and removal of scale objects via the API.
     '''
     def setUp(self):
-        super(ApiTestCase, self).setUp()
+        super(AuthTestCase, self).setUp()
 
-        # Create a user.
+        # Create users
         self.username = 'user'
         self.password = 'pass'
         self.user = User.objects.create_user(self.username, 'user@example.com', self.password)
+        self.username2 = "koala"
+        self.user2 = User.objects.create_user(self.username2, "koala@tree.com.au", self.password)
 
         # create a trail
         self.t1 = Trail(name = "Testtrail1", owner = self.user)
@@ -43,6 +45,17 @@ class ApiTestCase(ResourceTestCase, SessionAuthMixin):
     def test_unauthenticated_save(self):
         'Unauthenticated users must not create score objects'
         self.assertHttpUnauthorized(self.api_client.post(self.list_url, format='json', data=self.post_data))
+
+    def test_unauthorized_save(self):
+        """
+        Users may only rate their own trails.
+        """
+        self.login(self.username2, self.password)
+        response = self.api_client.post(self.list_url, format='json', data=self.post_data)
+        self.assertHttpUnauthorized(response)
+        response = self.api_client.delete(self.t1_url, format="json")
+        self.assertHttpUnauthorized(response)
+        self.logout()
 
     def test_authenticated_save(self):
         """

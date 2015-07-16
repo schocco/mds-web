@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from django.conf.urls import url
-from django.core.urlresolvers import reverse
 from tastypie import fields
 from tastypie.authorization import Authorization
 from tastypie.bundle import Bundle
@@ -9,13 +8,12 @@ from tastypie.exceptions import NotFound
 from tastypie.resources import Resource, ModelResource
 from tastypie.validation import CleanedDataFormValidation
 
-from apps.mds_auth.authorization import ReadAllSessionAuthentication, \
-    ReadAllDjangoAuthorization
+from apps.mds_auth.authorization import ReadAllSessionAuthentication
+from apps.muni_scales.api_authorization import UXXAuthorization
 from apps.muni_scales.fields import MscaleFieldMixin
 from apps.muni_scales.forms import UDHscaleForm, UXCscaleForm
 from apps.muni_scales.models import UDHscale, UXCscale
 from apps.muni_scales.mscale import Mscale, MSCALES
-from apps.trails.models import Trail
 
 
 class MscaleField(fields.ApiField, MscaleFieldMixin):
@@ -144,9 +142,8 @@ class UDHResource(ScaleCalcMixin, ModelResource):
         resource_name = 'udh-scale'
         validation = CleanedDataFormValidation(form_class = UDHscaleForm)
         always_return_data = True
-        #TODO: proper permission checks
         authentication = ReadAllSessionAuthentication()
-        authorization = ReadAllDjangoAuthorization()
+        authorization = UXXAuthorization()
 
 
 
@@ -165,4 +162,4 @@ class UXCResource(ScaleCalcMixin, ModelResource):
         always_return_data = True
         validation = CleanedDataFormValidation(form_class = UXCscaleForm)
         authentication = ReadAllSessionAuthentication()
-        authorization = ReadAllDjangoAuthorization()
+        authorization = UXXAuthorization()
