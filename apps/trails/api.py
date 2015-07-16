@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import tempfile
-from django import db
 
+from django import db
 from django.conf.urls import url
 from django.contrib.gis.measure import Distance
+from django.core.urlresolvers import reverse
 from django.http.response import HttpResponse
 from tastypie import fields
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
@@ -15,8 +16,7 @@ from tastypie.utils.urls import trailing_slash
 from tastypie.validation import CleanedDataFormValidation
 
 from apps.mds_auth.api import UserResource
-from apps.mds_auth.authorization import ReadAllDjangoAuthorization, \
-    ReadAllSessionAuthentication
+from apps.mds_auth.authorization import ReadAllSessionAuthentication
 from apps.muni_scales.api import UXCResource, UDHResource
 from apps.trails.api_authorization import TrailAuthorization
 from apps.trails.forms import TrailForm
@@ -42,7 +42,7 @@ class DistanceField(fields.DictField):
             if unit not in Distance.UNITS.keys():
                 raise Exception("Invalid unit passed into DistanceField: " + str(unit))
         super(DistanceField, self).__init__(*args, **kwargs)
-    
+
     def convert(self, value):
         if value is None:
             return None
@@ -51,16 +51,18 @@ class DistanceField(fields.DictField):
             dic[unit] = value.__getattr__(unit)
         return dic
 
+
 class TrailResource(ModelResource):
-    '''
+    """
     API resource which includes dynamically calculated values as readonly
     fields. Some fields are only visible in detail view to avoid high computation overhead.
     
     The length attribute is added through the query interface with a call to length().
-    '''
+    """
     owner = fields.ToOneField(UserResource, 'owner', null=True, blank=True)
     altitude_difference = fields.CharField(attribute='get_altitude_difference', readonly=True)
-    length = DistanceField(attribute='length', readonly=True, units=("m", "km", "ft", "mi", "yd"), null=True, blank=True)
+    length = DistanceField(attribute='length', readonly=True, units=("m", "km", "ft", "mi", "yd"), null=True,
+                           blank=True)
     max_slope_uh = fields.CharField(attribute='get_max_slope_uh', readonly=True, use_in="detail")
     max_slope_dh = fields.CharField(attribute='get_max_slope_dh', readonly=True, use_in="detail")
     avg_slope = fields.CharField(attribute='get_avg_slope', readonly=True, use_in="detail")
@@ -79,23 +81,28 @@ class TrailResource(ModelResource):
         always_return_data = True
         authentication = ReadAllSessionAuthentication()
         authorization = TrailAuthorization()
-        validation = CleanedDataFormValidation(form_class = TrailForm)
+        validation = CleanedDataFormValidation(form_class=TrailForm)
         filtering = {
-                     'type': ALL,
-                     'owner': ALL_WITH_RELATIONS,
-                     'created': ALL,
-                     'edited': ALL,
-                     'name': ALL,
-                     }
+            'type': ALL,
+            'owner': ALL_WITH_RELATIONS,
+            'created': ALL,
+            'edited': ALL,
+            'name': ALL,
+        }
         ordering = ["name", "length"]
 
-    
     def obj_create(self, bundle, **kwargs):
-        'automatically adds the current user to the created model.'
+        """
+        automatically adds the current user to the created model.
+        :param bundle:
+        :param kwargs:
+        :return:
+        """
         try:
             return super(TrailResource, self).obj_create(bundle, owner=bundle.request.user)
         except db.Error as e:
             raise BadRequest("Trail could not be saved.  {0}".format(e))
+
     def prepend_urls(self):
         return [
             # loading GPX files
@@ -109,21 +116,35 @@ class TrailResource(ModelResource):
         ]
 
     def load_gpx(self, request, **kwargs):
+        """
+
+        :param request: form data with file attachement in the gpx field
+        :param kwargs:
+        :return: json response with "task_id" and "result_uri" which contains a ref to the address where the result
+            can be retrieved
+        """
         if request.method == 'POST':
             gpx_file = request.FILES.get('gpx', False)
             ls = None
-            if(gpx_file and (gpx_file.name.lower().endswith(".gpx") or gpx_file.name.lower().endswith(".xml")
-               and gpx_file.size < 10000)):        
+            if (gpx_file and (gpx_file.name.lower().endswith(".gpx") or gpx_file.name.lower().endswith(".xml")
+            and gpx_file.size < 10000)):
                 filehandle, tmpath = tempfile.mkstemp(suffix=".gpx")
                 with open(tmpath, 'wb+') as destination:
                     for chunk in gpx_file.chunks():
                         destination.write(chunk)
-                #get linestring                
+                # get linestring
                 r = get_linestring.delay(tmpath)
-                return self.create_response(request, {"task_id": r.id})
+                result_uri = reverse('api_get_geojson',
+                                     kwargs={'resource_name': 'trails', 'api_name': 'v1', 'task_id': r.id})
+                return self.create_response(request, {"task_id": r.id, "result_uri": result_uri})
         raise BadRequest("only gpx/xml files smaller than 10,000 bytes are allowed.")
-    
+
     def get_gpx_result(self, request, **kwargs):
+        """
+        :param request:
+        :param kwargs:
+        :return: either HTTP_NO_CONTENT when not done or a geojson object
+        """
         # get task id
         task_id = kwargs.pop("task_id")
         result = get_linestring.AsyncResult(task_id)

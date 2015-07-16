@@ -20,24 +20,27 @@ class TrailAuthorization(DjangoAuthorization):
     
     def create_detail(self, object_list, bundle):
         'only allowed if user matches'
-        #TODO: check superclass
-        return bundle.obj.owner == bundle.request.user
+        has_permission = super(TrailAuthorization, self).create_detail(object_list, bundle)
+        return has_permission and bundle.obj.owner == bundle.request.user
 
     def update_list(self, object_list, bundle):
         'only allowed for owned objects'
-        allowed = [] #TODO: check superclass
-        for obj in object_list:
+        allowed = super(TrailAuthorization, self).update_list(object_list, bundle)
+        owned = []
+        for obj in allowed:
             if obj.owner == bundle.request.user:
-                allowed.append(obj)
-        return allowed
+                owned.append(obj)
+        return owned
 
     def update_detail(self, object_list, bundle):
         'only allowed if user matches'
-        return bundle.obj.owner == bundle.request.user
+        has_permission = super(TrailAuthorization, self).update_detail(object_list, bundle)
+        return has_permission and bundle.obj.owner == bundle.request.user
 
     def delete_list(self, object_list, bundle):
         'deletes are only allowed for single objects'
         raise Unauthorized("Only individual deletes are allowed.")
 
     def delete_detail(self, object_list, bundle):
-        return bundle.obj.owner == bundle.request.user
+        has_permission = super(TrailAuthorization, self).delete_detail(object_list, bundle)
+        return has_permission and bundle.obj.owner == bundle.request.user

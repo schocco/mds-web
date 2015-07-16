@@ -86,7 +86,9 @@ class ImportGPXTest(TestCase):
         self.assertEqual(response2.status_code, 200)
 
         c = Client()
-        tid2 = json.loads(response2.content).get("task_id")
+        jsonData = json.loads(response2.content)
+        tid2 = jsonData.get("task_id")
+        self.assertTrue(jsonData.has_key("result_uri"))
         response2b = self._get_geojson(tid2, 0.2)
         self.assertEqual(response2b.status_code, 400)
    
