@@ -32,11 +32,11 @@ class DistanceField(fields.DictField):
     help_text = "A dictionary of data, representing the distance in different units"
 
     def __init__(self, *args, **kwargs):
-        '''
+        """
         Like DictField constructor, but takes additional keyword argument "units".
         :param units: a list or tuple with units to be included in the object.
                       Supported units are listed at https://docs.djangoproject.com/en/dev/ref/contrib/gis/measure/
-        '''
+        """
         self.units = kwargs.pop("units", ("m", "km"))
         for unit in self.units:
             if unit not in Distance.UNITS.keys():
@@ -158,6 +158,3 @@ class TrailResource(ModelResource):
                 raise BadRequest("File could not be loaded: " + e.message)
         else:
             return self.create_response(request, {}, HttpNoContent)
-        
-        
-    

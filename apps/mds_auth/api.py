@@ -78,7 +78,7 @@ class UserResource(ModelResource):
 
     def get_object_list(self, request):
         'only return user that is already logged in'
-        return super(UserResource, self).get_object_list(request)  # .filter(pk=request.user.pk)
+        return super(UserResource, self).get_object_list(request)
 
     def prepend_urls(self):
         return [
@@ -125,6 +125,18 @@ class UserResource(ModelResource):
                 'success': False,
                 'reason': 'incorrect',
             }, HttpUnauthorized)
+
+    def dehydrate(self, bundle):
+        """
+        Add additional fields when a user requests its own user model.
+        :param bundle:
+        :return:
+        """
+        if bundle.request.user == bundle.obj:
+            bundle.data['is_admin'] = bundle.obj.is_superuser
+            bundle.data['is_staff'] = bundle.obj.is_staff
+        return bundle
+
 
     def logout(self, request, **kwargs):
         """
