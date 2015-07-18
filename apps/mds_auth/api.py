@@ -72,6 +72,7 @@ class UserResource(ModelResource):
         queryset = User.objects.all()
         resource_name = 'users'
         list_allowed_methods = ['get', 'post']
+        detail_uri_name = 'username'
         # authentication = SessionAuthentication()
         #authorization = DjangoAuthorization()
         fields = ['id', 'username', 'first_name', 'last_name', 'profile']

@@ -22,9 +22,9 @@ TRAIL_TYPE_CHOICES = (
                       )
 
 class Trail(models.Model):
-    '''
+    """
     Representation of a muni track.
-    '''
+    """
     name = models.CharField(_('name'), max_length=100, blank=False)
     owner = models.ForeignKey(User)
     type = models.CharField(_('trail type'), choices = TRAIL_TYPE_CHOICES, max_length=100)
@@ -37,6 +37,10 @@ class Trail(models.Model):
     # country
     # unitours link
     # pictures[]
+
+    class Meta:
+        ordering = ["-created"]
+
     
     def __unicode__(self):
         return u'%s' % self.name
