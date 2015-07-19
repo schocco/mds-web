@@ -1,6 +1,9 @@
 Muni Difficulty Scale - Web Project
 ###################################
 
+.. image:: https://travis-ci.org/schocco/mds-web.svg?branch=master
+    :target: https://travis-ci.org/schocco/mds-web
+
 
 This is the Django based web project for the Muni Difficulty Scale as defined by
 the muni committee members of the International Unicycling Federation
