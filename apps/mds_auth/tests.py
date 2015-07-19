@@ -8,7 +8,7 @@ from apps.mds_auth.permissions import DEFAULT_GROUP_NAME, \
 
 class SessionAuthMixin(object):
     """
-    Mixin for looging in and out using the django/tastypie session auth.
+    Mixin for logging in and out using the django/tastypie session auth.
     """
     def login(self, username, password):
         login_url = reverse('api_login', kwargs={'resource_name':'users', 'api_name':'v1'})
