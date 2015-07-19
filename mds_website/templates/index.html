@@ -1,24 +1,19 @@
-{% load static from staticfiles %}
-
 <!DOCTYPE html>
 <html lang="en" class="no-js">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="author" content="Rocco Schulz">
-	<meta name="description" content="Muni Difficulty Scale - A tool to measure singletrail difficulty">
-	<meta name="keywords" content="muni difficulty scale, mountain unicycling, trails, singletrail, mountain unicycling">
-	<link rel="shortcut icon" href="{% static "img/favicon.png" %}">
     <title>Muni Difficulty Scale | A tool to measure trail difficulty</title>
 
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <link rel="shortcut icon" href="/img/favicon.png">
     <link rel="apple-touch-icon" sizes="57x57" href="/img/apple-touch-icon.png">
     <link rel="apple-touch-icon" sizes="72x72" href="/img/apple-touch-icon-72x72.png">
     <link rel="apple-touch-icon" sizes="114x114" href="/img/apple-touch-icon-114x114.png">
 
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <div class="wrapper">
@@ -26,12 +21,15 @@
         <header>
             <div class="container">
                 <div class="clear">
-                    <h1 class="logo animate fade-in-down"><a href="#home">Muni Difficulty Scale</a></h1>
+                    <h1 class="logo animate fade-in-down font-outline"><a href="#home">Muni Difficulty Scale</a></h1>
                 </div>
             </div>
-            <div data-region="headerExtra" class="header-extra">
-                <div class="container">
+            <div class="header-extra container">
+                <div class="row">
+                <div class="col-6 col-8-tablet font-outline" data-region="headerExtra">
                     <p>A tool to measure trail difficulty</p>
+                </div>
+                <div class="col-6 col-4-tablet" data-region="authPanel"><i class="fa fa-user"></i> anonymous</div>
                 </div>
             </div>
             <div class="navbar">
@@ -52,14 +50,12 @@
         </header>
     </section>
 
+    <div data-region="notification" id="notification"></div>
+
     <section class="content container">
         <div class="content-inner" id="appBody" data-region="body">
             <div class="text-center col-tablet-11 no-float center-element">
                 <h1>The muni difficulty scale</h1>
-
-                <p class="lead">
-                    Some dummy content
-                </p>
             </div>
         </div>
     </section>
@@ -74,15 +70,16 @@
                 </p>
             </div>
             <div class="col-tablet-6">
-                <ul class="footer-list">
-                    <li><a href="#">Some footer links</a></li>
-                    <li><a href="#">placeholder</a></li>
+                <ul class="list-unstyled footer-linklist">
+                    <li><a href="https://github.com/iuf/muni-difficulty-scale/releases/latest" target="_blank"><i class="fa fa-file-pdf-o"></i> latest official release</a></li>
+                    <li><a href="#feedback"><i class="fa fa-envelope" ></i> submit feedback</a></li>
+                    <li><a href="https://github.com/schocco/mds-web" target="_blank"><i class="fa fa-github"></i> this project on github</a></li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
-<script src="{%  static 'main.js' %}"></script>
+<script src="App.main.js"></script>
 </body>
 </html>
