@@ -4,13 +4,17 @@ python:
   - "3.4"
 addons:
   postgresql: "9.1"
+services:
+  - rabbitmq
 env:
   PYTHONPATH='.'
 virtualenv:
   system_site_packages: true
 install: "pip install -r requirements.txt"
 before_script:
+  - sudo apt-get install -qq python-gdal
   - psql -U postgres -c 'CREATE DATABASE mdsdb;'
   - psql -U postgres -c "CREATE EXTENSION postgis" -d mdsdb
   - psql -U postgres -c "CREATE EXTENSION postgis_topology" -d mdsdb
+  - python manage.py start_celery
 script: python manage.py test
