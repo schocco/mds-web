@@ -30,3 +30,4 @@ six==1.7.3
 wsgiref==0.1.2
 django-require==1.0.6
 django-staticfiles-webpack==0.1
+django-countries==3.3

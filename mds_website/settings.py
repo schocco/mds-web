@@ -129,6 +129,8 @@ AUTHENTICATION_BACKENDS = (
    'django.contrib.auth.backends.ModelBackend',
 )
 
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['https://www.googleapis.com/auth/profile', 'https://www.googleapis.com/auth/email']
+
 LOGIN_REDIRECT_URL = '/'
 
 MIDDLEWARE_CLASSES = (

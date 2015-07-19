@@ -18,11 +18,13 @@ def save_profile(backend, user, response, *args, **kwargs):
     Reads profile information from oauth resource provider and stores
     it in the user's profile.
     '''
+    profile, created = Profile.objects.get_or_create(user=user)
     if backend.name == 'facebook':
-        profile, created = Profile.objects.get_or_create(user=user)
         if 'gender' in response:
             profile.gender = response.get('gender')[0]
         profile.facebook = response.get('link')
         profile.save()
-        #TODO: use token to asynchronously request more information and update profile
-    #TODO: handle other backends
+    if backend.name == 'google-oauth2':
+        if 'gender' in response:
+            profile.gender = response.get('gender')[0]
+        profile.gplus = response.get('link')
