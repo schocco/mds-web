@@ -122,6 +122,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
    'social.apps.django_app.context_processors.login_redirect',
 )
 
+# google api console: https://console.developers.google.com/project/api-access-tests/apiui/credential?authuser=0
+
 AUTHENTICATION_BACKENDS = (
    'social.backends.facebook.FacebookOAuth2',
    'social.backends.google.GoogleOAuth2',
@@ -129,7 +131,7 @@ AUTHENTICATION_BACKENDS = (
    'django.contrib.auth.backends.ModelBackend',
 )
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['https://www.googleapis.com/auth/profile', 'https://www.googleapis.com/auth/email']
+#SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['https://www.googleapis.com/auth/profile', 'https://www.googleapis.com/auth/email']
 
 LOGIN_REDIRECT_URL = '/'
 
