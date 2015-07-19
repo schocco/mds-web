@@ -14,6 +14,7 @@ before_script:
   - psql -U postgres -c "CREATE DATABASE mdsdb;"
   - psql -U postgres -c "CREATE EXTENSION postgis" -d mdsdb
   - psql -U postgres -c "CREATE EXTENSION postgis_topology" -d mdsdb
+  - sudo rm /etc/apt/sources.list.d/ubuntugis-stable-source.list # see https://github.com/travis-ci/travis-ci/issues/2401
   - sudo apt-get install -qq python-gdal
   - timeout 150 python manage.py start_celery &
 script: python manage.py test
