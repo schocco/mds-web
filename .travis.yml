@@ -11,10 +11,9 @@ virtualenv:
   system_site_packages: true
 install: "pip install -r requirements.txt"
 before_script:
-  - sudo apt-get install -qq python-gdal
-  - sudo apt-get install -qq postgis
   - psql -U postgres -c "CREATE DATABASE mdsdb;"
-  - psql -U postgres -c "CREATE EXTENSION postgis"
-  - psql -U postgres -c "CREATE EXTENSION postgis_topology"
-  - python manage.py start_celery
+  - psql -U postgres -c "CREATE EXTENSION postgis" -d mdsdb
+  - psql -U postgres -c "CREATE EXTENSION postgis_topology" -d mdsdb
+  - sudo apt-get install -qq python-gdal
+  - timeout 150 python manage.py start_celery &
 script: python manage.py test
