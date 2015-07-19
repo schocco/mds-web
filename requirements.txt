@@ -1,5 +1,4 @@
 Django==1.8.3
-GDAL==1.9.1
 amqp==1.4.6
 anyjson==0.3.3
 argparse==1.2.1
