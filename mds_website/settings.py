@@ -156,7 +156,8 @@ SOCIAL_AUTH_PIPELINE = (
     'apps.mds_auth.auth_pipeline.save_profile', # get profile data from oauth resource
     'social.pipeline.social_auth.associate_user',
     'social.pipeline.social_auth.load_extra_data',
-    'social.pipeline.user.user_details'
+    'social.pipeline.user.user_details',
+    'apps.mds_auth.auth_pipeline.device_redirect', # change ?next parameter to provide access token for mobile apps
 )
 
 ROOT_URLCONF = 'mds_website.urls'
