@@ -21,8 +21,8 @@ class SocialAuthExceptionHandlerMiddleware(SocialAuthExceptionMiddleware):
             # and then tries to sign in via another one (e.g. google)
             # clients should check the session before trying to log in, but if they don't
             # provide a more meaningful error message
-            response = JsonResponse({'error': _(
+            response = JsonResponse({'error': unicode(_(
                 'You are already logged in via another OAuth provider. '
-                'Sign out first if you want to log in with another account.')})
+                'Sign out first if you want to log in with another account.'))})
             response.status_code = 400
             return response
