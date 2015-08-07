@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User, Group, Permission
 from django.core.urlresolvers import reverse
-from django.test import TestCase
+from django.test import TestCase, Client
+from tastypie.serializers import Serializer
 from tastypie.test import ResourceTestCase
 
 from apps.mds_auth.permissions import DEFAULT_GROUP_NAME, \
@@ -10,10 +11,16 @@ class SessionAuthMixin(object):
     """
     Mixin for logging in and out using the django/tastypie session auth.
     """
-    def login(self, username, password):
+    def login(self, username, password, client=None):
         login_url = reverse('api_login', kwargs={'resource_name':'users', 'api_name':'v1'})
         credentials = {"username": username, "password": password}
-        resp = self.api_client.post(login_url, format="json", data=credentials)
+        resp = None
+        if type(client) is Client:
+            serializer = Serializer()
+            data = serializer.to_json(credentials)
+            resp = client.post(login_url, data=data, content_type="application/json")
+        else:
+            resp = self.api_client.post(login_url, format="json", data=credentials)
         return resp
 
     def logout(self):
