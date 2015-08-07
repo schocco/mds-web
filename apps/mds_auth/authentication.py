@@ -7,6 +7,8 @@ from django.utils import timezone
 from social.apps.django_app.default.models import UserSocialAuth
 
 from tastypie.authentication import Authentication
+from tastypie.http import HttpUnauthorized
+
 
 class OAuth20Authentication(Authentication):
     """
@@ -17,6 +19,8 @@ class OAuth20Authentication(Authentication):
     that signup is handled by the server and tokens are up to date and that clients won't expose any secrets or client
     ids.
     """
+    def _unauthorized(self):
+        return HttpUnauthorized()
 
     def is_authenticated(self, request, **kwargs):
         if not request.META.get('HTTP_AUTHORIZATION'):

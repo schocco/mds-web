@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from social.apps.django_app.utils import load_strategy
 from social.backends import utils
 from tastypie import fields
-from tastypie.authentication import Authentication
+from tastypie.authentication import Authentication, MultiAuthentication
 from tastypie.authorization import Authorization, ReadOnlyAuthorization
 from tastypie.bundle import Bundle
 from tastypie.exceptions import BadRequest
@@ -19,7 +19,8 @@ from tastypie.resources import BaseModelResource, ModelResource, Resource
 from tastypie.utils.urls import trailing_slash
 from django.utils.translation import ugettext_lazy as _
 
-from apps.mds_auth.authorization import ReadAllDjangoAuthorization
+from apps.mds_auth.authorization import ReadAllDjangoAuthorization, ReadAllSessionAuthentication, \
+    ReadAllTokenAuthentication
 from apps.mds_auth.models import Profile
 
 
@@ -74,7 +75,7 @@ class UserResource(ModelResource):
         resource_name = 'users'
         list_allowed_methods = ['get', 'post']
         detail_uri_name = 'username'
-        # authentication = SessionAuthentication()
+        authentication = MultiAuthentication(ReadAllSessionAuthentication(), ReadAllTokenAuthentication())
         # authorization = TODO: UserAuthorization() to let users edit some fields of their own
         fields = ['id', 'username', 'first_name', 'last_name', 'profile']
 

@@ -1,6 +1,8 @@
 from tastypie.authorization import Authorization, DjangoAuthorization
 from tastypie.exceptions import Unauthorized
 from tastypie.authentication import SessionAuthentication
+from apps.mds_auth.authentication import OAuth20Authentication
+
 
 class ReadAllSessionAuthentication(SessionAuthentication):
     '''
@@ -11,6 +13,17 @@ class ReadAllSessionAuthentication(SessionAuthentication):
         if request.method == 'GET':
             return True
         return super(ReadAllSessionAuthentication, self).is_authenticated(request, **kwargs)
+
+class ReadAllTokenAuthentication(OAuth20Authentication):
+    '''
+    Authenticates every request as long as it is a get operation.
+    Uses the default session Authentication otherwise.
+    '''
+    def is_authenticated(self, request, **kwargs):
+        if request.method == 'GET':
+            return True
+        return super(ReadAllTokenAuthentication, self).is_authenticated(request, **kwargs)
+
 
 class ReadAllDjangoAuthorization(DjangoAuthorization):
     '''

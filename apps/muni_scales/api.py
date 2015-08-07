@@ -2,13 +2,14 @@
 
 from django.conf.urls import url
 from tastypie import fields
+from tastypie.authentication import MultiAuthentication
 from tastypie.authorization import Authorization
 from tastypie.bundle import Bundle
 from tastypie.exceptions import NotFound
 from tastypie.resources import Resource, ModelResource
 from tastypie.validation import CleanedDataFormValidation
 
-from apps.mds_auth.authorization import ReadAllSessionAuthentication
+from apps.mds_auth.authorization import ReadAllSessionAuthentication, ReadAllTokenAuthentication
 from apps.muni_scales.api_authorization import UXXAuthorization
 from apps.muni_scales.fields import MscaleFieldMixin
 from apps.muni_scales.forms import UDHscaleForm, UXCscaleForm
@@ -142,7 +143,7 @@ class UDHResource(ScaleCalcMixin, ModelResource):
         resource_name = 'udh-scale'
         validation = CleanedDataFormValidation(form_class = UDHscaleForm)
         always_return_data = True
-        authentication = ReadAllSessionAuthentication()
+        authentication = MultiAuthentication(ReadAllSessionAuthentication(), ReadAllTokenAuthentication())
         authorization = UXXAuthorization()
 
 
@@ -161,5 +162,5 @@ class UXCResource(ScaleCalcMixin, ModelResource):
         resource_name = 'uxc-scale'
         always_return_data = True
         validation = CleanedDataFormValidation(form_class = UXCscaleForm)
-        authentication = ReadAllSessionAuthentication()
+        authentication = MultiAuthentication(ReadAllSessionAuthentication(), ReadAllTokenAuthentication())
         authorization = UXXAuthorization()
