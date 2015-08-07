@@ -10,7 +10,7 @@ from tastypie import fields
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.contrib.gis.resources import GeometryApiField
 from tastypie.contrib.gis.resources import ModelResource
-from tastypie.exceptions import BadRequest
+from tastypie.exceptions import BadRequest, Unauthorized
 from tastypie.http import HttpNoContent
 from tastypie.utils.urls import trailing_slash
 from tastypie.validation import CleanedDataFormValidation
@@ -23,13 +23,14 @@ from apps.trails.forms import TrailForm
 from apps.trails.load2 import GPXImportError
 from apps.trails.models import Trail
 from apps.trails.tasks import get_linestring
+from django.utils.translation import ugettext_lazy as _
 
 
 class DistanceField(fields.DictField):
     '''
     Field to represent Distance objects.
     '''
-    help_text = "A dictionary of data, representing the distance in different units"
+    help_text = _("A dictionary of data, representing the distance in different units")
 
     def __init__(self, *args, **kwargs):
         """
@@ -40,7 +41,7 @@ class DistanceField(fields.DictField):
         self.units = kwargs.pop("units", ("m", "km"))
         for unit in self.units:
             if unit not in Distance.UNITS.keys():
-                raise Exception("Invalid unit passed into DistanceField: " + str(unit))
+                raise Exception(_("Invalid unit passed into DistanceField: ") + str(unit))
         super(DistanceField, self).__init__(*args, **kwargs)
 
     def convert(self, value):
@@ -123,21 +124,22 @@ class TrailResource(ModelResource):
         :return: json response with "task_id" and "result_uri" which contains a ref to the address where the result
             can be retrieved
         """
-        if request.method == 'POST':
-            gpx_file = request.FILES.get('gpx', False)
-            ls = None
-            if (gpx_file and (gpx_file.name.lower().endswith(".gpx") or gpx_file.name.lower().endswith(".xml")
-            and gpx_file.size < 10000)):
-                filehandle, tmpath = tempfile.mkstemp(suffix=".gpx")
-                with open(tmpath, 'wb+') as destination:
-                    for chunk in gpx_file.chunks():
-                        destination.write(chunk)
-                # get linestring
-                r = get_linestring.delay(tmpath)
-                result_uri = reverse('api_get_geojson',
-                                     kwargs={'resource_name': 'trails', 'api_name': 'v1', 'task_id': r.id})
-                return self.create_response(request, {"task_id": r.id, "result_uri": result_uri})
-        raise BadRequest("only gpx/xml files smaller than 10,000 bytes are allowed.")
+        self.method_check(request, allowed=['post'])
+        self.is_authenticated(request)
+        gpx_file = request.FILES.get('gpx', False)
+        ls = None
+        if (gpx_file and (gpx_file.name.lower().endswith(".gpx") or
+                                  gpx_file.name.lower().endswith(".xml") and gpx_file.size < 10000)):
+            filehandle, tmpath = tempfile.mkstemp(suffix=".gpx")
+            with open(tmpath, 'wb+') as destination:
+                for chunk in gpx_file.chunks():
+                    destination.write(chunk)
+            # get linestring
+            r = get_linestring.delay(tmpath)
+            result_uri = reverse('api_get_geojson',
+                                 kwargs={'resource_name': 'trails', 'api_name': 'v1', 'task_id': r.id})
+            return self.create_response(request, {"task_id": r.id, "result_uri": result_uri})
+        raise BadRequest(_("only gpx/xml files smaller than 10,000 bytes are allowed."))
 
     def get_gpx_result(self, request, **kwargs):
         """

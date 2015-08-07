@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.utils.translation import ugettext_lazy as _
 from django_countries.fields import CountryField
+from social.apps.django_app.default.models import UserSocialAuth
 
 from apps.mds_auth.permissions import set_permissions
 from apps.muni_scales.models import UXCscale, UDHscale

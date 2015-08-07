@@ -43,7 +43,7 @@ def device_redirect(strategy, backend, uid, response, *args, **kwargs):
 
     token = response['access_token']
     if redirect_value == "android":
-        # TODO: document additional settings, append access token to url
+        # TODO: document additional settings
         backend.strategy.session_set('next',
                                      (backend.setting('LOGIN_REDIRECT_URL_ANDROID') or
                                       DEFAULT_DEVICE_REDIRECT_URI).format(token))
@@ -52,4 +52,3 @@ def device_redirect(strategy, backend, uid, response, *args, **kwargs):
         backend.strategy.session_set('next',
                                      (backend.setting('LOGIN_REDIRECT_URL_UBUNTU') or
                                       DEFAULT_DEVICE_REDIRECT_URI).format(token))
-        pass

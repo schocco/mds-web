@@ -11,12 +11,13 @@ from social.apps.django_app.utils import load_strategy
 from social.backends import utils
 from tastypie import fields
 from tastypie.authentication import Authentication
-from tastypie.authorization import Authorization
+from tastypie.authorization import Authorization, ReadOnlyAuthorization
 from tastypie.bundle import Bundle
 from tastypie.exceptions import BadRequest
 from tastypie.http import HttpForbidden, HttpUnauthorized, HttpNoContent
 from tastypie.resources import BaseModelResource, ModelResource, Resource
 from tastypie.utils.urls import trailing_slash
+from django.utils.translation import ugettext_lazy as _
 
 from apps.mds_auth.authorization import ReadAllDjangoAuthorization
 from apps.mds_auth.models import Profile
@@ -43,7 +44,7 @@ class SocialSignUpResource(BaseModelResource):
             bundle.obj = user
             return bundle
         else:
-            raise BadRequest("Error authenticating user with this provider")
+            raise BadRequest(_("Error authenticating user with this provider"))
 
 
 class ProfileResource(ModelResource):
@@ -74,7 +75,7 @@ class UserResource(ModelResource):
         list_allowed_methods = ['get', 'post']
         detail_uri_name = 'username'
         # authentication = SessionAuthentication()
-        #authorization = DjangoAuthorization()
+        # authorization = TODO: UserAuthorization() to let users edit some fields of their own
         fields = ['id', 'username', 'first_name', 'last_name', 'profile']
 
     def get_object_list(self, request):
@@ -176,7 +177,7 @@ class BackendResource(Resource):
 
     class Meta:
         resource_name = 'socialauth_backends'
-        authorization = Authorization()
+        authorization = ReadOnlyAuthorization()
         allowed_methods = ['get']
 
 
