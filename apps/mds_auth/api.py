@@ -18,11 +18,13 @@ from tastypie.http import HttpForbidden, HttpUnauthorized, HttpNoContent
 from tastypie.resources import BaseModelResource, ModelResource, Resource
 from tastypie.utils.urls import trailing_slash
 from django.utils.translation import ugettext_lazy as _
-
+import logging
+from apps.mds_auth.authentication import OAuth20Authentication
 from apps.mds_auth.authorization import ReadAllDjangoAuthorization, ReadAllSessionAuthentication, \
     ReadAllTokenAuthentication
 from apps.mds_auth.models import Profile
 
+logger = logging.getLogger(__name__)
 
 class SocialSignUpResource(BaseModelResource):
     '''
@@ -75,7 +77,7 @@ class UserResource(ModelResource):
         resource_name = 'users'
         list_allowed_methods = ['get', 'post']
         detail_uri_name = 'username'
-        authentication = MultiAuthentication(ReadAllSessionAuthentication(), ReadAllTokenAuthentication())
+        authentication = MultiAuthentication(OAuth20Authentication(), ReadAllSessionAuthentication())
         # authorization = TODO: UserAuthorization() to let users edit some fields of their own
         fields = ['id', 'username', 'first_name', 'last_name', 'profile']
 
@@ -161,6 +163,7 @@ class UserResource(ModelResource):
         :param request:
         :return: 'loggedin' when the user is authenticated, otherwise 'loggedout'
         '''
+        self.is_authenticated(request)
         self.method_check(request, allowed=['get'])
         if request.user and request.user.is_authenticated():
             bundle = self.build_bundle(obj=request.user, request=request)

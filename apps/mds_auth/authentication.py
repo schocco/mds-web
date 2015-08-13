@@ -38,10 +38,13 @@ class OAuth20Authentication(Authentication):
                 now = pytz.utc.localize(now)
             delta_seconds = (now - user.last_login).total_seconds()
             if delta_seconds > oauth_session_length:
+                logger.debug("user's last login is too long ago, session expired")
                 return True
             else:
+                logger.debug("user session still active")
                 return False
         except Exception, e:
+            logger.debug("error checking last login time" + str(e))
             return True
 
 
@@ -52,6 +55,7 @@ class OAuth20Authentication(Authentication):
         try:
             (auth_type, token) = request.META['HTTP_AUTHORIZATION'].split()
             if auth_type.lower() != 'bearer':
+                logger.debug("Expected 'bearer' type but got {0}".format(auth_type))
                 return self._unauthorized()
         except Exception, e:
             logger.debug("no valid authorization header found", e)
@@ -60,6 +64,7 @@ class OAuth20Authentication(Authentication):
         try:
             auth_user = UserSocialAuth.objects.get(extra_data__contains='"access_token": "{0}"'.format(token))
             if auth_user.access_token != token:  # in case someone managed to add such a string in another extra field
+                logger.warn("the query for a user returned a result, but the user's token differs from the lookup token.")
                 return self._unauthorized
             user = auth_user.user
         except Exception, e:
@@ -71,7 +76,9 @@ class OAuth20Authentication(Authentication):
             return self._unauthorized()
 
         if self.check_active(user) and not self._expired(user):
+            logger.debug("user is active and session is still valid")
             request.user = user
             return True
         else:
+            logger.debug("user inactive or session expired.")
             return False

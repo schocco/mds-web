@@ -3,6 +3,7 @@ from django.contrib.auth.models import User, Group, Permission
 import json
 from django.core.urlresolvers import reverse
 from django.test import TestCase, Client, RequestFactory
+from django.utils.encoding import force_text
 from social.apps.django_app.default.models import UserSocialAuth
 from tastypie.serializers import Serializer
 from tastypie.test import ResourceTestCase
@@ -100,6 +101,7 @@ class Oauth20AuthenticationTestCase(ResourceTestCase):
         Creates users and associations with access tokens in extra data.
         :return:
         """
+        super(Oauth20AuthenticationTestCase, self).setUp()
         self.user_logged_in = User.objects.create_user("username", 'user@example.com', "userpass", last_login = dt.datetime.now())
         authenticate(username="username", password="userpass")
         self.user_logged_out = User.objects.create_user("out", 'out@example.com', "userpass")
@@ -145,3 +147,23 @@ class Oauth20AuthenticationTestCase(ResourceTestCase):
         request = RequestFactory().get("/api/v1/something", secure=True)
         status = authentication.is_authenticated(request)
         self.assertHttpUnauthorized(status)
+
+    def test_api_call_authenticated(self):
+        """
+        Authorized clients should get the proper result when checking their current auth status using the oauth token.
+        """
+        auth_header_val = "bearer " + self.token_logged_in
+        resp = self.api_client.get(reverse("api_auth-status", kwargs={'resource_name':'users', 'api_name':'v1'}), authentication=auth_header_val)
+        self.assertValidJSONResponse(resp)
+        data = json.loads(force_text(resp.content))
+        self.assertEqual(data.get("status"), "loggedin")
+
+    def test_api_call_unauthenticated(self):
+        """
+        Unauthorized lients should get the proper result when checking their current auth status using the oauth token.
+        """
+        auth_header_val = "bearer " + self.token_logged_out
+        resp = self.api_client.get(reverse("api_auth-status", kwargs={'resource_name':'users', 'api_name':'v1'}), authentication=auth_header_val)
+        self.assertValidJSONResponse(resp)
+        data = json.loads(force_text(resp.content))
+        self.assertEqual(data.get("status"), "loggedout")
