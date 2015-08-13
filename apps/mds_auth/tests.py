@@ -1,8 +1,13 @@
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User, Group, Permission
+import json
 from django.core.urlresolvers import reverse
-from django.test import TestCase, Client
+from django.test import TestCase, Client, RequestFactory
+from social.apps.django_app.default.models import UserSocialAuth
 from tastypie.serializers import Serializer
 from tastypie.test import ResourceTestCase
+from apps.mds_auth.authentication import OAuth20Authentication
+import datetime as dt
 
 from apps.mds_auth.permissions import DEFAULT_GROUP_NAME, \
     get_or_create_default_group
@@ -83,3 +88,60 @@ class AuthPermissionTestCase(TestCase):
         self.assertEqual(9, group.permissions.all().count(),
                          "The number of permissions has changed. Please review the "
                          + "default group, are there any permissions which shouldn't be there?")
+
+
+class Oauth20AuthenticationTestCase(ResourceTestCase):
+    """
+    Checks if the oauth authentication class correctly detects users based on the authorization header.
+    """
+
+    def setUp(self):
+        """
+        Creates users and associations with access tokens in extra data.
+        :return:
+        """
+        self.user_logged_in = User.objects.create_user("username", 'user@example.com', "userpass", last_login = dt.datetime.now())
+        authenticate(username="username", password="userpass")
+        self.user_logged_out = User.objects.create_user("out", 'out@example.com', "userpass")
+        self.token_logged_in = "CAACp6Me1lPUBAA9wZntrlubazxSWoiJZC3zmO3zD5xHaCU0tTpk4PyOv2ZCAmEMNOsWBXooWwp1w0dWOnnZC"
+        self.token_logged_out = "cfghCp6Muzriewzirzeiru89w7rz8wghrh89zhoia87zhadkjahd977udhaiuhd7a9zdahd98qhdzauihd987"
+        extra_data1 = json.dumps({"access_token": self.token_logged_in, "other_field": "extradata"})
+        extra_data2 = json.dumps({"access_token": self.token_logged_out})
+        UserSocialAuth.objects.create(extra_data = extra_data1, user = self.user_logged_in, uid=1)
+        UserSocialAuth.objects.create(extra_data = extra_data2, user = self.user_logged_out, uid=2)
+
+    def test_authenticated(self):
+        """
+        The authentication class should return true when the user identified by the access token has a valid session.
+        """
+        authentication = OAuth20Authentication()
+        request = RequestFactory().get("/api/v1/something", secure=True)
+        request.META['HTTP_AUTHORIZATION'] = "bearer " + self.token_logged_in
+        status = authentication.is_authenticated(request)
+        self.assertTrue(status)
+
+    def test_unauthenticated(self):
+        """
+        The authentication class should return false when the user identified by the access token is not logged in.
+        """
+        authentication = OAuth20Authentication()
+        request = RequestFactory().get("/api/v1/something", secure=True)
+        request.META['HTTP_AUTHORIZATION'] = "BEARer " + self.token_logged_out
+        status = authentication.is_authenticated(request)
+        self.assertFalse(status)
+
+    def test_no_token(self):
+        """
+        A HttpUnauthorized response should be returned when no user matches the token or when the token is
+        not present.
+        """
+        authentication = OAuth20Authentication()
+        # invalid token
+        request = RequestFactory().get("/api/v1/something", secure=True)
+        request.META['HTTP_AUTHORIZATION'] = "bearer invalidtoken"
+        status = authentication.is_authenticated(request)
+        self.assertHttpUnauthorized(status)
+        # no token
+        request = RequestFactory().get("/api/v1/something", secure=True)
+        status = authentication.is_authenticated(request)
+        self.assertHttpUnauthorized(status)

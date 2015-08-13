@@ -1,10 +1,12 @@
 import urllib
 from django.http.response import HttpResponseRedirect
 from apps.mds_auth.models import Profile
+import logging
 
 # due to security settings using custom url schemes or other hosts is restricted by django and PSA
 # Using a param for the current host should work on all devices capable to intercept requests made by the browser engine
 DEFAULT_DEVICE_REDIRECT_URI = "/access_token?token={0}"
+logger = logging.getLogger(__name__)
 
 
 def username(strategy, user=None, *args, **kwargs):
@@ -36,15 +38,25 @@ def save_profile(backend, user, response, *args, **kwargs):
 
 
 def device_redirect(strategy, backend, uid, response, *args, **kwargs):
-    # pop redirect value before the session is trashed on login(), but after
-    # the pipeline so that the pipeline can change the redirect if needed
+    """
+    pop redirect value before the session is trashed on login(), but after
+    the pipeline so that the pipeline can change the redirect if needed
+
+    :param strategy:
+    :param backend:
+    :param uid:
+    :param response:
+    :param args:
+    :param kwargs:
+    :return:
+    """
     data = backend.strategy.request_data()
     redirect_value = backend.strategy.session_get('next', '') or \
                      data.get('next', '')
-
     token = response['access_token']
     if redirect_value in ("/android", urllib.quote_plus("/android")):
         # TODO: document additional settings
+        logger.debug("Login redirect value is '{0}', setting new redirect for android".format(redirect_value))
         backend.strategy.session_set('next',
                                      (backend.setting('LOGIN_REDIRECT_URL_ANDROID') or
                                       DEFAULT_DEVICE_REDIRECT_URI).format(token))

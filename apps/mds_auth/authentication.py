@@ -1,14 +1,13 @@
 # coding=utf-8
-import logging
-
-from django.http import HttpResponse
-from django.contrib.auth.models import AnonymousUser, User
-from django.utils import timezone
 from social.apps.django_app.default.models import UserSocialAuth
-
+import logging
 from tastypie.authentication import Authentication
 from tastypie.http import HttpUnauthorized
+import pytz
+import datetime as dt
+from django.conf import settings
 
+logger = logging.getLogger(__name__)
 
 class OAuth20Authentication(Authentication):
     """
@@ -22,6 +21,31 @@ class OAuth20Authentication(Authentication):
     def _unauthorized(self):
         return HttpUnauthorized()
 
+    @staticmethod
+    def _expired(user):
+        """
+        Calculates the difference between now and the last login time of the user.
+        If the difference is higher than the maximum duration, the user is considered unauthenticated.
+
+        :return: true if the last login is was within the maximum session time
+        """
+        oauth_session_length = getattr(settings, "OAUTH_SESSION_TIMEOUT", 12 * 60 * 60)
+        use_tz = getattr(settings, "USE_TZ", False)
+
+        try:
+            now = dt.datetime.now()
+            if use_tz:
+                now = pytz.utc.localize(now)
+            delta_seconds = (now - user.last_login).total_seconds()
+            if delta_seconds > oauth_session_length:
+                return True
+            else:
+                return False
+        except Exception, e:
+            return True
+
+
+
     def is_authenticated(self, request, **kwargs):
         if not request.META.get('HTTP_AUTHORIZATION'):
             return self._unauthorized()
@@ -29,24 +53,25 @@ class OAuth20Authentication(Authentication):
             (auth_type, token) = request.META['HTTP_AUTHORIZATION'].split()
             if auth_type.lower() != 'bearer':
                 return self._unauthorized()
-            self.backend = request.META['oauth-backend']
-
-        except:
+        except Exception, e:
+            logger.debug("no valid authorization header found", e)
             return self._unauthorized()
 
         try:
-            auth_user = UserSocialAuth.objects.get(extra_data__contains='access_token="{0}"'.format(token))
-            if auth_user.access_token != token: # in case someone managed to add such a string in another extra field
+            auth_user = UserSocialAuth.objects.get(extra_data__contains='"access_token": "{0}"'.format(token))
+            if auth_user.access_token != token:  # in case someone managed to add such a string in another extra field
                 return self._unauthorized
             user = auth_user.user
-        except:
+        except Exception, e:
+            logger.debug("No social auth user object found for this token")
             return self._unauthorized()
 
         if user is None:
+            logger.debug("User is None -> unauthorized")
             return self._unauthorized()
 
-        if not self.check_active(user) or not user.is_authenticated():
-            return False
-        else:
+        if self.check_active(user) and not self._expired(user):
             request.user = user
             return True
+        else:
+            return False
